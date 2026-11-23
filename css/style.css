@@ -257,3 +257,111 @@ img { max-width: 100%; display: block; }
   color: #ffffff;
   border-color: var(--accent-red);
 }
+
+/* Top Country / Edition Line */
+.country-strip {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-sans);
+}
+
+.country-strip-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.country-strip-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.country-strip-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.region-btn {
+  padding: 5px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.region-btn:hover {
+  color: var(--accent-red);
+  border-color: var(--border-color);
+}
+
+.region-btn.active {
+  background-color: var(--accent-red);
+  color: #ffffff;
+  border-color: var(--accent-red);
+}
+
+/* Top Country / Edition Line */
+.country-strip {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-sans);
+}
+
+.country-strip-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.country-strip-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.country-strip-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.region-btn {
+  padding: 5px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.region-btn:hover {
+  color: var(--accent-red);
+  border-color: var(--border-color);
+}
+
+.region-btn.active {
+  background-color: var(--accent-red);
+  color: #ffffff;
+  border-color: var(--accent-red);
+}

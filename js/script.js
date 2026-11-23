@@ -145,10 +145,48 @@ const LIVE_RSS_FEEDS = [
 let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
 let ACTIVE_REGION = "All";
 
-window.tryNextImgExt = function (imgEl) {
+function extractImageFromHtml(htmlString) {
+  if (!htmlString) return "";
+  const doc = new DOMParser().parseFromString(htmlString, "text/html");
+  const img = doc.querySelector("img");
+  if (!img) return "";
+  const src = (img.getAttribute("src") || "").trim();
+  if (!src || src.startsWith("data:")) return "";
+  return src;
+}
+
+function getRealArticleImage(item) {
+  const candidates = [];
+
+  if (item.enclosure && item.enclosure.link) {
+    candidates.push(String(item.enclosure.link).trim());
+  }
+  if (item.thumbnail) {
+    candidates.push(String(item.thumbnail).trim());
+  }
+  const descImg = extractImageFromHtml(item.description || "");
+  if (descImg) {
+    candidates.push(descImg);
+  }
+  const contentImg = extractImageFromHtml(item.content || "");
+  if (contentImg) {
+    candidates.push(contentImg);
+  }
+
+  for (let i = 0; i < candidates.length; i++) {
+    const candidate = candidates[i];
+    if (/^https?:\/\//i.test(candidate)) {
+      return candidate;
+    }
+  }
+  return "";
+}
+
+/* Agar real image na ho ya load na ho, toh normal local image (.jpg / .jpeg) par switch karega */
+window.handleArticleImgError = function (imgEl) {
   const extensions = ["jpg", "jpeg", "JPG", "JPEG"];
   const base = imgEl.getAttribute("data-base");
-  let step = parseInt(imgEl.getAttribute("data-ext-step") || "0", 10) + 1;
+  let step = parseInt(imgEl.getAttribute("data-ext-step") || "-1", 10) + 1;
 
   if (base && step < extensions.length) {
     imgEl.setAttribute("data-ext-step", String(step));
@@ -166,6 +204,7 @@ function stripHtml(htmlText) {
 
 async function fetchLiveNews() {
   const collected = [];
+  const usedRealImages = new Set();
 
   for (let i = 0; i < LIVE_RSS_FEEDS.length; i++) {
     const feed = LIVE_RSS_FEEDS[i];
@@ -178,6 +217,15 @@ async function fetchLiveNews() {
       if (data.status !== "ok" || !Array.isArray(data.items)) continue;
 
       data.items.slice(0, 3).forEach((item, idx) => {
+        const rawRealImg = getRealArticleImage(item);
+
+        // Jo feed/item real image de uski real image rakhein; duplicate URL ho ya real image na ho toh normal local image use karein
+        let finalRealImg = "";
+        if (rawRealImg && !usedRealImages.has(rawRealImg)) {
+          usedRealImages.add(rawRealImg);
+          finalRealImg = rawRealImg;
+        }
+
         const cleanDesc = stripHtml(item.description);
         const shortExcerpt =
           cleanDesc.length > 140
@@ -189,6 +237,7 @@ async function fetchLiveNews() {
           region: feed.region,
           category: feed.category,
           imageBase: feed.imageBase,
+          realImageUrl: finalRealImg,
           title: item.title || `${feed.region} News Update`,
           author: item.author || (data.feed && data.feed.title) || `${feed.region} Desk`,
           date: item.pubDate
@@ -208,7 +257,7 @@ async function fetchLiveNews() {
         });
       });
     } catch (err) {
-      // Offline or blocked feed keeps local fallback stories intact
+      // Offline or blocked feed keeps normal local stories intact
     }
   }
 
@@ -253,6 +302,14 @@ function initRegionFilters() {
       buttons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       applyFilters();
+      const latestSec = document.getElementById("latest-news");
+      if (latestSec) {
+        latestSec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      const latestSec = document.getElementById("latest-news");
+      if (latestSec) {
+        latestSec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
   });
 }
@@ -325,10 +382,11 @@ function renderNewsCards(articles) {
     const badgeText = article.region && article.region !== article.category
       ? `${article.region} • ${article.category}`
       : article.category;
+    const initialImgSrc = article.realImageUrl ? article.realImageUrl : `${article.imageBase}.jpg`;
 
     card.innerHTML = `
       <a href="${targetHref}" ${targetAttrs} class="card-thumb" aria-label="${article.title}">
-        <img src="${article.imageBase}.jpg" data-base="${article.imageBase}" onerror="tryNextImgExt(this)" alt="${article.title}" class="card-img">
+        <img src="${initialImgSrc}" data-base="${article.imageBase}" onerror="handleArticleImgError(this)" alt="${article.title}" class="card-img">
         <span class="media-caption">${(article.region || article.category).toUpperCase()}</span>
       </a>
       <div class="card-body">
@@ -379,9 +437,10 @@ function initSingleArticlePage() {
   if (dateEl) dateEl.textContent = article.date;
   if (readTimeEl) readTimeEl.textContent = article.readTime;
   if (imageEl) {
+    const initialImgSrc = article.realImageUrl ? article.realImageUrl : `${article.imageBase}.jpg`;
     imageEl.className = "article-hero-image";
     imageEl.innerHTML = `
-      <img src="${article.imageBase}.jpg" data-base="${article.imageBase}" onerror="tryNextImgExt(this)" alt="${article.title}" class="article-hero-img">
+      <img src="${initialImgSrc}" data-base="${article.imageBase}" onerror="handleArticleImgError(this)" alt="${article.title}" class="article-hero-img">
       <span id="article-image-caption" class="media-caption">${(article.region || article.category).toUpperCase()} DESK — MIRKUK NEWS ARCHIVE</span>
     `;
   }
@@ -397,3 +456,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initSingleArticlePage();
   fetchLiveNews();
 });
+
+
