@@ -477,7 +477,7 @@
       if (doc.querySelector("parsererror")) return [];
 
       const entries = Array.from(doc.querySelectorAll("item, entry"));
-      return entries.slice(0, 6).map((el) => {
+      return entries.slice(0, 8).map((el) => {
         const title = (el.querySelector("title")?.textContent || "").trim();
         let link = "";
         const linkEl = el.querySelector("link");
@@ -541,7 +541,7 @@
       const now = Date.now();
       const pruned = items
         .filter((it) => now - (it.fetchedAt || it.ts || now) < MAX_AGE_MS)
-        .slice(0, 80);
+        .slice(0, 120);
       const payload = JSON.stringify(pruned);
       if (typeof safeSetLocalStorage === "function") {
         safeSetLocalStorage(CACHE_KEY, payload);
@@ -569,7 +569,7 @@
       return;
     }
 
-    gridEl.innerHTML = filtered.slice(0, 12).map((item) => {
+    gridEl.innerHTML = filtered.slice(0, 18).map((item) => {
       const safeTitle = item.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const safeSource = item.sourceName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       const safeDesk = item.desk.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -1836,6 +1836,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
