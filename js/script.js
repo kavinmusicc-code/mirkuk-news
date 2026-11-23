@@ -590,7 +590,29 @@
 
   function ensureDeskContainer() {
     if (document.getElementById("mirkuk-live-desk")) return true;
-    const anchor = document.querySelector("main, .container, #main-content") || document.body;
+    const isLiveWirePage = /live-wire\.html/i.test(window.location.pathname) || !!document.getElementById("mirkuk-live-wire-mount");
+    if (!isLiveWirePage) {
+      if (!document.getElementById("mirkuk-bottom-live-cta")) {
+        const footerTarget = document.querySelector("footer") || document.body;
+        const cta = document.createElement("section");
+        cta.id = "mirkuk-bottom-live-cta";
+        cta.style.cssText = "max-width:1100px;margin:28px auto 18px;padding:16px 18px;border-radius:12px;background:#0f172a;color:#f8fafc;border:1px solid rgba(56,189,248,0.35);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;";
+        cta.innerHTML = `
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:#38bdf8;">24/7 Live Wire &amp; Global Stock Markets</div>
+            <div style="font-size:0.85rem;color:#cbd5e1;margin-top:3px;">Explore live feeds from Tech, US &amp; Indian Stock Markets, World News, Gaming &amp; YouTube on a dedicated page.</div>
+          </div>
+          <a href="live-wire.html" style="padding:9px 16px;border-radius:8px;background:#38bdf8;color:#0f172a;font-weight:700;text-decoration:none;font-size:0.88rem;">Open 24/7 Live Wire &rarr;</a>
+        `;
+        if (footerTarget.tagName === "FOOTER") {
+          footerTarget.parentElement.insertBefore(cta, footerTarget);
+        } else {
+          document.body.appendChild(cta);
+        }
+      }
+      return false;
+    }
+    const anchor = document.getElementById("mirkuk-live-wire-mount") || document.querySelector("main") || document.body;
     if (!anchor) return false;
 
     const desks = ["All", "Tech", "Markets", "World", "Gaming", "YouTube"];
@@ -1836,6 +1858,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
