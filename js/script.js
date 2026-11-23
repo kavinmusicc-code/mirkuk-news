@@ -1,4 +1,220 @@
-﻿(function initMirkukPremiumFeatures() {
+﻿(function initMirkukLangAndAuth() {
+  const LANG_KEY = "mirkuk_lang_v1";
+  const USER_KEY = "mirkuk_reader_account_v1";
+
+  const I18N = {
+    en: {
+      breaking: "BREAKING",
+      liveWire: "24/7 Live Wire",
+      searchPlaceholder: "Search news (e.g. GTA 6, Rockstar, India, Tech)...",
+      signIn: "Sign In / Register",
+      signedInPrefix: "Hi, ",
+      modalTitle: "Reader Account",
+      modalDesc: "Save your reader name and preferred desk in this browser.",
+      nameLabel: "Your Name",
+      deskLabel: "Preferred Desk",
+      saveBtn: "Save & Continue",
+      signOutBtn: "Sign Out",
+      closeBtn: "Close",
+      listenBtn: "Listen to Article",
+      stopBtn: "Stop Audio",
+      copyBtn: "Copy Link",
+      copiedBtn: "Link Copied!"
+    },
+    hi: {
+      breaking: "ब्रेकिंग",
+      liveWire: "24/7 लाइव न्यूज़ डेस्क",
+      searchPlaceholder: "खबर खोजें (जैसे GTA 6, Rockstar, India, Tech)...",
+      signIn: "साइन इन / रजिस्टर",
+      signedInPrefix: "नमस्ते, ",
+      modalTitle: "रीडर अकाउंट",
+      modalDesc: "अपना नाम और पसंदीदा डेस्क इस ब्राउज़र में सेव करें।",
+      nameLabel: "आपका नाम",
+      deskLabel: "पसंदीदा डेस्क",
+      saveBtn: "सेव करें",
+      signOutBtn: "साइन आउट",
+      closeBtn: "बंद करें",
+      listenBtn: "आर्टिकल सुनें",
+      stopBtn: "ऑडियो रोकें",
+      copyBtn: "लिंक कॉपी करें",
+      copiedBtn: "लिंक कॉपी हो गया!"
+    }
+  };
+
+  function getLang() {
+    const saved = localStorage.getItem(LANG_KEY);
+    return saved === "hi" ? "hi" : "en";
+  }
+
+  function t(key) {
+    const lang = getLang();
+    return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+  }
+
+  function getUser() {
+    try {
+      const raw = localStorage.getItem(USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveUser(userObj) {
+    try {
+      const payload = JSON.stringify(userObj);
+      if (typeof safeSetLocalStorage === "function") {
+        safeSetLocalStorage(USER_KEY, payload);
+      } else {
+        localStorage.setItem(USER_KEY, payload);
+      }
+    } catch (_) {}
+  }
+
+  function clearUser() {
+    try { localStorage.removeItem(USER_KEY); } catch (_) {}
+  }
+
+  function applyTranslations() {
+    const tickerLabel = document.querySelector(".mirkuk-ticker-label");
+    if (tickerLabel) tickerLabel.textContent = t("breaking");
+
+    const liveBadge = document.querySelector(".mirkuk-live-badge");
+    if (liveBadge) {
+      liveBadge.innerHTML = `<span class="mirkuk-live-dot"></span>${t("liveWire")}`;
+    }
+
+    const searchInput = document.querySelector(".mirkuk-live-search-input");
+    if (searchInput) searchInput.placeholder = t("searchPlaceholder");
+
+    const authBtn = document.getElementById("mirkuk-auth-trigger");
+    const user = getUser();
+    if (authBtn) {
+      authBtn.textContent = user && user.name ? `${t("signedInPrefix")}${user.name}` : t("signIn");
+    }
+
+    const copyBtn = document.querySelector(".mirkuk-share-btn");
+    if (copyBtn && copyBtn.textContent !== t("copiedBtn") && copyBtn.textContent !== "Link Copied!") {
+      copyBtn.textContent = t("copyBtn");
+    }
+  }
+
+  function setupLanguageSwitcher() {
+    if (document.getElementById("mirkuk-lang-pill")) return;
+    const pill = document.createElement("div");
+    pill.id = "mirkuk-lang-pill";
+    pill.className = "mirkuk-lang-pill";
+    pill.innerHTML = `
+      <span>Lang:</span>
+      <select id="mirkuk-lang-select" class="mirkuk-lang-select" aria-label="Select Language">
+        <option value="en">EN</option>
+        <option value="hi">हिंदी</option>
+      </select>
+    `;
+    document.body.appendChild(pill);
+
+    const sel = document.getElementById("mirkuk-lang-select");
+    sel.value = getLang();
+    sel.addEventListener("change", () => {
+      try {
+        if (typeof safeSetLocalStorage === "function") {
+          safeSetLocalStorage(LANG_KEY, sel.value);
+        } else {
+          localStorage.setItem(LANG_KEY, sel.value);
+        }
+      } catch (_) {}
+      applyTranslations();
+    });
+  }
+
+  function openAuthModal() {
+    let backdrop = document.getElementById("mirkuk-auth-backdrop");
+    if (!backdrop) {
+      backdrop = document.createElement("div");
+      backdrop.id = "mirkuk-auth-backdrop";
+      backdrop.className = "mirkuk-auth-backdrop";
+      backdrop.innerHTML = `
+        <div class="mirkuk-auth-modal" role="dialog" aria-modal="true">
+          <h3 id="mirkuk-auth-title"></h3>
+          <p id="mirkuk-auth-desc" style="font-size:0.84rem;opacity:0.85;margin:0 0 10px;"></p>
+          <label id="mirkuk-name-label" style="font-size:0.8rem;"></label>
+          <input id="mirkuk-auth-name" type="text" class="mirkuk-auth-field" placeholder="Prashant">
+          <label id="mirkuk-desk-label" style="font-size:0.8rem;"></label>
+          <select id="mirkuk-auth-desk" class="mirkuk-auth-field">
+            <option value="All">All</option>
+            <option value="Tech">Tech</option>
+            <option value="Markets">Markets</option>
+            <option value="World">World</option>
+            <option value="Gaming">Gaming</option>
+            <option value="YouTube">YouTube</option>
+          </select>
+          <div class="mirkuk-auth-actions">
+            <button type="button" id="mirkuk-auth-signout" class="mirkuk-auth-btn"></button>
+            <button type="button" id="mirkuk-auth-close" class="mirkuk-auth-btn"></button>
+            <button type="button" id="mirkuk-auth-save" class="mirkuk-auth-btn primary"></button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+
+      document.getElementById("mirkuk-auth-close").addEventListener("click", () => {
+        backdrop.classList.remove("is-open");
+      });
+      document.getElementById("mirkuk-auth-signout").addEventListener("click", () => {
+        clearUser();
+        backdrop.classList.remove("is-open");
+        applyTranslations();
+      });
+      document.getElementById("mirkuk-auth-save").addEventListener("click", () => {
+        const nameVal = (document.getElementById("mirkuk-auth-name").value || "").trim();
+        const deskVal = document.getElementById("mirkuk-auth-desk").value || "All";
+        if (!nameVal) return;
+        saveUser({ name: nameVal, desk: deskVal });
+        const chip = document.querySelector(`.mirkuk-desk-chip[data-desk="${deskVal}"]`);
+        if (chip) chip.click();
+        backdrop.classList.remove("is-open");
+        applyTranslations();
+      });
+    }
+
+    const user = getUser() || { name: "", desk: "All" };
+    document.getElementById("mirkuk-auth-title").textContent = t("modalTitle");
+    document.getElementById("mirkuk-auth-desc").textContent = t("modalDesc");
+    document.getElementById("mirkuk-name-label").textContent = t("nameLabel");
+    document.getElementById("mirkuk-desk-label").textContent = t("deskLabel");
+    document.getElementById("mirkuk-auth-save").textContent = t("saveBtn");
+    document.getElementById("mirkuk-auth-signout").textContent = t("signOutBtn");
+    document.getElementById("mirkuk-auth-close").textContent = t("closeBtn");
+    document.getElementById("mirkuk-auth-name").value = user.name || "";
+    document.getElementById("mirkuk-auth-desk").value = user.desk || "All";
+
+    backdrop.classList.add("is-open");
+  }
+
+  function setupAuthTrigger() {
+    if (document.getElementById("mirkuk-auth-trigger")) return;
+    const btn = document.createElement("button");
+    btn.id = "mirkuk-auth-trigger";
+    btn.type = "button";
+    btn.className = "mirkuk-auth-trigger";
+    btn.addEventListener("click", openAuthModal);
+    document.body.appendChild(btn);
+  }
+
+  function bootLangAuth() {
+    setupLanguageSwitcher();
+    setupAuthTrigger();
+    applyTranslations();
+    setTimeout(applyTranslations, 800);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(bootLangAuth, 500));
+  } else {
+    setTimeout(bootLangAuth, 500);
+  }
+})();
+(function initMirkukPremiumFeatures() {
   const THEME_KEY = "mirkuk_theme_mode_v1";
   const SAVED_KEY = "mirkuk_saved_stories_v1";
 
@@ -1512,6 +1728,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 

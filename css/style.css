@@ -966,3 +966,113 @@ body.mirkuk-light-mode .mirkuk-desk-chip {
 body.mirkuk-light-mode .mirkuk-desk-chip.is-active {
   color: #0f172a !important;
 }
+
+/* Mirkuk Lang & Reader Auth */
+.mirkuk-lang-pill {
+  position: fixed;
+  right: 16px;
+  bottom: 170px;
+  z-index: 9990;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.8rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.mirkuk-lang-select {
+  background: transparent;
+  color: #38bdf8;
+  border: none;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.mirkuk-auth-trigger {
+  position: fixed;
+  right: 16px;
+  bottom: 214px;
+  z-index: 9990;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: #0f172a;
+  color: #f8fafc;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.mirkuk-auth-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+
+.mirkuk-auth-backdrop.is-open {
+  display: flex;
+}
+
+.mirkuk-auth-modal {
+  width: 100%;
+  max-width: 380px;
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.mirkuk-auth-modal h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.mirkuk-auth-field {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0 12px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #020617;
+  color: #f8fafc;
+  font-size: 0.9rem;
+}
+
+.mirkuk-auth-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.mirkuk-auth-btn {
+  padding: 8px 13px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: #e2e8f0;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mirkuk-auth-btn.primary {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #38bdf8;
+}
