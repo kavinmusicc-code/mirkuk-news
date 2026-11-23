@@ -1,4 +1,147 @@
-﻿(function initMirkukPwaAndAudio() {
+﻿(function initMirkukSearchShareProgress() {
+  // 1. Reading Progress Bar (scroll ke saath top line move hoti hai)
+  function setupProgressBar() {
+    if (document.getElementById("mirkuk-read-progress")) return;
+    const bar = document.createElement("div");
+    bar.id = "mirkuk-read-progress";
+    bar.className = "mirkuk-read-progress";
+    document.body.prepend(bar);
+
+    function updateProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+      bar.style.width = pct.toFixed(1) + "%";
+    }
+
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  // 2. Live Search bar (news cards / headlines ko turant filter karta hai)
+  function setupLiveSearch() {
+    if (document.getElementById("mirkuk-live-search-bar")) return;
+    const cards = Array.from(document.querySelectorAll("article, .news-card, .story-card, .card"));
+    const searchableCards = cards.filter((el) => {
+      if (el.closest("#mirkuk-cookie-banner, #mirkuk-audio-bar, #mirkuk-share-bar")) return false;
+      return (el.innerText || "").trim().length > 25;
+    });
+
+    if (searchableCards.length < 2) return;
+    const container = searchableCards[0].parentElement;
+    if (!container) return;
+
+    const wrap = document.createElement("div");
+    wrap.id = "mirkuk-live-search-bar";
+    wrap.className = "mirkuk-live-search-bar";
+
+    const input = document.createElement("input");
+    input.type = "search";
+    input.className = "mirkuk-live-search-input";
+    input.placeholder = "Search news (e.g. GTA 6, Rockstar, India, Tech)...";
+    input.setAttribute("aria-label", "Search news");
+
+    const countSpan = document.createElement("span");
+    countSpan.style.fontSize = "0.84rem";
+    countSpan.style.opacity = "0.85";
+
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "mirkuk-clear-btn";
+    clearBtn.textContent = "Reset";
+
+    function filterCards() {
+      const q = (input.value || "").trim().toLowerCase();
+      let shown = 0;
+      searchableCards.forEach((card) => {
+        const txt = (card.innerText || "").toLowerCase();
+        const match = !q || txt.includes(q);
+        card.style.display = match ? "" : "none";
+        if (match) shown++;
+      });
+      countSpan.textContent = q ? `${shown} shown` : `${searchableCards.length} stories`;
+    }
+
+    input.addEventListener("input", filterCards);
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      filterCards();
+      input.focus();
+    });
+
+    wrap.appendChild(input);
+    wrap.appendChild(countSpan);
+    wrap.appendChild(clearBtn);
+    container.parentElement.insertBefore(wrap, container);
+    filterCards();
+  }
+
+  // 3. Share & Copy Link buttons on article/content view
+  function setupShareButtons() {
+    if (document.getElementById("mirkuk-share-bar")) return;
+    const target = document.querySelector("article, main, .article-content, .article-body, #article-content");
+    if (!target || (target.innerText || "").trim().length < 60) return;
+
+    const bar = document.createElement("div");
+    bar.id = "mirkuk-share-bar";
+    bar.className = "mirkuk-share-bar";
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "mirkuk-share-btn";
+    copyBtn.textContent = "Copy Link";
+
+    copyBtn.addEventListener("click", async () => {
+      const url = window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        copyBtn.textContent = "Link Copied!";
+      } catch (_) {
+        const temp = document.createElement("input");
+        temp.value = url;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+        copyBtn.textContent = "Link Copied!";
+      }
+      setTimeout(() => { copyBtn.textContent = "Copy Link"; }, 1800);
+    });
+
+    bar.appendChild(copyBtn);
+
+    if (navigator.share) {
+      const shareBtn = document.createElement("button");
+      shareBtn.type = "button";
+      shareBtn.className = "mirkuk-share-btn";
+      shareBtn.textContent = "Share";
+      shareBtn.addEventListener("click", async () => {
+        try {
+          await navigator.share({
+            title: document.title || "Mirkuk News",
+            url: window.location.href
+          });
+        } catch (_) {}
+      });
+      bar.appendChild(shareBtn);
+    }
+
+    target.prepend(bar);
+  }
+
+  function initAll() {
+    setupProgressBar();
+    setupLiveSearch();
+    setupShareButtons();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(initAll, 350));
+  } else {
+    setTimeout(initAll, 350);
+  }
+})();
+(function initMirkukPwaAndAudio() {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
@@ -1025,6 +1168,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
