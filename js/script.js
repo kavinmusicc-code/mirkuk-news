@@ -142,24 +142,37 @@
 const LIVE_RSS_FEEDS = [
   { channel: "BBC India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml" },
   { channel: "The Hindu National", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss" },
-  { channel: "The Hindu International", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://www.thehindu.com/news/international/feeder/default.rss" },
-  { channel: "The Hindu Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://www.thehindu.com/business/feeder/default.rss" },
-  { channel: "The Hindu Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://www.thehindu.com/sport/feeder/default.rss" },
-  { channel: "The Hindu Other States", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss" },
-  { channel: "BBC US & Canada", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
-  { channel: "BBC UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml" },
-  { channel: "BBC Europe", region: "Europe", category: "Europe", imageBase: "images/culture", rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml" },
-  { channel: "BBC Middle East", region: "Middle East", category: "Middle East", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml" },
-  { channel: "BBC World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
-  { channel: "BBC Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml" },
-  { channel: "BBC Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml" },
-  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" },
   { channel: "Google News India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://news.google.com/rss/headlines/section/geo/India?hl=en-IN&gl=IN&ceid=IN:en" },
+
+  { channel: "BBC US & Canada", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
   { channel: "Google News USA", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/geo/United%20States?hl=en-US&gl=US&ceid=US:en" },
+
+  { channel: "The Hindu Other States", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss" },
   { channel: "Google News North East", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://news.google.com/rss/search?q=North%20East%20India%20news&hl=en-IN&gl=IN&ceid=IN:en" },
+
+  { channel: "BBC UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml" },
+  { channel: "Google News UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://news.google.com/rss/headlines/section/geo/United%20Kingdom?hl=en-GB&gl=GB&ceid=GB:en" },
+
+  { channel: "Google News Canada", region: "Canada", category: "Canada", imageBase: "images/local", rssUrl: "https://news.google.com/rss/headlines/section/geo/Canada?hl=en-CA&gl=CA&ceid=CA:en" },
+
+  { channel: "Google News Australia", region: "Australia", category: "Australia", imageBase: "images/weather", rssUrl: "https://news.google.com/rss/headlines/section/geo/Australia?hl=en-AU&gl=AU&ceid=AU:en" },
+
+  { channel: "Google News Japan", region: "Japan", category: "Japan", imageBase: "images/tech", rssUrl: "https://news.google.com/rss/headlines/section/geo/Japan?hl=en-JP&gl=JP&ceid=JP:en" },
+
+  { channel: "BBC Europe", region: "Europe", category: "Europe", imageBase: "images/culture", rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml" },
+
+  { channel: "BBC Middle East", region: "Middle East", category: "Middle East", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml" },
+
+  { channel: "BBC World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
   { channel: "Google News World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en" },
+
+  { channel: "BBC Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml" },
   { channel: "Google News Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en" },
+
+  { channel: "BBC Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml" },
   { channel: "Google News Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en" },
+
+  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" },
   { channel: "Google News Sports", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-US&gl=US&ceid=US:en" }
 ];
 
@@ -511,7 +524,7 @@ function applyFilters() {
   try {
     const searchInput = document.getElementById("news-search");
     const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
-    const selected = (ACTIVE_REGION || "All").toLowerCase();
+    const selected = (ACTIVE_REGION || "All").trim().toLowerCase();
 
     const baseList = (Array.isArray(CURRENT_GRID_ARTICLES) && CURRENT_GRID_ARTICLES.length > 0)
       ? CURRENT_GRID_ARTICLES
@@ -524,16 +537,34 @@ function applyFilters() {
       if (selected === "live") {
         matchesRegion = Boolean(article.isLiveFeed || article.url);
       } else if (selected !== "all") {
-        const reg = (article.region || "").toLowerCase();
-        const cat = (article.category || "").toLowerCase();
+        const reg = (article.region || "").trim().toLowerCase();
+        const cat = (article.category || "").trim().toLowerCase();
         const title = (article.title || "").toLowerCase();
-        const author = (article.author || "").toLowerCase();
-        matchesRegion =
-          reg === selected ||
-          reg.includes(selected) ||
-          cat.includes(selected) ||
-          title.includes(selected) ||
-          author.includes(selected);
+        const excerpt = (article.excerpt || "").toLowerCase();
+
+        if (selected === "usa" || selected === "us" || selected === "united states") {
+          matchesRegion =
+            reg === "usa" ||
+            cat === "usa" ||
+            title.includes("u.s.") ||
+            title.includes("us ") ||
+            title.includes("america") ||
+            title.includes("united states");
+        } else if (selected === "uk" || selected === "united kingdom") {
+          matchesRegion =
+            reg === "uk" ||
+            cat === "uk" ||
+            title.includes("u.k.") ||
+            title.includes("uk ") ||
+            title.includes("britain") ||
+            title.includes("british");
+        } else {
+          matchesRegion =
+            reg === selected ||
+            cat === selected ||
+            title.includes(selected) ||
+            excerpt.includes(selected);
+        }
       }
 
       const matchesSearch =
@@ -768,4 +799,5 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
