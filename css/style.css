@@ -1176,3 +1176,56 @@ body.mirkuk-light-mode .mirkuk-section-heading {
   border-top-color: #111827;
   color: #111827;
 }
+
+/* Mirkuk Ticker Overlap Fix */
+.mirkuk-ticker-wrap {
+  position: relative !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  background: #111827 !important;
+  color: #f9fafb !important;
+  z-index: 50 !important;
+}
+
+.mirkuk-ticker-label {
+  position: relative !important;
+  z-index: 2 !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.06em !important;
+  padding: 0 12px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.mirkuk-ticker-label::before,
+.mirkuk-ticker-label::after {
+  content: none !important;
+  display: none !important;
+}
+
+.mirkuk-ticker-track {
+  position: relative !important;
+  z-index: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  padding-left: 14px !important;
+}
+
+.mirkuk-ticker-item {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  font-size: 0.84rem !important;
+  line-height: 36px !important;
+  margin-right: 32px !important;
+}
