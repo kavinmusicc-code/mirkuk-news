@@ -151,6 +151,42 @@ const LIVE_RSS_FEEDS = [
     rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
   },
   {
+    region: "UK",
+    category: "UK",
+    imageBase: "images/hero",
+    rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml"
+  },
+  {
+    region: "Canada",
+    category: "Canada",
+    imageBase: "images/local",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
+  },
+  {
+    region: "Australia",
+    category: "Australia",
+    imageBase: "images/weather",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
+  },
+  {
+    region: "Japan",
+    category: "Japan",
+    imageBase: "images/tech",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
+  },
+  {
+    region: "Europe",
+    category: "Europe",
+    imageBase: "images/culture",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
+  },
+  {
+    region: "Middle East",
+    category: "Middle East",
+    imageBase: "images/hero",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
+  },
+  {
     region: "World",
     category: "World",
     imageBase: "images/hero",
@@ -176,8 +212,17 @@ const LIVE_RSS_FEEDS = [
   }
 ];
 
+const AUTO_REFRESH_INTERVAL_MS = 60000; // Every 1 minute
 let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
 let ACTIVE_REGION = "All";
+let IS_FETCHING_LIVE = false;
+
+function updateSyncStatus(text) {
+  const statusEl = document.getElementById("live-sync-status");
+  if (statusEl) {
+    statusEl.textContent = text;
+  }
+}
 
 function extractImageFromHtml(htmlString) {
   if (!htmlString) return "";
@@ -224,6 +269,10 @@ function stripHtml(htmlText) {
 }
 
 async function fetchLiveNews() {
+  if (IS_FETCHING_LIVE) return;
+  IS_FETCHING_LIVE = true;
+  updateSyncStatus("Syncing live feeds...");
+
   const collected = [];
   const usedRealImages = new Set();
 
@@ -281,10 +330,23 @@ async function fetchLiveNews() {
     }
   }
 
+  IS_FETCHING_LIVE = false;
+
   if (collected.length > 0) {
     CURRENT_GRID_ARTICLES = collected;
     applyFilters();
+    const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    updateSyncStatus(`Updated ${nowTime} (1m auto)`);
+  } else {
+    updateSyncStatus("Fallback mode (1m auto)");
   }
+}
+
+function startAutoMinuteUpdates() {
+  fetchLiveNews();
+  setInterval(() => {
+    fetchLiveNews();
+  }, AUTO_REFRESH_INTERVAL_MS);
 }
 
 function setActiveRegionButton(regionName) {
@@ -497,5 +559,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initRegionFilters();
   initNewsSearch();
   initSingleArticlePage();
-  fetchLiveNews();
+  startAutoMinuteUpdates();
 });

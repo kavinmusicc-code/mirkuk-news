@@ -453,3 +453,17 @@ img { max-width: 100%; display: block; }
 .region-btn.active .live-dot {
   background-color: #ffffff;
 }
+
+/* Live 1-Minute Sync Indicator */
+.country-strip-inner {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-sync-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
