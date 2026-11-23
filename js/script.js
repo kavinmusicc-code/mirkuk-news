@@ -1,4 +1,90 @@
-﻿(function initMirkukCookieConsent() {
+﻿(function initMirkukPwaAndAudio() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
+
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (document.getElementById("mirkuk-install-app-btn")) return;
+    const btn = document.createElement("button");
+    btn.id = "mirkuk-install-app-btn";
+    btn.type = "button";
+    btn.className = "mirkuk-pwa-btn";
+    btn.textContent = "Install App";
+    btn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      try { await deferredPrompt.userChoice; } catch (_) {}
+      deferredPrompt = null;
+      btn.remove();
+    });
+    document.body.appendChild(btn);
+  });
+
+  function setupAudioReader() {
+    if (!("speechSynthesis" in window)) return;
+    const articleRoot = document.querySelector("article, main, .article-content, .article-body, #article-content");
+    if (!articleRoot || document.getElementById("mirkuk-audio-bar")) return;
+
+    const textToRead = (articleRoot.innerText || "").trim();
+    if (textToRead.length < 40) return;
+
+    const bar = document.createElement("div");
+    bar.id = "mirkuk-audio-bar";
+    bar.className = "mirkuk-audio-bar";
+
+    const playBtn = document.createElement("button");
+    playBtn.type = "button";
+    playBtn.className = "mirkuk-audio-btn";
+    playBtn.textContent = "Listen to Article";
+
+    const statusSpan = document.createElement("span");
+    statusSpan.textContent = "Free browser voice";
+
+    let speaking = false;
+    function stopSpeech() {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+      speaking = false;
+      playBtn.textContent = "Listen to Article";
+      playBtn.classList.remove("is-stop");
+      statusSpan.textContent = "Stopped";
+    }
+
+    playBtn.addEventListener("click", () => {
+      if (speaking) {
+        stopSpeech();
+        return;
+      }
+      stopSpeech();
+      const utterance = new SpeechSynthesisUtterance(textToRead.slice(0, 4000));
+      utterance.rate = 1;
+      utterance.onend = stopSpeech;
+      utterance.onerror = stopSpeech;
+      speaking = true;
+      playBtn.textContent = "Stop Audio";
+      playBtn.classList.add("is-stop");
+      statusSpan.textContent = "Playing...";
+      window.speechSynthesis.speak(utterance);
+    });
+
+    window.addEventListener("beforeunload", stopSpeech);
+    bar.appendChild(playBtn);
+    bar.appendChild(statusSpan);
+    articleRoot.prepend(bar);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(setupAudioReader, 400));
+  } else {
+    setTimeout(setupAudioReader, 400);
+  }
+})();
+(function initMirkukCookieConsent() {
   const CONSENT_KEY = "mirkuk_cookie_consent_v1";
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
@@ -939,6 +1025,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
