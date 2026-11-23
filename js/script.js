@@ -1,4 +1,138 @@
-﻿(function initMirkuk24x7Engine() {
+﻿(function initMirkukPremiumFeatures() {
+  const THEME_KEY = "mirkuk_theme_mode_v1";
+  const SAVED_KEY = "mirkuk_saved_stories_v1";
+
+  // 1. Dark / Light Theme Toggle
+  function setupThemeToggle() {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme === "light") document.body.classList.add("mirkuk-light-mode");
+
+    if (document.getElementById("mirkuk-theme-toggle")) return;
+    const btn = document.createElement("button");
+    btn.id = "mirkuk-theme-toggle";
+    btn.type = "button";
+    btn.className = "mirkuk-theme-btn";
+    btn.textContent = document.body.classList.contains("mirkuk-light-mode") ? "Dark Mode" : "Light Mode";
+
+    btn.addEventListener("click", () => {
+      const isLight = document.body.classList.toggle("mirkuk-light-mode");
+      btn.textContent = isLight ? "Dark Mode" : "Light Mode";
+      try {
+        if (typeof safeSetLocalStorage === "function") {
+          safeSetLocalStorage(THEME_KEY, isLight ? "light" : "dark");
+        } else {
+          localStorage.setItem(THEME_KEY, isLight ? "light" : "dark");
+        }
+      } catch (_) {}
+    });
+
+    document.body.appendChild(btn);
+  }
+
+  // 2. Breaking News Marquee Ticker
+  function setupBreakingTicker() {
+    if (document.getElementById("mirkuk-ticker-wrap")) return;
+    let headlines = [
+      { title: "Welcome to Mirkuk News — 24/7 Live Tech, Markets, Gaming & World Desk", link: "#mirkuk-live-desk" }
+    ];
+
+    try {
+      const rawCache = localStorage.getItem("mirkuk_24x7_feed_cache_v1");
+      if (rawCache) {
+        const parsed = JSON.parse(rawCache);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          headlines = parsed.slice(0, 8).map((item) => ({
+            title: `[${item.desk || "LIVE"}] ${item.title}`,
+            link: item.link || "#mirkuk-live-desk"
+          }));
+        }
+      }
+    } catch (_) {}
+
+    const wrap = document.createElement("div");
+    wrap.id = "mirkuk-ticker-wrap";
+    wrap.className = "mirkuk-ticker-wrap";
+
+    const itemsHtml = headlines.map((h) => {
+      const safeT = h.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const targetAttr = h.link.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : "";
+      return `<a href="${h.link}" ${targetAttr} class="mirkuk-ticker-item">• ${safeT}</a>`;
+    }).join("");
+
+    wrap.innerHTML = `
+      <div class="mirkuk-ticker-label">BREAKING</div>
+      <div class="mirkuk-ticker-track">${itemsHtml}${itemsHtml}</div>
+    `;
+
+    document.body.prepend(wrap);
+  }
+
+  // 3. Bookmark / Save Story Buttons on Live Cards
+  function getSavedLinks() {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function toggleSaveLink(url) {
+    let list = getSavedLinks();
+    if (list.includes(url)) {
+      list = list.filter((u) => u !== url);
+    } else {
+      list.unshift(url);
+      list = list.slice(0, 50);
+    }
+    try {
+      if (typeof safeSetLocalStorage === "function") {
+        safeSetLocalStorage(SAVED_KEY, JSON.stringify(list));
+      } else {
+        localStorage.setItem(SAVED_KEY, JSON.stringify(list));
+      }
+    } catch (_) {}
+    return list.includes(url);
+  }
+
+  function attachBookmarkButtons() {
+    const saved = getSavedLinks();
+    document.querySelectorAll(".mirkuk-live-card").forEach((card) => {
+      if (card.querySelector(".mirkuk-save-btn")) return;
+      const anchor = card.querySelector(".mirkuk-live-title a");
+      const meta = card.querySelector(".mirkuk-live-meta");
+      if (!anchor || !meta) return;
+
+      const url = anchor.getAttribute("href") || "";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mirkuk-save-btn" + (saved.includes(url) ? " is-saved" : "");
+      btn.textContent = saved.includes(url) ? "Saved" : "Save";
+
+      btn.addEventListener("click", () => {
+        const nowSaved = toggleSaveLink(url);
+        btn.classList.toggle("is-saved", nowSaved);
+        btn.textContent = nowSaved ? "Saved" : "Save";
+      });
+
+      meta.appendChild(btn);
+    });
+  }
+
+  function bootPremium() {
+    setupThemeToggle();
+    setupBreakingTicker();
+    attachBookmarkButtons();
+    setInterval(attachBookmarkButtons, 2000);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(bootPremium, 600));
+  } else {
+    setTimeout(bootPremium, 600);
+  }
+})();
+(function initMirkuk24x7Engine() {
   const CACHE_KEY = "mirkuk_24x7_feed_cache_v1";
   const MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
   let allItems = [];
@@ -1378,6 +1512,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
