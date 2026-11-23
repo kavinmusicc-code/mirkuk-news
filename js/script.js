@@ -1,4 +1,105 @@
-﻿(function initMirkukReaderFeedback() {
+﻿(function initMirkukConnectedGoogleForm() {
+  const FB_KEY = "mirkuk_reader_feedback_v1";
+
+  function getFormUrl() {
+    return (window.MIRKUK_FEEDBACK_FORM_URL || "").trim();
+  }
+
+  function readSaved() {
+    try {
+      return JSON.parse(localStorage.getItem(FB_KEY) || "[]");
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function copyToClipboard(text, msg, statusEl) {
+    if (!text) {
+      if (statusEl) statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (statusEl) statusEl.textContent = msg;
+      }).catch(() => {});
+    }
+  }
+
+  function syncFormControls() {
+    const formUrl = getFormUrl();
+    const row = document.querySelector(".mirkuk-fb-row");
+    const statusEl = document.getElementById("mirkuk-fb-status");
+    if (!row || !formUrl) return;
+
+    if (!document.getElementById("mirkuk-fb-copy-latest")) {
+      const btnLatest = document.createElement("button");
+      btnLatest.type = "button";
+      btnLatest.id = "mirkuk-fb-copy-latest";
+      btnLatest.className = "mirkuk-fb-btn secondary";
+      btnLatest.textContent = "Copy Latest";
+      btnLatest.addEventListener("click", () => {
+        const items = readSaved();
+        if (!items.length) {
+          if (statusEl) statusEl.textContent = "No saved feedback yet.";
+          return;
+        }
+        const x = items[0];
+        copyToClipboard(`[${x.tag}] ${x.note} (${x.time})`, "Copied latest feedback.", statusEl);
+      });
+      row.appendChild(btnLatest);
+    }
+
+    if (!document.getElementById("mirkuk-fb-copy-all")) {
+      const btnAll = document.createElement("button");
+      btnAll.type = "button";
+      btnAll.id = "mirkuk-fb-copy-all";
+      btnAll.className = "mirkuk-fb-btn secondary";
+      btnAll.textContent = "Copy All";
+      btnAll.addEventListener("click", () => {
+        const items = readSaved();
+        if (!items.length) {
+          if (statusEl) statusEl.textContent = "No saved feedback yet.";
+          return;
+        }
+        const formatted = items.map((x, i) => `${i + 1}. [${x.tag}] ${x.note} (${x.time})`).join("\n");
+        copyToClipboard(formatted, `Copied ${items.length} feedback item(s).`, statusEl);
+      });
+      row.appendChild(btnAll);
+    }
+
+    if (!document.getElementById("mirkuk-fb-copy-form-link")) {
+      const btnCopyForm = document.createElement("button");
+      btnCopyForm.type = "button";
+      btnCopyForm.id = "mirkuk-fb-copy-form-link";
+      btnCopyForm.className = "mirkuk-fb-btn secondary";
+      btnCopyForm.textContent = "Copy Form Link";
+      btnCopyForm.addEventListener("click", () => {
+        copyToClipboard(formUrl, "Copied Google Form link.", statusEl);
+      });
+      row.appendChild(btnCopyForm);
+    }
+
+    let openBtn = document.getElementById("mirkuk-fb-form-link");
+    if (!openBtn) {
+      openBtn = document.createElement("a");
+      openBtn.id = "mirkuk-fb-form-link";
+      openBtn.className = "mirkuk-fb-btn";
+      openBtn.target = "_blank";
+      openBtn.rel = "noopener noreferrer";
+      openBtn.style.textDecoration = "none";
+      openBtn.style.display = "inline-flex";
+      openBtn.style.alignItems = "center";
+      openBtn.textContent = "Open Form";
+      row.appendChild(openBtn);
+    }
+    openBtn.href = formUrl;
+  }
+
+  setInterval(syncFormControls, 1000);
+})();
+// MIRKUK_FORM_URL_CONFIG
+window.MIRKUK_FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor";
+(function initMirkukReaderFeedback() {
   const FB_KEY = "mirkuk_reader_feedback_v1";
 
   function mountFeedback() {
@@ -2221,6 +2322,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
