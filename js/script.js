@@ -177,18 +177,102 @@ const LIVE_RSS_FEEDS = [
 ];
 
 const COUNTRY_LIVE_STREAMS = {
-  "All": { title: "All Editions — Global Live Wire", note: "Showing live updates across all editions.", embedUrl: "", mp4Url: "" },
-  "LIVE": { title: "LIVE — Continuous Global Dispatch", note: "Real-time feed updates every 1 minute.", embedUrl: "", mp4Url: "" },
-  "India": { title: "India Live Desk", note: "Live coverage and updates focused on India.", embedUrl: "", mp4Url: "" },
-  "USA": { title: "USA Live Desk", note: "Live coverage and updates focused on the United States.", embedUrl: "", mp4Url: "" },
-  "North East": { title: "North East Live Desk", note: "Regional updates across North East India.", embedUrl: "", mp4Url: "" },
-  "UK": { title: "UK Live Desk", note: "Live coverage and updates focused on the United Kingdom.", embedUrl: "", mp4Url: "" },
-  "Canada": { title: "Canada Live Desk", note: "Live coverage and updates focused on Canada.", embedUrl: "", mp4Url: "" },
-  "Australia": { title: "Australia Live Desk", note: "Live coverage and updates focused on Australia.", embedUrl: "", mp4Url: "" },
-  "Japan": { title: "Japan Live Desk", note: "Live coverage and updates focused on Japan.", embedUrl: "", mp4Url: "" },
-  "Europe": { title: "Europe Live Desk", note: "Live coverage and updates focused on Europe.", embedUrl: "", mp4Url: "" },
-  "Middle East": { title: "Middle East Live Desk", note: "Live coverage and updates focused on the Middle East.", embedUrl: "", mp4Url: "" },
-  "World": { title: "World Live Desk", note: "International headlines and cross-border coverage.", embedUrl: "", mp4Url: "" }
+  "All": {
+    title: "All Editions — Global Live Wire",
+    note: "Showing live updates across all editions.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "LIVE": {
+    title: "LIVE — Continuous Global Dispatch",
+    note: "24/7 live news desk synced with live feeds.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "India": {
+    title: "India Live Desk",
+    note: "Live coverage and updates focused on India.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "USA": {
+    title: "USA Live Desk",
+    note: "Live coverage and updates focused on the United States.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "North East": {
+    title: "North East Live Desk",
+    note: "Regional updates across North East India.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "UK": {
+    title: "UK Live Desk",
+    note: "Live coverage and updates focused on the United Kingdom.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Canada": {
+    title: "Canada Live Desk",
+    note: "Live coverage and updates focused on Canada.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Australia": {
+    title: "Australia Live Desk",
+    note: "Live coverage and updates focused on Australia.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Japan": {
+    title: "Japan Live Desk",
+    note: "Live coverage and updates focused on Japan.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Europe": {
+    title: "Europe Live Desk",
+    note: "Live coverage and updates focused on Europe.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Middle East": {
+    title: "Middle East Live Desk",
+    note: "Live coverage and updates focused on the Middle East.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "World": {
+    title: "World Live Desk",
+    note: "International headlines and cross-border coverage.",
+    skyNewsEmbedUrl: "",
+    youtubeEmbedUrl: "",
+    embedUrl: "",
+    mp4Url: ""
+  }
 };
 
 const AUTO_REFRESH_INTERVAL_MS = 60000;
@@ -799,6 +883,8 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
+
 
 
 
