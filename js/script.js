@@ -1,4 +1,62 @@
-﻿(function initMirkukLocationEditionFilter() {
+﻿(function initMirkukGlobalLiveWireToggle() {
+  function markGlobalLiveBlocks() {
+    document.querySelectorAll("section, article, div").forEach((el) => {
+      if (el === document.body || el === document.documentElement) return;
+      if (el.id === "mirkuk-auto-edition-bar" || el.id === "mirkuk-ad-slot") return;
+      if (el.closest("#mirkuk-ed-footer, footer")) return;
+
+      const txt = (el.innerText || "").trim();
+      const hasHeading =
+        txt.includes("All Editions — Global Live Wire") ||
+        txt.includes("All Editions - Global Live Wire") ||
+        (txt.includes("ON PAGE LIVE STREAM") && txt.includes("Global Live Wire"));
+
+      if (hasHeading && txt.length < 1800) {
+        el.classList.add("mirkuk-global-live-hidden");
+      }
+    });
+  }
+
+  function bindLiveButtons() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target && e.target.closest ? e.target.closest("a, button, span, div") : null;
+      if (!btn) return;
+      if (btn.closest("#mirkuk-global-live-hidden, .mirkuk-global-live-hidden")) return;
+
+      const href = (btn.getAttribute("href") || "").toLowerCase();
+      if (href.includes("live-wire.html")) return;
+
+      const label = (btn.textContent || "").trim().toLowerCase();
+      if (
+        label === "live" ||
+        label === "live news" ||
+        label.includes("live (") ||
+        label === "24/7 live wire"
+      ) {
+        e.preventDefault();
+        markGlobalLiveBlocks();
+        document.body.classList.toggle("mirkuk-live-panel-open");
+        const target = document.querySelector(".mirkuk-global-live-hidden, #mirkuk-live-desk");
+        if (document.body.classList.contains("mirkuk-live-panel-open") && target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    });
+  }
+
+  function run() {
+    markGlobalLiveBlocks();
+    bindLiveButtons();
+    setInterval(markGlobalLiveBlocks, 1200);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+(function initMirkukLocationEditionFilter() {
   const STORAGE_KEY = "mirkuk_selected_edition_v1";
   const COUNTRY_KEYWORDS = {
     India: ["india", "indian", "delhi", "mumbai", "modi", "rupee", "sensex", "nifty"],
@@ -2060,6 +2118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 

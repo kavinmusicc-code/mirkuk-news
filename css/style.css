@@ -1392,3 +1392,8 @@ body.mirkuk-live-panel-open .mirkuk-live-desk-wrap {
 .mirkuk-country-hidden {
   display: none !important;
 }
+
+/* Mirkuk Hide Global Live Wire By Default */
+body:not(.mirkuk-live-panel-open):not([data-page="live-wire"]) .mirkuk-global-live-hidden {
+  display: none !important;
+}
