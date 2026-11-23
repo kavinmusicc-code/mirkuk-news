@@ -1,4 +1,126 @@
-﻿(function initMirkukCountryLiveClock() {
+﻿(function initMirkukLocationEditionFilter() {
+  const STORAGE_KEY = "mirkuk_selected_edition_v1";
+  const COUNTRY_KEYWORDS = {
+    India: ["india", "indian", "delhi", "mumbai", "modi", "rupee", "sensex", "nifty"],
+    US: ["u.s.", "us ", "usa", "united states", "america", "american", "washington", "wall street", "biden", "trump"],
+    UK: ["uk", "u.k.", "britain", "british", "london", "england", "parliament"],
+    Canada: ["canada", "canadian", "ottawa", "toronto"],
+    Australia: ["australia", "australian", "sydney", "melbourne", "canberra"],
+    Japan: ["japan", "japanese", "tokyo", "yen", "nikkei"]
+  };
+
+  function detectDefaultEdition() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && (saved === "All" || COUNTRY_KEYWORDS[saved])) return saved;
+    } catch (_) {}
+
+    const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
+    const lang = (navigator.language || "").toLowerCase();
+
+    if (tz.includes("kolkata") || tz.includes("calcutta") || lang.endsWith("-in")) return "India";
+    if (tz.includes("london") || lang.endsWith("-gb")) return "UK";
+    if (tz.includes("toronto") || tz.includes("vancouver") || lang.endsWith("-ca")) return "Canada";
+    if (tz.includes("sydney") || tz.includes("melbourne") || lang.endsWith("-au")) return "Australia";
+    if (tz.includes("tokyo") || lang.endsWith("-jp")) return "Japan";
+    if (tz.startsWith("america/") || lang.endsWith("-us")) return "US";
+
+    return "India";
+  }
+
+  function applyEditionFilter(edition) {
+    const cards = Array.from(document.querySelectorAll(
+      ".mirkuk-live-card:not(.mirkuk-empty-saved), article, .news-card, .story-card"
+    ));
+
+    if (!edition || edition === "All") {
+      cards.forEach((c) => c.classList.remove("mirkuk-country-hidden"));
+      return;
+    }
+
+    const keys = COUNTRY_KEYWORDS[edition] || [];
+    const matched = [];
+    const unmatched = [];
+
+    cards.forEach((card) => {
+      if (card.closest("footer, #mirkuk-ed-footer, #mirkuk-ad-slot")) return;
+      const txt = (card.innerText || "").toLowerCase();
+      const hasMatch = keys.some((k) => txt.includes(k));
+      if (hasMatch) matched.push(card);
+      else unmatched.push(card);
+    });
+
+    if (matched.length >= 2) {
+      matched.forEach((c) => c.classList.remove("mirkuk-country-hidden"));
+      unmatched.forEach((c) => c.classList.add("mirkuk-country-hidden"));
+    } else {
+      cards.forEach((c) => c.classList.remove("mirkuk-country-hidden"));
+    }
+  }
+
+  function ensureBar() {
+    if (document.getElementById("mirkuk-auto-edition-bar")) return;
+    const anchor =
+      document.getElementById("mirkuk-live-desk") ||
+      document.querySelector("main") ||
+      document.body.firstElementChild;
+    if (!anchor || !anchor.parentElement) return;
+
+    const currentEd = detectDefaultEdition();
+    const bar = document.createElement("div");
+    bar.id = "mirkuk-auto-edition-bar";
+    bar.className = "mirkuk-auto-edition-bar";
+    bar.innerHTML = `
+      <div>
+        <strong>Location Edition:</strong>
+        <span id="mirkuk-ed-status">Showing ${currentEd === "All" ? "All / Global" : currentEd} news</span>
+      </div>
+      <div>
+        <label for="mirkuk-ed-picker" style="margin-right:6px;font-weight:600;">Switch Country:</label>
+        <select id="mirkuk-ed-picker" class="mirkuk-edition-select">
+          <option value="India">India</option>
+          <option value="US">United States (US)</option>
+          <option value="UK">United Kingdom (UK)</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="All">All / Global</option>
+        </select>
+      </div>
+    `;
+
+    anchor.parentElement.insertBefore(bar, anchor);
+
+    const picker = document.getElementById("mirkuk-ed-picker");
+    const status = document.getElementById("mirkuk-ed-status");
+    if (picker) {
+      picker.value = currentEd;
+      picker.addEventListener("change", () => {
+        const chosen = picker.value;
+        try { localStorage.setItem(STORAGE_KEY, chosen); } catch (_) {}
+        if (status) {
+          status.textContent = `Showing ${chosen === "All" ? "All / Global" : chosen} news`;
+        }
+        applyEditionFilter(chosen);
+      });
+    }
+
+    applyEditionFilter(currentEd);
+  }
+
+  function run() {
+    ensureBar();
+    setTimeout(() => applyEditionFilter(detectDefaultEdition()), 1200);
+    setInterval(() => applyEditionFilter(detectDefaultEdition()), 2500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+(function initMirkukCountryLiveClock() {
   const EDITION_TZ_MAP = {
     india: { label: "India (IST)", tz: "Asia/Kolkata" },
     in: { label: "India (IST)", tz: "Asia/Kolkata" },
@@ -1938,6 +2060,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
