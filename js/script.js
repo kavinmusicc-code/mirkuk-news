@@ -5,9 +5,9 @@
     category: "National",
     imageBase: "images/hero",
     title: "Metropolitan Transit Overhaul Secures Historic Bipartisan Infrastructure Backing",
-    author: "Eleanor Vance",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint promising high-speed commuter corridors and zero-emission fleets.",
@@ -18,13 +18,30 @@
   },
   {
     id: 1,
+    region: "Tech",
+    category: "Gaming & Tech",
+    imageBase: "images/tech",
+    title: "Grand Theft Auto 6 (GTA 6): Open-World Scale, Next-Gen Physics, and Release Watch",
+    author: "Prashant Sagar",
+    date: "November 23, 2026",
+    timestamp: Date.now(),
+    readTime: "5 min read",
+    url: "",
+    excerpt: "A roundup of key details, open-world ambitions, AI NPC behavior, and player expectations surrounding Grand Theft Auto 6 (GTA 6).",
+    paragraphs: [
+      "Grand Theft Auto 6 (GTA 6) remains one of the most closely tracked releases in gaming and interactive entertainment, drawing global attention for its sprawling open-world setting and next-generation visual detail.",
+      "Players and industry analysts continue watching official milestones, platform optimization details, and open-world simulation features ahead of launch."
+    ]
+  },
+  {
+    id: 2,
     region: "India",
     category: "India",
     imageBase: "images/local",
     title: "Major Rail and Highway Corridors Expand Across Indian Metro and Regional Hubs",
-    author: "Rohan Deshmukh",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "3 min read",
     url: "",
     excerpt: "New connectivity upgrades aim to cut freight transit times and link tier-two cities with major industrial centers across India.",
@@ -34,14 +51,14 @@
     ]
   },
   {
-    id: 2,
+    id: 3,
     region: "USA",
     category: "USA",
     imageBase: "images/business",
     title: "Midwest Manufacturing Output Climbs as Domestic Supply Chains Stabilize",
-    author: "Claire Holloway",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "5 min read",
     url: "",
     excerpt: "Regional factory orders across the United States rose as precision machinery, clean-energy components, and domestic logistics steadied.",
@@ -51,14 +68,14 @@
     ]
   },
   {
-    id: 3,
+    id: 4,
     region: "North East",
     category: "North East",
     imageBase: "images/weather",
     title: "Early Winter Weather and Connectivity Updates Across North East Regions",
-    author: "Owen Grant",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "3 min read",
     url: "",
     excerpt: "Brisk seasonal air currents, road advisories, and regional updates shape conditions across North East corridors.",
@@ -68,14 +85,14 @@
     ]
   },
   {
-    id: 4,
+    id: 5,
     region: "UK",
     category: "UK",
     imageBase: "images/hero",
     title: "UK Energy Grid and Regional Rail Projects Advance Across Britain",
-    author: "Hannah Mercer",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "Utilities and transport bodies outline winter readiness and regional connectivity updates across the United Kingdom.",
@@ -85,14 +102,14 @@
     ]
   },
   {
-    id: 5,
+    id: 6,
     region: "World",
     category: "World",
     imageBase: "images/hero",
     title: "Global Diplomacy and Trade Corridors Shape Cross-Border Cooperation",
-    author: "Eleanor Vance",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "International delegates and policy desks track evolving trade agreements, energy transitions, and regional summits.",
@@ -102,14 +119,14 @@
     ]
   },
   {
-    id: 6,
+    id: 7,
     region: "Business",
     category: "Business",
     imageBase: "images/business",
     title: "Markets and Enterprise Hubs Adapt to Shifting Supply Chain and Capital Trends",
-    author: "Claire Holloway",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "Companies focus on operational efficiency, domestic manufacturing, and digital tools across key sectors.",
@@ -119,14 +136,14 @@
     ]
   },
   {
-    id: 7,
+    id: 8,
     region: "Tech",
     category: "Tech",
     imageBase: "images/tech",
     title: "Open-Source Battery Research Promises Faster Charging for Grid Storage",
-    author: "Sanjay Kulkarni",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "Engineers publish benchmark results on durable storage designs, software tooling, and cloud infrastructure.",
@@ -136,14 +153,14 @@
     ]
   },
   {
-    id: 8,
+    id: 9,
     region: "Sports",
     category: "Sports",
     imageBase: "images/sports",
     title: "Late Fourth-Quarter Drive Seals Championship Berth in Stadium Showdown",
-    author: "Devon Brooks",
+    author: "Prashant Sagar",
     date: "November 23, 2026",
-    timestamp: 0,
+    timestamp: Date.now(),
     readTime: "4 min read",
     url: "",
     excerpt: "A dramatic late-game finish highlights weekend fixtures, league standings, and standout performances.",
@@ -214,6 +231,9 @@ function pruneExpiredArticles(articles, nowMs = Date.now()) {
   const cutoff = nowMs - RETENTION_MS;
   return articles.filter((item) => {
     if (!item || !item.title) return false;
+    if (Number(item.id) < 100) {
+      return true;
+    }
     const itemTime = Number(item.timestamp || item.savedAt || 0);
     if (!itemTime) {
       item.savedAt = nowMs;
@@ -732,6 +752,7 @@ function renderNewsCards(articles) {
       </a>
       <div class="card-body">
         <span class="category-badge">${badgeText}</span>
+        <div class="card-meta-line">${article.date || "Mirkuk Desk"} • ${article.author || "Prashant Sagar"}</div>
         <h3 class="card-title">
           <a href="${targetHref}" ${targetAttrs}>${article.title}</a>
         </h3>
@@ -813,3 +834,4 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+

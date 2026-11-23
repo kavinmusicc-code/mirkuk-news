@@ -588,3 +588,19 @@ html, body {
     font-size: 1.02rem;
   }
 }
+
+/* Upgraded News Card Polish for Richer Readability */
+.news-card {
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.card-meta-line {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
