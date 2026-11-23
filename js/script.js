@@ -1,73 +1,4 @@
-﻿(function initMirkukDesktopFixPack() {
-  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor";
-  const EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor&embedded=true";
-  const FALLBACK_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
-    '<rect width="800" height="450" fill="#e2e8f0"/>' +
-    '<text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Georgia, serif" font-size="24">MIRKUK NEWS DESK</text>' +
-    '<text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="14">Editorial Dispatch</text>' +
-    '</svg>'
-  );
-
-  function repairImages() {
-    document.querySelectorAll("img").forEach((img) => {
-      if (!img.dataset.mirkukImgBound) {
-        img.dataset.mirkukImgBound = "1";
-        img.addEventListener("error", () => {
-          if (img.src !== FALLBACK_IMG) {
-            img.src = FALLBACK_IMG;
-          }
-        }, { once: true });
-      }
-      if (img.complete && img.naturalWidth === 0 && img.src !== FALLBACK_IMG) {
-        img.src = FALLBACK_IMG;
-      }
-    });
-  }
-
-  function renderCleanFormBox() {
-    let box = document.getElementById("mirkuk-feedback-box");
-    if (!box) {
-      const anchor =
-        document.getElementById("mirkuk-ad-slot") ||
-        document.getElementById("mirkuk-ed-footer") ||
-        document.querySelector("footer");
-      if (!anchor || !anchor.parentElement) return;
-      box = document.createElement("section");
-      box.id = "mirkuk-feedback-box";
-      box.className = "mirkuk-feedback-box";
-      box.setAttribute("aria-label", "Reader Feedback");
-      anchor.parentElement.insertBefore(box, anchor);
-    }
-
-    if (box.dataset.mirkukFormRendered === "1") return;
-    box.dataset.mirkukFormRendered = "1";
-
-    box.innerHTML = 
-      <div class="mirkuk-feedback-top" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-        <strong>Reader Feedback</strong>
-        <a href=" + FORM_URL + " target="_blank" rel="noopener noreferrer" class="mirkuk-fb-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Open Form</a>
-      </div>
-      <div style="width:100%;overflow:hidden;border:1px solid #cbd5e1;background:#ffffff;">
-        <iframe
-          src=" + EMBED_URL + "
-          title="Mirkuk News — Reader Feedback"
-          style="width:100%;height:560px;border:0;display:block;background:#ffffff;"
-          loading="lazy"
-        ></iframe>
-      </div>
-    ;
-  }
-
-  function runAll() {
-    repairImages();
-    renderCleanFormBox();
-  }
-
-  runAll();
-  setInterval(runAll, 1000);
-})();
-(function initMirkukMobilePolish() {
+﻿(function initMirkukMobilePolish() {
   const FALLBACK_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
     '<rect width="800" height="450" fill="#e2e8f0"/>' +
@@ -2499,7 +2430,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
-
 
 
 
