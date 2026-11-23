@@ -1103,3 +1103,76 @@ body.mirkuk-light-mode .mirkuk-card-footer {
 body.mirkuk-light-mode .mirkuk-source-tag {
   color: #0284c7;
 }
+
+/* Mirkuk Clean Editorial Grid (BBC-inspired clean structure) */
+.mirkuk-editorial-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.mirkuk-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid #0f172a;
+  padding-top: 8px;
+  margin: 24px 0 14px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mirkuk-editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .mirkuk-editorial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .mirkuk-editorial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mirkuk-editorial-card {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  padding-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mirkuk-editorial-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 2px;
+  background: #e2e8f0;
+}
+
+.mirkuk-editorial-title {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.32;
+  font-weight: 700;
+}
+
+.mirkuk-editorial-summary {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.42;
+  opacity: 0.85;
+}
+
+body.mirkuk-light-mode .mirkuk-section-heading {
+  border-top-color: #111827;
+  color: #111827;
+}
