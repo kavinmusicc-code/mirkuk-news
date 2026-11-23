@@ -213,7 +213,64 @@ const LIVE_RSS_FEEDS = [
 ];
 
 const AUTO_REFRESH_INTERVAL_MS = 60000; // Every 1 minute
-let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
+
+const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
+const MAX_ARCHIVED_ARTICLES = 160;
+
+function loadSavedArchive() {
+  try {
+    const raw = localStorage.getItem(ARCHIVE_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveArchiveToStorage(articles) {
+  try {
+    const trimmed = Array.isArray(articles) ? articles.slice(0, MAX_ARCHIVED_ARTICLES) : [];
+    localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(trimmed));
+  } catch (e) {
+    // If storage quota is full, trim older items and retry once
+    try {
+      const smaller = (Array.isArray(articles) ? articles : []).slice(0, 60);
+      localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(smaller));
+    } catch (err2) {}
+  }
+}
+
+function getArticleUniqueKey(item) {
+  const titleKey = (item.title || "").trim().toLowerCase();
+  const linkKey = (item.url || "").trim().toLowerCase();
+  return `${titleKey}::${linkKey}`;
+}
+
+function mergeAndSaveArticles(existingList, incomingList) {
+  const map = new Map();
+
+  const addItem = (item) => {
+    if (!item || !item.title) return;
+    const key = getArticleUniqueKey(item);
+    if (!map.has(key)) {
+      map.set(key, item);
+    }
+  };
+
+  // Incoming items first so newest feed items stay fresh, then existing saved items below
+  (incomingList || []).forEach(addItem);
+  (existingList || []).forEach(addItem);
+
+  const merged = Array.from(map.values()).sort(
+    (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+  );
+
+  const capped = merged.slice(0, MAX_ARCHIVED_ARTICLES);
+  saveArchiveToStorage(capped);
+  return capped;
+}
+let CURRENT_GRID_ARTICLES = loadSavedArchive() || ARTICLES_DATA.filter((item) => item.id !== 0);
 let ACTIVE_REGION = "All";
 let IS_FETCHING_LIVE = false;
 
@@ -351,9 +408,7 @@ async function fetchLiveNews() {
   IS_FETCHING_LIVE = false;
 
   if (collected.length > 0) {
-    // Sort newest channel items first across all feeds
-    collected.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    CURRENT_GRID_ARTICLES = collected;
+    CURRENT_GRID_ARTICLES = mergeAndSaveArticles(CURRENT_GRID_ARTICLES, collected);
     applyFilters();
     const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     updateSyncStatus(`Updated ${nowTime} (1m auto)`);
@@ -593,4 +648,5 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
