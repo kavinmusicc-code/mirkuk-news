@@ -1,4 +1,39 @@
-﻿(function initMirkukConnectedGoogleForm() {
+﻿(function initMirkukDedupeFeedbackButtons() {
+  function cleanDuplicateFeedbackButtons() {
+    const row = document.querySelector(".mirkuk-fb-row");
+    if (!row) return;
+
+    const buttons = Array.from(row.querySelectorAll("button, a"));
+    let seenCopyLatest = false;
+    let seenCopyAll = false;
+    let seenCopyForm = false;
+    let seenOpenForm = false;
+
+    buttons.forEach((el) => {
+      const label = (el.textContent || "").trim().toLowerCase();
+      if (label === "copy latest") {
+        if (seenCopyLatest) el.remove();
+        else seenCopyLatest = true;
+      } else if (label === "copy all") {
+        if (seenCopyAll) el.remove();
+        else seenCopyAll = true;
+      } else if (label === "copy form link") {
+        if (seenCopyForm) el.remove();
+        else seenCopyForm = true;
+      } else if (label === "open form" || label === "open feedback form") {
+        if (seenOpenForm) el.remove();
+        else {
+          seenOpenForm = true;
+          el.textContent = "Open Form";
+        }
+      }
+    });
+  }
+
+  cleanDuplicateFeedbackButtons();
+  setInterval(cleanDuplicateFeedbackButtons, 800);
+})();
+(function initMirkukConnectedGoogleForm() {
   const FB_KEY = "mirkuk_reader_feedback_v1";
 
   function getFormUrl() {
@@ -2322,6 +2357,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
