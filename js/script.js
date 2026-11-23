@@ -67,50 +67,66 @@
   },
   {
     id: 4,
-    region: "India",
-    category: "Business",
-    imageBase: "images/tech",
-    title: "Digital Public Infrastructure and Clean Energy Push Gains Momentum in India",
-    author: "Ananya Nair",
+    region: "World",
+    category: "World",
+    imageBase: "images/hero",
+    title: "Global Diplomacy and Trade Corridors Shape Cross-Border Cooperation",
+    author: "Eleanor Vance",
     date: "November 23, 2026",
     readTime: "4 min read",
     url: "",
-    excerpt: "Startups, state grids, and enterprise hubs accelerate solar adoption and cloud-native services across Indian cities.",
+    excerpt: "International delegates and policy desks track evolving trade agreements, energy transitions, and regional summits.",
     paragraphs: [
-      "Technology and energy initiatives across India continue to expand digital access and renewable power capacity.",
-      "Analysts note rising collaboration between research institutes, domestic manufacturers, and regional enterprises."
+      "Cross-border policy discussions and international trade corridors remain central to global economic outlooks.",
+      "Analysts monitor maritime logistics, clean energy targets, and diplomatic updates across major capitals."
     ]
   },
   {
     id: 5,
-    region: "USA",
-    category: "Sports",
-    imageBase: "images/sports",
-    title: "Late Fourth-Quarter Drive Seals Championship Berth in U.S. Stadium Showdown",
-    author: "Devon Brooks",
+    region: "Business",
+    category: "Business",
+    imageBase: "images/business",
+    title: "Markets and Enterprise Hubs Adapt to Shifting Supply Chain and Capital Trends",
+    author: "Claire Holloway",
     date: "November 23, 2026",
     readTime: "4 min read",
     url: "",
-    excerpt: "A dramatic final-minute drive capped off an electric weekend matchup before a packed American stadium crowd.",
+    excerpt: "Companies focus on operational efficiency, domestic manufacturing, and digital tools across key sectors.",
     paragraphs: [
-      "Before tens of thousands of fans, a decisive late-game scoring drive turned a tight contest into a memorable postseason victory.",
-      "Coaches and players credited disciplined execution under pressure in the closing minutes."
+      "Business leaders across manufacturing, retail, and finance continue adjusting investment plans around interest rates and supply chain resilience.",
+      "Regional enterprises are prioritizing cost discipline and faster fulfillment."
     ]
   },
   {
     id: 6,
-    region: "North East",
-    category: "Culture",
-    imageBase: "images/culture",
-    title: "Community Arts, Music, and Heritage Programs Highlight North East Cultural Calendar",
-    author: "Hannah Lindqvist",
+    region: "Tech",
+    category: "Tech",
+    imageBase: "images/tech",
+    title: "Open-Source Battery Research Promises Faster Charging for Grid Storage",
+    author: "Sanjay Kulkarni",
     date: "November 23, 2026",
-    readTime: "3 min read",
+    readTime: "4 min read",
     url: "",
-    excerpt: "Local ensembles, schools, and cultural spaces host accessible performances and exhibitions across the North East.",
+    excerpt: "Engineers publish benchmark results on durable storage designs, software tooling, and cloud infrastructure.",
     paragraphs: [
-      "Cultural organizers across the North East have scheduled open community performances, exhibitions, and youth workshops.",
-      "The programs aim to keep arts and heritage spaces welcoming and accessible to local families."
+      "Researchers and engineering teams continue advancing energy storage, developer tools, and connected infrastructure.",
+      "Open standards and modular architectures are helping smaller teams build faster web and hardware solutions."
+    ]
+  },
+  {
+    id: 7,
+    region: "Sports",
+    category: "Sports",
+    imageBase: "images/sports",
+    title: "Late Fourth-Quarter Drive Seals Championship Berth in Stadium Showdown",
+    author: "Devon Brooks",
+    date: "November 23, 2026",
+    readTime: "4 min read",
+    url: "",
+    excerpt: "A dramatic late-game finish highlights weekend fixtures, league standings, and standout performances.",
+    paragraphs: [
+      "High-stakes matchups across major leagues delivered decisive late-game moments and shifting playoff pictures.",
+      "Coaches and players credited late-game composure and team depth."
     ]
   }
 ];
@@ -137,8 +153,26 @@ const LIVE_RSS_FEEDS = [
   {
     region: "World",
     category: "World",
-    imageBase: "images/tech",
+    imageBase: "images/hero",
     rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml"
+  },
+  {
+    region: "Business",
+    category: "Business",
+    imageBase: "images/business",
+    rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml"
+  },
+  {
+    region: "Tech",
+    category: "Tech",
+    imageBase: "images/tech",
+    rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml"
+  },
+  {
+    region: "Sports",
+    category: "Sports",
+    imageBase: "images/sports",
+    rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml"
   }
 ];
 
@@ -157,32 +191,19 @@ function extractImageFromHtml(htmlString) {
 
 function getRealArticleImage(item) {
   const candidates = [];
-
-  if (item.enclosure && item.enclosure.link) {
-    candidates.push(String(item.enclosure.link).trim());
-  }
-  if (item.thumbnail) {
-    candidates.push(String(item.thumbnail).trim());
-  }
+  if (item.enclosure && item.enclosure.link) candidates.push(String(item.enclosure.link).trim());
+  if (item.thumbnail) candidates.push(String(item.thumbnail).trim());
   const descImg = extractImageFromHtml(item.description || "");
-  if (descImg) {
-    candidates.push(descImg);
-  }
+  if (descImg) candidates.push(descImg);
   const contentImg = extractImageFromHtml(item.content || "");
-  if (contentImg) {
-    candidates.push(contentImg);
-  }
+  if (contentImg) candidates.push(contentImg);
 
   for (let i = 0; i < candidates.length; i++) {
-    const candidate = candidates[i];
-    if (/^https?:\/\//i.test(candidate)) {
-      return candidate;
-    }
+    if (/^https?:\/\//i.test(candidates[i])) return candidates[i];
   }
   return "";
 }
 
-/* Agar real image na ho ya load na ho, toh normal local image (.jpg / .jpeg) par switch karega */
 window.handleArticleImgError = function (imgEl) {
   const extensions = ["jpg", "jpeg", "JPG", "JPEG"];
   const base = imgEl.getAttribute("data-base");
@@ -216,10 +237,8 @@ async function fetchLiveNews() {
       const data = await response.json();
       if (data.status !== "ok" || !Array.isArray(data.items)) continue;
 
-      data.items.slice(0, 3).forEach((item, idx) => {
+      data.items.slice(0, 2).forEach((item, idx) => {
         const rawRealImg = getRealArticleImage(item);
-
-        // Jo feed/item real image de uski real image rakhein; duplicate URL ho ya real image na ho toh normal local image use karein
         let finalRealImg = "";
         if (rawRealImg && !usedRealImages.has(rawRealImg)) {
           usedRealImages.add(rawRealImg);
@@ -238,6 +257,7 @@ async function fetchLiveNews() {
           category: feed.category,
           imageBase: feed.imageBase,
           realImageUrl: finalRealImg,
+          isLiveFeed: true,
           title: item.title || `${feed.region} News Update`,
           author: item.author || (data.feed && data.feed.title) || `${feed.region} Desk`,
           date: item.pubDate
@@ -247,17 +267,17 @@ async function fetchLiveNews() {
                 day: "numeric"
               })
             : "Today",
-          readTime: "Live Wire",
+          readTime: "LIVE",
           url: item.link || "",
           excerpt: shortExcerpt,
           paragraphs: [
             cleanDesc || "This item was pulled automatically from a live RSS news feed.",
-            `Region: ${feed.region} | Source: ${(data.feed && data.feed.title) || "Public News RSS"}. Open the source link to read the complete story.`
+            `Section: ${feed.region} | Source: ${(data.feed && data.feed.title) || "Public News RSS"}. Open the source link to read the complete story.`
           ]
         });
       });
     } catch (err) {
-      // Offline or blocked feed keeps normal local stories intact
+      // Keep local items intact if offline or blocked
     }
   }
 
@@ -267,16 +287,31 @@ async function fetchLiveNews() {
   }
 }
 
+function setActiveRegionButton(regionName) {
+  ACTIVE_REGION = regionName || "All";
+  const container = document.getElementById("region-filters");
+  if (!container) return;
+  const buttons = container.querySelectorAll(".region-btn");
+  buttons.forEach((b) => {
+    const btnRegion = b.getAttribute("data-region");
+    b.classList.toggle("active", btnRegion && btnRegion.toLowerCase() === ACTIVE_REGION.toLowerCase());
+  });
+}
+
 function applyFilters() {
   const searchInput = document.getElementById("news-search");
   const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
   const filtered = CURRENT_GRID_ARTICLES.filter((article) => {
-    const matchesRegion =
-      ACTIVE_REGION === "All" ||
-      (article.region && article.region.toLowerCase() === ACTIVE_REGION.toLowerCase()) ||
-      article.category.toLowerCase().includes(ACTIVE_REGION.toLowerCase()) ||
-      article.title.toLowerCase().includes(ACTIVE_REGION.toLowerCase());
+    let matchesRegion = true;
+    if (ACTIVE_REGION === "LIVE") {
+      matchesRegion = Boolean(article.isLiveFeed || article.url);
+    } else if (ACTIVE_REGION !== "All") {
+      matchesRegion =
+        (article.region && article.region.toLowerCase() === ACTIVE_REGION.toLowerCase()) ||
+        article.category.toLowerCase().includes(ACTIVE_REGION.toLowerCase()) ||
+        article.title.toLowerCase().includes(ACTIVE_REGION.toLowerCase());
+    }
 
     const matchesSearch =
       !query ||
@@ -295,16 +330,24 @@ function initRegionFilters() {
   const container = document.getElementById("region-filters");
   if (!container) return;
 
+  const params = new URLSearchParams(window.location.search);
+  const viewParam = params.get("view");
+  const regionParam = params.get("region");
+
+  if (viewParam && viewParam.toLowerCase() === "live") {
+    setActiveRegionButton("LIVE");
+  } else if (regionParam) {
+    setActiveRegionButton(regionParam);
+  }
+
   const buttons = container.querySelectorAll(".region-btn");
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      ACTIVE_REGION = btn.getAttribute("data-region") || "All";
-      buttons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+      const chosen = btn.getAttribute("data-region") || "All";
+      setActiveRegionButton(chosen);
       applyFilters();
-      const latestSec = document.getElementById("latest-news");
-      if (latestSec) {
-        latestSec.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (chosen === "LIVE") {
+        fetchLiveNews();
       }
       const latestSec = document.getElementById("latest-news");
       if (latestSec) {
@@ -456,5 +499,3 @@ document.addEventListener("DOMContentLoaded", () => {
   initSingleArticlePage();
   fetchLiveNews();
 });
-
-

@@ -428,3 +428,28 @@ img { max-width: 100%; display: block; }
   line-height: 1.65;
   max-width: 360px;
 }
+
+/* Live Indicator & Expanded Portal Navigation */
+.nav-list {
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.nav-live-link,
+.live-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-red);
+  display: inline-block;
+}
+
+.region-btn.active .live-dot {
+  background-color: #ffffff;
+}
