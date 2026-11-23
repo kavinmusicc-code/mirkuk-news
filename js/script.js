@@ -1,4 +1,71 @@
-﻿(function initMirkukLiveOnDemandAndTopImage() {
+﻿(function initMirkukCountryLiveClock() {
+  const EDITION_TZ_MAP = {
+    india: { label: "India (IST)", tz: "Asia/Kolkata" },
+    in: { label: "India (IST)", tz: "Asia/Kolkata" },
+    us: { label: "US (ET)", tz: "America/New_York" },
+    usa: { label: "US (ET)", tz: "America/New_York" },
+    america: { label: "US (ET)", tz: "America/New_York" },
+    uk: { label: "UK (GMT/BST)", tz: "Europe/London" },
+    canada: { label: "Canada (ET)", tz: "America/Toronto" },
+    australia: { label: "Australia (AEST)", tz: "Australia/Sydney" },
+    japan: { label: "Japan (JST)", tz: "Asia/Tokyo" }
+  };
+
+  function getActiveZoneInfo() {
+    const activeEd = document.querySelector(".edition-btn.active, [data-edition].active, .is-active[data-edition]");
+    const rawEd = activeEd
+      ? (activeEd.getAttribute("data-edition") || activeEd.textContent || "").trim().toLowerCase()
+      : "";
+
+    for (const key of Object.keys(EDITION_TZ_MAP)) {
+      if (rawEd.includes(key)) {
+        return EDITION_TZ_MAP[key];
+      }
+    }
+
+    const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Kolkata";
+    const shortName = localTz.includes("/") ? localTz.split("/")[1].replace(/_/g, " ") : "Local";
+    return { label: shortName, tz: localTz };
+  }
+
+  function formatZoneTime(tz) {
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      }).format(new Date());
+    } catch (_) {
+      return new Date().toLocaleTimeString();
+    }
+  }
+
+  function tickClocks() {
+    const info = getActiveZoneInfo();
+    const formatted = formatZoneTime(info.tz);
+
+    document.querySelectorAll("*").forEach((el) => {
+      if (el.children.length > 0) return;
+      const txt = (el.textContent || "").trim();
+      if (/^Updated\s+\d{1,2}:\d{2}(:\d{2})?\s*(AM|PM)?/i.test(txt)) {
+        const suffixMatch = txt.match(/(\s*[•|·].*)$/);
+        const suffix = suffixMatch ? suffixMatch[1] : "";
+        el.textContent = `Updated ${formatted} (${info.label})${suffix}`;
+      }
+    });
+
+    const liveClockEls = document.querySelectorAll(".mirkuk-live-clock, #mirkuk-live-clock, [data-live-clock]");
+    liveClockEls.forEach((el) => {
+      el.textContent = `${info.label}: ${formatted}`;
+    });
+  }
+
+  tickClocks();
+  setInterval(tickClocks, 1000);
+})();
+(function initMirkukLiveOnDemandAndTopImage() {
   const FALLBACK_IMG = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80";
 
   function bindLiveTriggers() {
@@ -1871,6 +1938,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
