@@ -1474,3 +1474,17 @@ body:not(.mirkuk-live-panel-open):not([data-page="live-wire"]) .mirkuk-global-li
   font-size: 0.8rem;
   color: #334155;
 }
+
+/* Mirkuk Mobile Polish */
+@media (max-width: 768px) {
+  .mirkuk-fb-box,
+  #mirkuk-feedback-box {
+    margin: 10px !important;
+    padding: 12px !important;
+  }
+  input[placeholder*="Search headlines"],
+  input[type="search"] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

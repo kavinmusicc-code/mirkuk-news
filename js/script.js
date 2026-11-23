@@ -1,4 +1,45 @@
-﻿(function initMirkukOnlyGoogleForm() {
+﻿(function initMirkukMobilePolish() {
+  const FALLBACK_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
+    '<rect width="800" height="450" fill="#e2e8f0"/>' +
+    '<text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Georgia, serif" font-size="24">MIRKUK NEWS DESK</text>' +
+    '<text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="14">Editorial Dispatch</text>' +
+    '</svg>'
+  );
+
+  function fixImagesAndHeader() {
+    document.querySelectorAll("img").forEach((img) => {
+      if (img.id === "mirkuk-fallback-bound") return;
+      img.id = "mirkuk-fallback-bound";
+      img.addEventListener("error", () => {
+        if (img.src !== FALLBACK_IMG) {
+          img.src = FALLBACK_IMG;
+        }
+      }, { once: true });
+      if (img.complete && img.naturalWidth === 0) {
+        img.src = FALLBACK_IMG;
+      }
+    });
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue && node.nodeValue.includes("Loading date...")) {
+        const nowText = new Date().toLocaleDateString("en-IN", {
+          weekday: "short",
+          day: "2-digit",
+          month: "short",
+          year: "numeric"
+        });
+        node.nodeValue = node.nodeValue.replace(/Loading date\.\.\./g, nowText);
+      }
+    }
+  }
+
+  fixImagesAndHeader();
+  setInterval(fixImagesAndHeader, 1200);
+})();
+(function initMirkukOnlyGoogleForm() {
   const RAW_URL = (window.MIRKUK_FEEDBACK_FORM_URL || "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor").trim();
   const EMBED_URL = RAW_URL.includes("embedded=true")
     ? RAW_URL
@@ -2389,6 +2430,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
