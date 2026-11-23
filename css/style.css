@@ -1076,3 +1076,30 @@ body.mirkuk-light-mode .mirkuk-desk-chip.is-active {
   color: #0f172a;
   border-color: #38bdf8;
 }
+
+/* Mirkuk Smart Reader Hub */
+.mirkuk-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.mirkuk-source-tag {
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+body.mirkuk-light-mode .mirkuk-card-footer {
+  color: #475569;
+  border-top-color: #e2e8f0;
+}
+
+body.mirkuk-light-mode .mirkuk-source-tag {
+  color: #0284c7;
+}

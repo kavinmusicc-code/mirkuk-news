@@ -1,4 +1,112 @@
-﻿(function initMirkukLangAndAuth() {
+﻿(function initMirkukSmartReaderHub() {
+  const SAVED_KEY = "mirkuk_saved_stories_v1";
+
+  function readSavedSet() {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  function ensureSavedChip() {
+    const chipsRow = document.querySelector(".mirkuk-desk-chips");
+    if (!chipsRow || chipsRow.querySelector('[data-desk="Saved"]')) return;
+
+    const savedBtn = document.createElement("button");
+    savedBtn.type = "button";
+    savedBtn.className = "mirkuk-desk-chip";
+    savedBtn.setAttribute("data-desk", "Saved");
+    savedBtn.textContent = "Saved";
+
+    savedBtn.addEventListener("click", () => {
+      chipsRow.querySelectorAll(".mirkuk-desk-chip").forEach((b) => b.classList.remove("is-active"));
+      savedBtn.classList.add("is-active");
+      applySavedFilter();
+    });
+
+    chipsRow.querySelectorAll(".mirkuk-desk-chip").forEach((b) => {
+      if (b.getAttribute("data-desk") !== "Saved") {
+        b.addEventListener("click", () => {
+          savedBtn.classList.remove("is-active");
+          document.querySelectorAll(".mirkuk-live-card").forEach((card) => {
+            card.style.display = "";
+          });
+        });
+      }
+    });
+
+    chipsRow.appendChild(savedBtn);
+  }
+
+  function applySavedFilter() {
+    const savedSet = readSavedSet();
+    const cards = Array.from(document.querySelectorAll(".mirkuk-live-card"));
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const href = card.querySelector(".mirkuk-live-title a")?.getAttribute("href") || "";
+      const isSaved = savedSet.has(href);
+      card.style.display = isSaved ? "" : "none";
+      if (isSaved) visibleCount++;
+    });
+
+    const grid = document.querySelector("[data-live-grid]");
+    if (!grid) return;
+    let emptyNote = grid.querySelector(".mirkuk-empty-saved");
+    if (visibleCount === 0) {
+      if (!emptyNote) {
+        emptyNote = document.createElement("div");
+        emptyNote.className = "mirkuk-live-card mirkuk-empty-saved";
+        emptyNote.innerHTML = '<p class="mirkuk-live-title">No saved stories yet. Click "Save" on any card to keep it here.</p>';
+        grid.appendChild(emptyNote);
+      }
+    } else if (emptyNote) {
+      emptyNote.remove();
+    }
+  }
+
+  function enrichCardsWithReadTimeAndSource() {
+    document.querySelectorAll(".mirkuk-live-card").forEach((card) => {
+      if (card.classList.contains("mirkuk-empty-saved") || card.querySelector(".mirkuk-card-footer")) return;
+      const metaText = card.querySelector(".mirkuk-live-meta")?.textContent || "";
+      const titleText = card.querySelector(".mirkuk-live-title")?.textContent || "";
+      const words = (titleText + " " + metaText).trim().split(/\s+/).filter(Boolean).length;
+      const readMins = Math.max(1, Math.round(words / 40));
+
+      const sourcePart = metaText.split("•")[1]?.split("\n")[0]?.trim() || "External Source";
+      const footer = document.createElement("div");
+      footer.className = "mirkuk-card-footer";
+      footer.innerHTML = `
+        <span class="mirkuk-source-tag">Source: ${sourcePart.replace(/</g, "&lt;")}</span>
+        <span>~${readMins} min scan • Opens source</span>
+      `;
+      card.appendChild(footer);
+    });
+  }
+
+  function bootSmartHub() {
+    ensureSavedChip();
+    enrichCardsWithReadTimeAndSource();
+    const activeChip = document.querySelector(".mirkuk-desk-chip.is-active");
+    if (activeChip && activeChip.getAttribute("data-desk") === "Saved") {
+      applySavedFilter();
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(bootSmartHub, 700);
+      setInterval(bootSmartHub, 2000);
+    });
+  } else {
+    setTimeout(bootSmartHub, 700);
+    setInterval(bootSmartHub, 2000);
+  }
+})();
+(function initMirkukLangAndAuth() {
   const LANG_KEY = "mirkuk_lang_v1";
   const USER_KEY = "mirkuk_reader_account_v1";
 
@@ -1728,6 +1836,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
