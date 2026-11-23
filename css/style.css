@@ -400,3 +400,31 @@ img { max-width: 100%; display: block; }
     height: 30px;
   }
 }
+
+/* Footer Brand Lockup & About Copy */
+.footer-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.footer-brand-row .footer-brand {
+  margin-bottom: 0;
+}
+
+.footer-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+  padding: 2px;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.footer-about {
+  line-height: 1.65;
+  max-width: 360px;
+}
