@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "mirkuk-news-v1";
+﻿const CACHE_NAME = "mirkuk-v1795430261";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -39,3 +39,4 @@ self.addEventListener("fetch", (event) => {
       .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
   );
 });
+

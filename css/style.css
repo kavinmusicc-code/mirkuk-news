@@ -1238,3 +1238,8 @@ body.mirkuk-light-mode .mirkuk-section-heading {
   padding: 0 !important;
   overflow: hidden !important;
 }
+
+/* Single Clean Footer Rule */
+footer:not(#mirkuk-ed-footer) {
+  display: none !important;
+}

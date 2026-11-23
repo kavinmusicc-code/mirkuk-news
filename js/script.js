@@ -1,4 +1,19 @@
-﻿(function initMirkukEditorialFooter() {
+﻿(function mirkukAutoCleanOldCaches() {
+  const BUILD_TAG = "mirkuk_build_2026_11_23_v2";
+  try {
+    if (localStorage.getItem("mirkuk_last_build") !== BUILD_TAG) {
+      localStorage.setItem("mirkuk_last_build", BUILD_TAG);
+      if ("caches" in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((k) => {
+            if (!k.includes(BUILD_TAG)) caches.delete(k);
+          });
+        }).catch(() => {});
+      }
+    }
+  } catch (_) {}
+})();
+(function initMirkukEditorialFooter() {
   const EDITION_KEY = "mirkuk_footer_edition_v1";
 
   function buildFooter() {
@@ -1718,4 +1733,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
