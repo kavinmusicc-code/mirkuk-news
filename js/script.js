@@ -1,4 +1,214 @@
-﻿(function initMirkukSearchShareProgress() {
+﻿(function initMirkuk24x7Engine() {
+  const CACHE_KEY = "mirkuk_24x7_feed_cache_v1";
+  const MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+  let allItems = [];
+  let activeDesk = "All";
+
+  function getConfig() {
+    const cfg = window.MIRKUK_FEEDS || {};
+    return {
+      refreshIntervalMs: Number(cfg.refreshIntervalMs) || 900000,
+      sources: Array.isArray(cfg.sources) ? cfg.sources : []
+    };
+  }
+
+  function parseFeedXml(xmlText, source) {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xmlText, "text/xml");
+      if (doc.querySelector("parsererror")) return [];
+
+      const entries = Array.from(doc.querySelectorAll("item, entry"));
+      return entries.slice(0, 6).map((el) => {
+        const title = (el.querySelector("title")?.textContent || "").trim();
+        let link = "";
+        const linkEl = el.querySelector("link");
+        if (linkEl) {
+          link = (linkEl.getAttribute("href") || linkEl.textContent || "").trim();
+        }
+        const pubDateRaw = (
+          el.querySelector("pubDate, published, updated")?.textContent || ""
+        ).trim();
+        const ts = Date.parse(pubDateRaw) || Date.now();
+        return {
+          title,
+          link,
+          desk: source.desk || "World",
+          sourceName: source.name || "Wire",
+          ts,
+          fetchedAt: Date.now()
+        };
+      }).filter((item) => item.title && /^https?:\/\//i.test(item.link));
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function fetchSingleSource(source) {
+    // Direct fetch pehle try karein, fail ho to free public AllOrigins raw proxy fallback
+    const candidates = [
+      source.url,
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent(source.url)
+    ];
+
+    for (const targetUrl of candidates) {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 6500);
+        const res = await fetch(targetUrl, { signal: controller.signal });
+        clearTimeout(timer);
+        if (!res.ok) continue;
+        const text = await res.text();
+        const parsed = parseFeedXml(text, source);
+        if (parsed.length > 0) return parsed;
+      } catch (_) {}
+    }
+    return [];
+  }
+
+  function loadCachedItems() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return [];
+      const data = JSON.parse(raw);
+      const now = Date.now();
+      return (Array.isArray(data) ? data : []).filter((it) => now - (it.fetchedAt || it.ts || now) < MAX_AGE_MS);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveCachedItems(items) {
+    try {
+      const now = Date.now();
+      const pruned = items
+        .filter((it) => now - (it.fetchedAt || it.ts || now) < MAX_AGE_MS)
+        .slice(0, 80);
+      const payload = JSON.stringify(pruned);
+      if (typeof safeSetLocalStorage === "function") {
+        safeSetLocalStorage(CACHE_KEY, payload);
+      } else {
+        localStorage.setItem(CACHE_KEY, payload);
+      }
+    } catch (_) {}
+  }
+
+  function renderDeskCards(statusText) {
+    const deskBox = document.getElementById("mirkuk-live-desk");
+    if (!deskBox) return;
+
+    const statusEl = deskBox.querySelector("[data-live-status]");
+    const gridEl = deskBox.querySelector("[data-live-grid]");
+    if (statusEl && statusText) statusEl.textContent = statusText;
+    if (!gridEl) return;
+
+    const filtered = activeDesk === "All"
+      ? allItems
+      : allItems.filter((item) => item.desk === activeDesk);
+
+    if (filtered.length === 0) {
+      gridEl.innerHTML = `<div class="mirkuk-live-card"><p class="mirkuk-live-title">Syncing live updates for ${activeDesk}...</p></div>`;
+      return;
+    }
+
+    gridEl.innerHTML = filtered.slice(0, 12).map((item) => {
+      const safeTitle = item.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const safeSource = item.sourceName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const safeDesk = item.desk.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const timeStr = new Date(item.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      return `
+        <article class="mirkuk-live-card">
+          <div class="mirkuk-live-meta">
+            <span>${safeDesk} • ${safeSource}</span>
+            <span>${timeStr}</span>
+          </div>
+          <h3 class="mirkuk-live-title">
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer">${safeTitle}</a>
+          </h3>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function ensureDeskContainer() {
+    if (document.getElementById("mirkuk-live-desk")) return true;
+    const anchor = document.querySelector("main, .container, #main-content") || document.body;
+    if (!anchor) return false;
+
+    const desks = ["All", "Tech", "Markets", "World", "Gaming", "YouTube"];
+    const box = document.createElement("section");
+    box.id = "mirkuk-live-desk";
+    box.className = "mirkuk-live-desk";
+    box.setAttribute("aria-label", "24/7 Live News Desk");
+
+    box.innerHTML = `
+      <div class="mirkuk-live-header">
+        <span class="mirkuk-live-badge"><span class="mirkuk-live-dot"></span>24/7 Live Wire</span>
+        <span data-live-status style="font-size:0.8rem;opacity:0.85;">Initializing feeds...</span>
+      </div>
+      <div class="mirkuk-desk-chips" role="tablist">
+        ${desks.map((d) => `<button type="button" class="mirkuk-desk-chip ${d === activeDesk ? "is-active" : ""}" data-desk="${d}">${d}</button>`).join("")}
+      </div>
+      <div class="mirkuk-live-grid" data-live-grid></div>
+    `;
+
+    box.querySelectorAll(".mirkuk-desk-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeDesk = btn.getAttribute("data-desk") || "All";
+        box.querySelectorAll(".mirkuk-desk-chip").forEach((b) => b.classList.toggle("is-active", b === btn));
+        renderDeskCards();
+      });
+    });
+
+    anchor.prepend(box);
+    return true;
+  }
+
+  async function syncAllFeeds() {
+    const { sources } = getConfig();
+    if (!sources.length) return;
+
+    renderDeskCards("Updating live feeds...");
+    const results = await Promise.all(sources.map((src) => fetchSingleSource(src)));
+    const combined = results.flat();
+
+    if (combined.length > 0) {
+      const seen = new Set();
+      allItems = [...combined, ...allItems]
+        .filter((it) => {
+          const key = it.link || it.title;
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        })
+        .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+
+      saveCachedItems(allItems);
+      const nowLabel = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      renderDeskCards("Updated at " + nowLabel);
+    } else if (allItems.length > 0) {
+      renderDeskCards("Showing cached headlines");
+    } else {
+      renderDeskCards("Waiting for feed connection");
+    }
+  }
+
+  function startEngine() {
+    if (!ensureDeskContainer()) return;
+    allItems = loadCachedItems();
+    renderDeskCards(allItems.length ? "Loaded saved headlines • Syncing..." : "Syncing live feeds...");
+    syncAllFeeds();
+    const { refreshIntervalMs } = getConfig();
+    setInterval(syncAllFeeds, refreshIntervalMs);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(startEngine, 450));
+  } else {
+    setTimeout(startEngine, 450);
+  }
+})();
+(function initMirkukSearchShareProgress() {
   // 1. Reading Progress Bar (scroll ke saath top line move hoti hai)
   function setupProgressBar() {
     if (document.getElementById("mirkuk-read-progress")) return;
@@ -1168,6 +1378,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
