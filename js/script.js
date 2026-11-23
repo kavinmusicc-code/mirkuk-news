@@ -194,7 +194,7 @@ const COUNTRY_LIVE_STREAMS = {
 const AUTO_REFRESH_INTERVAL_MS = 60000;
 const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
 const MAX_ARCHIVED_ARTICLES = 500;
-const RETENTION_DAYS = 10;
+const RETENTION_DAYS = 30;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
 let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
@@ -362,7 +362,7 @@ async function fetchLiveNews() {
           (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
         );
 
-        sortedFeedItems.slice(0, 25).forEach((item, idx) => {
+        sortedFeedItems.slice(0, 8).forEach((item, idx) => {
           const rawRealImg = getRealArticleImage(item);
           let finalRealImg = "";
           if (rawRealImg && !usedRealImages.has(rawRealImg)) {
@@ -411,7 +411,7 @@ async function fetchLiveNews() {
     CURRENT_GRID_ARTICLES = mergeAndSaveArticles(CURRENT_GRID_ARTICLES, collected);
     applyFilters();
     const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    updateSyncStatus(`Updated ${nowTime} (1m auto)`);
+    updateSyncStatus(`Updated ${nowTime} • +${collected.length} fetched • 30d auto-clean`);
   } else {
     CURRENT_GRID_ARTICLES = pruneExpiredArticles(CURRENT_GRID_ARTICLES);
     applyFilters();
@@ -799,5 +799,6 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
