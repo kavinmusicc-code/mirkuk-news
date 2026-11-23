@@ -431,8 +431,113 @@ function startAutoMinuteUpdates() {
   }, AUTO_REFRESH_INTERVAL_MS);
 }
 
+const COUNTRY_LIVE_STREAMS = {
+  "All": {
+    title: "All Editions — Global Live Wire",
+    note: "Showing live updates across all editions. Tap any country button to switch the country stream.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "LIVE": {
+    title: "LIVE — Continuous Global Dispatch",
+    note: "Real-time feed updates every 1 minute with newest stories sorted first.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "India": {
+    title: "India Live Desk",
+    note: "Live coverage and updates focused on India.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "USA": {
+    title: "USA Live Desk",
+    note: "Live coverage and updates focused on the United States.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "North East": {
+    title: "North East Live Desk",
+    note: "Regional updates and dispatches across North East India.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "UK": {
+    title: "UK Live Desk",
+    note: "Live coverage and updates focused on the United Kingdom.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Canada": {
+    title: "Canada Live Desk",
+    note: "Live coverage and updates focused on Canada.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Australia": {
+    title: "Australia Live Desk",
+    note: "Live coverage and updates focused on Australia.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Japan": {
+    title: "Japan Live Desk",
+    note: "Live coverage and updates focused on Japan.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Europe": {
+    title: "Europe Live Desk",
+    note: "Live coverage and updates focused on Europe.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "Middle East": {
+    title: "Middle East Live Desk",
+    note: "Live coverage and updates focused on the Middle East.",
+    embedUrl: "",
+    mp4Url: ""
+  },
+  "World": {
+    title: "World Live Desk",
+    note: "International headlines and cross-border coverage.",
+    embedUrl: "",
+    mp4Url: ""
+  }
+};
+
+function renderCountryLiveVideo(regionName) {
+  try {
+    const headingEl = document.getElementById("live-country-heading");
+    const subtextEl = document.getElementById("live-country-subtext");
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
+
+    const key = Object.keys(COUNTRY_LIVE_STREAMS).find(
+      (k) => k.toLowerCase() === String(regionName || "All").toLowerCase()
+    ) || "All";
+    const info = COUNTRY_LIVE_STREAMS[key] || {
+      title: `${regionName} Live Desk`,
+      note: `Live news feed for ${regionName}.`,
+      embedUrl: "",
+      mp4Url: ""
+    };
+
+    if (headingEl) headingEl.textContent = info.title;
+    if (subtextEl) subtextEl.textContent = info.note;
+
+    if (info.mp4Url) {
+      stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}"></video>`;
+    } else if (info.embedUrl) {
+      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      stageEl.innerHTML = `<p class="live-video-placeholder">On-page player ready for <strong>${key}</strong>. Add a verified embed/MP4 stream URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> to play video right here.</p>`;
+    }
+  } catch (e) {}
+}
+
 function setActiveRegionButton(regionName) {
-  ACTIVE_REGION = regionName || "All";
+  ACTIVE_REGION = regionName || "All";`n  renderCountryLiveVideo(ACTIVE_REGION);
   const container = document.getElementById("region-filters");
   if (!container) return;
   const buttons = container.querySelectorAll(".region-btn");
@@ -677,6 +782,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
