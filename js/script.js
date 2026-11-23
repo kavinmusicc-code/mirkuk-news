@@ -1,4 +1,65 @@
-﻿(function initMirkukCleanAdSlot() {
+﻿(function initMirkukLiveOnDemandAndTopImage() {
+  const FALLBACK_IMG = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80";
+
+  function bindLiveTriggers() {
+    document.addEventListener("click", (e) => {
+      const target = e.target && e.target.closest ? e.target.closest("a, button, .mirkuk-desk-chip") : null;
+      if (!target) return;
+
+      const href = (target.getAttribute("href") || "").toLowerCase();
+      const text = (target.textContent || "").trim().toLowerCase();
+      const desk = (target.getAttribute("data-desk") || "").trim().toLowerCase();
+
+      if (href.includes("live-wire")) return;
+
+      if (text === "live" || text === "live news" || text.includes("live wire") || desk === "live") {
+        e.preventDefault();
+        document.body.classList.toggle("mirkuk-live-panel-open");
+        const deskEl = document.getElementById("mirkuk-live-desk");
+        if (document.body.classList.contains("mirkuk-live-panel-open") && deskEl) {
+          deskEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+    });
+  }
+
+  function ensureTopStoryImage() {
+    const heroCandidates = document.querySelectorAll(
+      ".hero-story, .top-story, .lead-story, .featured-story, article.top-story"
+    );
+    heroCandidates.forEach((box) => {
+      let img = box.querySelector("img");
+      if (!img) {
+        img = document.createElement("img");
+        img.className = "mirkuk-top-story-img";
+        img.alt = "Mirkuk News top story visual";
+        img.src = FALLBACK_IMG;
+        box.insertBefore(img, box.firstChild);
+      } else {
+        img.classList.add("mirkuk-top-story-img");
+        if (!img.getAttribute("src") || img.naturalWidth === 0) {
+          img.src = FALLBACK_IMG;
+        }
+        img.onerror = function () {
+          if (this.src !== FALLBACK_IMG) this.src = FALLBACK_IMG;
+        };
+      }
+    });
+  }
+
+  function run() {
+    bindLiveTriggers();
+    ensureTopStoryImage();
+    setInterval(ensureTopStoryImage, 1500);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+(function initMirkukCleanAdSlot() {
   function mountSlot() {
     if (document.getElementById("mirkuk-ad-slot")) return;
     const footer = document.getElementById("mirkuk-ed-footer") || document.querySelector("footer");
@@ -1810,6 +1871,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
