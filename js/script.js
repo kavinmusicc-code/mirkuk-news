@@ -7,6 +7,7 @@
     title: "Metropolitan Transit Overhaul Secures Historic Bipartisan Infrastructure Backing",
     author: "Eleanor Vance",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "4 min read",
     url: "",
     excerpt: "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint promising high-speed commuter corridors and zero-emission fleets.",
@@ -25,6 +26,7 @@
     title: "Major Rail and Highway Corridors Expand Across Indian Metro and Regional Hubs",
     author: "Rohan Deshmukh",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "3 min read",
     url: "",
     excerpt: "New connectivity upgrades aim to cut freight transit times and link tier-two cities with major industrial centers across India.",
@@ -41,6 +43,7 @@
     title: "Midwest Manufacturing Output Climbs as Domestic Supply Chains Stabilize",
     author: "Claire Holloway",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "5 min read",
     url: "",
     excerpt: "Regional factory orders across the United States rose as precision machinery, clean-energy components, and domestic logistics steadied.",
@@ -57,6 +60,7 @@
     title: "Early Winter Weather and Connectivity Updates Across North East Regions",
     author: "Owen Grant",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "3 min read",
     url: "",
     excerpt: "Brisk seasonal air currents, road advisories, and regional updates shape conditions across North East corridors.",
@@ -73,6 +77,7 @@
     title: "Global Diplomacy and Trade Corridors Shape Cross-Border Cooperation",
     author: "Eleanor Vance",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "4 min read",
     url: "",
     excerpt: "International delegates and policy desks track evolving trade agreements, energy transitions, and regional summits.",
@@ -89,6 +94,7 @@
     title: "Markets and Enterprise Hubs Adapt to Shifting Supply Chain and Capital Trends",
     author: "Claire Holloway",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "4 min read",
     url: "",
     excerpt: "Companies focus on operational efficiency, domestic manufacturing, and digital tools across key sectors.",
@@ -105,6 +111,7 @@
     title: "Open-Source Battery Research Promises Faster Charging for Grid Storage",
     author: "Sanjay Kulkarni",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "4 min read",
     url: "",
     excerpt: "Engineers publish benchmark results on durable storage designs, software tooling, and cloud infrastructure.",
@@ -121,6 +128,7 @@
     title: "Late Fourth-Quarter Drive Seals Championship Berth in Stadium Showdown",
     author: "Devon Brooks",
     date: "November 23, 2026",
+    timestamp: 0,
     readTime: "4 min read",
     url: "",
     excerpt: "A dramatic late-game finish highlights weekend fixtures, league standings, and standout performances.",
@@ -133,82 +141,74 @@
 
 const LIVE_RSS_FEEDS = [
   {
+    channel: "BBC India",
     region: "India",
     category: "India",
     imageBase: "images/local",
     rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml"
   },
   {
+    channel: "BBC US & Canada",
     region: "USA",
     category: "USA",
     imageBase: "images/business",
     rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
   },
   {
+    channel: "The Hindu States",
     region: "North East",
     category: "North East",
     imageBase: "images/weather",
     rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
   },
   {
+    channel: "BBC UK",
     region: "UK",
     category: "UK",
     imageBase: "images/hero",
     rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml"
   },
   {
-    region: "Canada",
-    category: "Canada",
-    imageBase: "images/local",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
-  },
-  {
-    region: "Australia",
-    category: "Australia",
-    imageBase: "images/weather",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
-  },
-  {
-    region: "Japan",
-    category: "Japan",
-    imageBase: "images/tech",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
-  },
-  {
-    region: "Europe",
-    category: "Europe",
-    imageBase: "images/culture",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
-  },
-  {
-    region: "Middle East",
-    category: "Middle East",
-    imageBase: "images/hero",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
-  },
-  {
+    channel: "BBC World",
     region: "World",
     category: "World",
     imageBase: "images/hero",
     rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml"
   },
   {
+    channel: "BBC Business",
     region: "Business",
     category: "Business",
     imageBase: "images/business",
     rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml"
   },
   {
+    channel: "BBC Tech",
     region: "Tech",
     category: "Tech",
     imageBase: "images/tech",
     rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml"
   },
   {
+    channel: "BBC Sport",
     region: "Sports",
     category: "Sports",
     imageBase: "images/sports",
     rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml"
+  },
+  {
+    channel: "BBC Europe",
+    region: "Europe",
+    category: "Europe",
+    imageBase: "images/culture",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
+  },
+  {
+    channel: "BBC Middle East",
+    region: "Middle East",
+    category: "Middle East",
+    imageBase: "images/hero",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
   }
 ];
 
@@ -268,10 +268,16 @@ function stripHtml(htmlText) {
   return (div.textContent || div.innerText || "").trim();
 }
 
+function parsePubTimestamp(pubDate) {
+  if (!pubDate) return 0;
+  const parsed = Date.parse(pubDate);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
 async function fetchLiveNews() {
   if (IS_FETCHING_LIVE) return;
   IS_FETCHING_LIVE = true;
-  updateSyncStatus("Syncing live feeds...");
+  updateSyncStatus("Syncing channels...");
 
   const collected = [];
   const usedRealImages = new Set();
@@ -286,7 +292,11 @@ async function fetchLiveNews() {
       const data = await response.json();
       if (data.status !== "ok" || !Array.isArray(data.items)) continue;
 
-      data.items.slice(0, 2).forEach((item, idx) => {
+      const sortedFeedItems = [...data.items].sort(
+        (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
+      );
+
+      sortedFeedItems.slice(0, 3).forEach((item, idx) => {
         const rawRealImg = getRealArticleImage(item);
         let finalRealImg = "";
         if (rawRealImg && !usedRealImages.has(rawRealImg)) {
@@ -294,11 +304,14 @@ async function fetchLiveNews() {
           finalRealImg = rawRealImg;
         }
 
+        const ts = parsePubTimestamp(item.pubDate);
         const cleanDesc = stripHtml(item.description);
         const shortExcerpt =
           cleanDesc.length > 140
             ? `${cleanDesc.slice(0, 140)}...`
-            : cleanDesc || `Live ${feed.region} news dispatch.`;
+            : cleanDesc || `Live dispatch from ${feed.channel}.`;
+
+        const sourceName = item.author || (data.feed && data.feed.title) || feed.channel;
 
         collected.push({
           id: 100 + i * 10 + idx,
@@ -307,21 +320,23 @@ async function fetchLiveNews() {
           imageBase: feed.imageBase,
           realImageUrl: finalRealImg,
           isLiveFeed: true,
-          title: item.title || `${feed.region} News Update`,
-          author: item.author || (data.feed && data.feed.title) || `${feed.region} Desk`,
-          date: item.pubDate
-            ? new Date(item.pubDate).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
+          timestamp: ts,
+          title: item.title || `${feed.channel} Update`,
+          author: sourceName,
+          date: ts
+            ? new Date(ts).toLocaleString([], {
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
               })
-            : "Today",
-          readTime: "LIVE",
+            : "Just now",
+          readTime: `${sourceName} • LIVE`,
           url: item.link || "",
           excerpt: shortExcerpt,
           paragraphs: [
-            cleanDesc || "This item was pulled automatically from a live RSS news feed.",
-            `Section: ${feed.region} | Source: ${(data.feed && data.feed.title) || "Public News RSS"}. Open the source link to read the complete story.`
+            cleanDesc || "This item was pulled automatically from a live channel RSS feed.",
+            `Channel: ${sourceName} | Section: ${feed.region}. Open the source link to read the complete story.`
           ]
         });
       });
@@ -333,6 +348,8 @@ async function fetchLiveNews() {
   IS_FETCHING_LIVE = false;
 
   if (collected.length > 0) {
+    // Sort newest channel items first across all feeds
+    collected.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     CURRENT_GRID_ARTICLES = collected;
     applyFilters();
     const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
@@ -379,6 +396,7 @@ function applyFilters() {
       !query ||
       article.title.toLowerCase().includes(query) ||
       article.category.toLowerCase().includes(query) ||
+      (article.author && article.author.toLowerCase().includes(query)) ||
       (article.region && article.region.toLowerCase().includes(query)) ||
       article.excerpt.toLowerCase().includes(query);
 
@@ -488,6 +506,9 @@ function renderNewsCards(articles) {
       ? `${article.region} • ${article.category}`
       : article.category;
     const initialImgSrc = article.realImageUrl ? article.realImageUrl : `${article.imageBase}.jpg`;
+    const metaInfo = article.date && article.isLiveFeed
+      ? `${article.readTime} • ${article.date}`
+      : article.readTime;
 
     card.innerHTML = `
       <a href="${targetHref}" ${targetAttrs} class="card-thumb" aria-label="${article.title}">
@@ -501,7 +522,7 @@ function renderNewsCards(articles) {
         </h3>
         <p class="card-excerpt">${article.excerpt}</p>
         <div class="card-footer">
-          <span>${article.readTime}</span>
+          <span>${metaInfo}</span>
           <a href="${targetHref}" ${targetAttrs} class="read-more-link">${article.url ? "Source &rarr;" : "Read Story &rarr;"}</a>
         </div>
       </div>
