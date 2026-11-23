@@ -224,12 +224,35 @@ const AUTO_REFRESH_INTERVAL_MS = 60000; // Every 1 minute
 const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
 const MAX_ARCHIVED_ARTICLES = 160;
 
+// Change to 10 for 10 days or 30 for 30 days auto-cleanup
+const RETENTION_DAYS = 10;
+const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+function pruneExpiredArticles(articles, nowMs = Date.now()) {
+  if (!Array.isArray(articles)) return [];
+  const cutoff = nowMs - RETENTION_MS;
+
+  return articles.filter((item) => {
+    if (!item || !item.title) return false;
+    // Keep built-in template articles (id < 100) intact unless expired if timestamped
+    const itemTime = Number(item.timestamp || item.savedAt || 0);
+    if (!itemTime) {
+      item.savedAt = nowMs;
+      return true;
+    }
+    return itemTime >= cutoff;
+  });
+}
+
 function loadSavedArchive() {
   try {
     const raw = localStorage.getItem(ARCHIVE_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : null;
+    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    const freshOnly = pruneExpiredArticles(parsed);
+    saveArchiveToStorage(freshOnly);
+    return freshOnly.length > 0 ? freshOnly : null;
   } catch (e) {
     return null;
   }
@@ -265,12 +288,19 @@ function mergeAndSaveArticles(existingList, incomingList) {
     }
   };
 
-  // Incoming items first so newest feed items stay fresh, then existing saved items below
-  (incomingList || []).forEach(addItem);
-  (existingList || []).forEach(addItem);
+  const nowMs = Date.now();
+  const cleanIncoming = (incomingList || []).map((item) => ({
+    ...item,
+    timestamp: item.timestamp || nowMs,
+    savedAt: item.savedAt || nowMs
+  }));
+  const cleanExisting = pruneExpiredArticles(existingList || [], nowMs);
 
-  const merged = Array.from(map.values()).sort(
-    (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+  cleanIncoming.forEach(addItem);
+  cleanExisting.forEach(addItem);
+
+  const merged = pruneExpiredArticles(Array.from(map.values()), nowMs).sort(
+    (a, b) => (b.timestamp || b.savedAt || 0) - (a.timestamp || a.savedAt || 0)
   );
 
   const capped = merged.slice(0, MAX_ARCHIVED_ARTICLES);
@@ -506,6 +536,13 @@ const COUNTRY_LIVE_STREAMS = {
   }
 };
 
+window.retryCountryLiveStream = function () {
+  try {
+    renderCountryLiveVideo(ACTIVE_REGION || "All");
+    fetchLiveNews();
+  } catch (e) {}
+};
+
 function renderCountryLiveVideo(regionName) {
   try {
     const headingEl = document.getElementById("live-country-heading");
@@ -517,24 +554,49 @@ function renderCountryLiveVideo(regionName) {
       (k) => k.toLowerCase() === String(regionName || "All").toLowerCase()
     ) || "All";
     const info = COUNTRY_LIVE_STREAMS[key] || {
-      title: `${regionName} Live Desk`,
-      note: `Live news feed for ${regionName}.`,
+      title: `${regionName} 24/7 Live Desk`,
+      note: `Continuous live news and stream status for ${regionName}.`,
       embedUrl: "",
       mp4Url: ""
     };
 
     if (headingEl) headingEl.textContent = info.title;
-    if (subtextEl) subtextEl.textContent = info.note;
+    if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
 
     if (info.mp4Url) {
-      stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}"></video>`;
+      stageEl.innerHTML = `
+        <video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>
+      `;
     } else if (info.embedUrl) {
-      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+      stageEl.innerHTML = `
+        <iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      `;
     } else {
-      stageEl.innerHTML = `<p class="live-video-placeholder">On-page player ready for <strong>${key}</strong>. Add a verified embed/MP4 stream URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> to play video right here.</p>`;
+      stageEl.innerHTML = `
+        <div class="live-video-placeholder">
+          <p><strong>24/7 LIVE WIRE ACTIVE (${key})</strong></p>
+          <p style="margin-top:6px;opacity:0.85;">Live news feeds refresh every 1 minute below. Add an embed/MP4 URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> anytime to stream video right here.</p>
+          <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Sync Now</button>
+        </div>
+      `;
     }
   } catch (e) {}
 }
+
+window.handleStreamFallback = function (videoEl, keyName) {
+  try {
+    if (videoEl) videoEl.onerror = null;
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
+    stageEl.innerHTML = `
+      <div class="live-video-placeholder">
+        <p><strong>Stream temporarily unavailable (${keyName})</strong></p>
+        <p style="margin-top:6px;opacity:0.85;">Live text news updates continue automatically every 1 minute.</p>
+        <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Retry Stream</button>
+      </div>
+    `;
+  } catch (e) {}
+};
 
 function setActiveRegionButton(regionName) {
   ACTIVE_REGION = regionName || "All";`n  renderCountryLiveVideo(ACTIVE_REGION);
@@ -782,6 +844,8 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
+
 
 
 
