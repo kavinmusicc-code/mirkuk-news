@@ -12,10 +12,8 @@
     url: "",
     excerpt: "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint promising high-speed commuter corridors and zero-emission fleets.",
     paragraphs: [
-      "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint on Monday, promising high-speed commuter corridors, zero-emission bus fleets, and upgraded regional rail hubs across twelve major districts. The initiative represents the largest single public transit investment in more than four decades.",
-      "According to documents released by the Department of Transportation, construction on the first three priority corridors will begin early next spring. Engineers estimate that upgraded signaling systems alone will reduce peak-hour delays by nearly thirty-five percent while increasing overall passenger capacity during morning and evening commutes.",
-      "Business coalitions and neighborhood associations largely welcomed the announcement, noting that reliable transit links are essential to sustaining downtown retail recovery and connecting outer-ring residential neighborhoods with major employment centers.",
-      "Local municipal leaders have scheduled a series of public town halls over the coming month to gather feedback on station accessibility, bicycle lane integration, and fare-capping programs designed for low-income commuters."
+      "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint on Monday, promising high-speed commuter corridors, zero-emission bus fleets, and upgraded regional rail hubs across twelve major districts.",
+      "According to documents released by the Department of Transportation, construction on the first three priority corridors will begin early next spring."
     ]
   },
   {
@@ -49,7 +47,7 @@
     excerpt: "Regional factory orders across the United States rose as precision machinery, clean-energy components, and domestic logistics steadied.",
     paragraphs: [
       "Industrial production across the American Midwest posted stronger gains as shorter shipping lead times and steadier input costs lifted factory utilization rates.",
-      "Regional suppliers reported steady hiring in skilled technical roles, particularly in automated assembly and quality assurance."
+      "Regional suppliers reported steady hiring in skilled technical roles."
     ]
   },
   {
@@ -66,11 +64,28 @@
     excerpt: "Brisk seasonal air currents, road advisories, and regional updates shape conditions across North East corridors.",
     paragraphs: [
       "Seasonal weather patterns and brisk winds moved across North East corridors, prompting routine travel advisories and utility readiness checks.",
-      "Local authorities advised commuters and residents to plan ahead for cooler overnight temperatures and changing transit schedules."
+      "Local authorities advised commuters and residents to plan ahead for cooler overnight temperatures."
     ]
   },
   {
     id: 4,
+    region: "UK",
+    category: "UK",
+    imageBase: "images/hero",
+    title: "UK Energy Grid and Regional Rail Projects Advance Across Britain",
+    author: "Hannah Mercer",
+    date: "November 23, 2026",
+    timestamp: 0,
+    readTime: "4 min read",
+    url: "",
+    excerpt: "Utilities and transport bodies outline winter readiness and regional connectivity updates across the United Kingdom.",
+    paragraphs: [
+      "Grid operators and transport teams across the UK published seasonal reliability updates covering power transmission and rail corridors.",
+      "Local councils highlighted commuter and small-business support measures."
+    ]
+  },
+  {
+    id: 5,
     region: "World",
     category: "World",
     imageBase: "images/hero",
@@ -87,7 +102,7 @@
     ]
   },
   {
-    id: 5,
+    id: 6,
     region: "Business",
     category: "Business",
     imageBase: "images/business",
@@ -104,7 +119,7 @@
     ]
   },
   {
-    id: 6,
+    id: 7,
     region: "Tech",
     category: "Tech",
     imageBase: "images/tech",
@@ -121,7 +136,7 @@
     ]
   },
   {
-    id: 7,
+    id: 8,
     region: "Sports",
     category: "Sports",
     imageBase: "images/sports",
@@ -143,136 +158,39 @@ const LIVE_RSS_FEEDS = [
   { channel: "BBC India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml" },
   { channel: "The Hindu National", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss" },
   { channel: "Google News India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://news.google.com/rss/headlines/section/geo/India?hl=en-IN&gl=IN&ceid=IN:en" },
-
   { channel: "BBC US & Canada", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
   { channel: "Google News USA", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/geo/United%20States?hl=en-US&gl=US&ceid=US:en" },
-
   { channel: "The Hindu Other States", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss" },
   { channel: "Google News North East", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://news.google.com/rss/search?q=North%20East%20India%20news&hl=en-IN&gl=IN&ceid=IN:en" },
-
   { channel: "BBC UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml" },
   { channel: "Google News UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://news.google.com/rss/headlines/section/geo/United%20Kingdom?hl=en-GB&gl=GB&ceid=GB:en" },
-
   { channel: "Google News Canada", region: "Canada", category: "Canada", imageBase: "images/local", rssUrl: "https://news.google.com/rss/headlines/section/geo/Canada?hl=en-CA&gl=CA&ceid=CA:en" },
-
   { channel: "Google News Australia", region: "Australia", category: "Australia", imageBase: "images/weather", rssUrl: "https://news.google.com/rss/headlines/section/geo/Australia?hl=en-AU&gl=AU&ceid=AU:en" },
-
   { channel: "Google News Japan", region: "Japan", category: "Japan", imageBase: "images/tech", rssUrl: "https://news.google.com/rss/headlines/section/geo/Japan?hl=en-JP&gl=JP&ceid=JP:en" },
-
   { channel: "BBC Europe", region: "Europe", category: "Europe", imageBase: "images/culture", rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml" },
-
   { channel: "BBC Middle East", region: "Middle East", category: "Middle East", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml" },
-
   { channel: "BBC World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
-  { channel: "Google News World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en" },
-
   { channel: "BBC Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml" },
-  { channel: "Google News Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en" },
-
   { channel: "BBC Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml" },
-  { channel: "Google News Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en" },
-
-  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" },
-  { channel: "Google News Sports", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-US&gl=US&ceid=US:en" }
+  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" }
 ];
 
+const YOUTUBE_API_KEY = "";
+const LIVE_YT_CACHE_MS = 30 * 60 * 1000;
+
 const COUNTRY_LIVE_STREAMS = {
-  "All": {
-    title: "All Editions — Global Live Wire",
-    note: "Showing live updates across all editions.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "LIVE": {
-    title: "LIVE — Continuous Global Dispatch",
-    note: "24/7 live news desk synced with live feeds.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "India": {
-    title: "India Live Desk",
-    note: "Live coverage and updates focused on India.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "USA": {
-    title: "USA Live Desk",
-    note: "Live coverage and updates focused on the United States.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "North East": {
-    title: "North East Live Desk",
-    note: "Regional updates across North East India.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "UK": {
-    title: "UK Live Desk",
-    note: "Live coverage and updates focused on the United Kingdom.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Canada": {
-    title: "Canada Live Desk",
-    note: "Live coverage and updates focused on Canada.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Australia": {
-    title: "Australia Live Desk",
-    note: "Live coverage and updates focused on Australia.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Japan": {
-    title: "Japan Live Desk",
-    note: "Live coverage and updates focused on Japan.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Europe": {
-    title: "Europe Live Desk",
-    note: "Live coverage and updates focused on Europe.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Middle East": {
-    title: "Middle East Live Desk",
-    note: "Live coverage and updates focused on the Middle East.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "World": {
-    title: "World Live Desk",
-    note: "International headlines and cross-border coverage.",
-    skyNewsEmbedUrl: "",
-    youtubeEmbedUrl: "",
-    embedUrl: "",
-    mp4Url: ""
-  }
+  "All": { title: "All Editions — Global Live Wire", note: "Showing live updates across all editions.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "LIVE": { title: "LIVE — Continuous Global Dispatch", note: "24/7 live news desk synced with live feeds.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "India": { title: "India Live Desk", note: "Live coverage and updates focused on India.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "USA": { title: "USA Live Desk", note: "Live coverage and updates focused on the United States.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "North East": { title: "North East Live Desk", note: "Regional updates across North East India.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "UK": { title: "UK Live Desk", note: "Live coverage and updates focused on the United Kingdom.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "Canada": { title: "Canada Live Desk", note: "Live coverage and updates focused on Canada.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "Australia": { title: "Australia Live Desk", note: "Live coverage and updates focused on Australia.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "Japan": { title: "Japan Live Desk", note: "Live coverage and updates focused on Japan.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "Europe": { title: "Europe Live Desk", note: "Live coverage and updates focused on Europe.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "Middle East": { title: "Middle East Live Desk", note: "Live coverage and updates focused on the Middle East.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" },
+  "World": { title: "World Live Desk", note: "International headlines and cross-border coverage.", skyNewsEmbedUrl: "", youtubeEmbedUrl: "", embedUrl: "", mp4Url: "" }
 };
 
 const AUTO_REFRESH_INTERVAL_MS = 60000;
@@ -280,10 +198,16 @@ const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
 const MAX_ARCHIVED_ARTICLES = 500;
 const RETENTION_DAYS = 30;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+const PAGE_BATCH_SIZE = 60;
 
+let VISIBLE_NEWS_LIMIT = PAGE_BATCH_SIZE;
 let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
 let ACTIVE_REGION = "All";
 let IS_FETCHING_LIVE = false;
+
+function getDefaultArticles() {
+  return ARTICLES_DATA.filter((item) => item.id !== 0);
+}
 
 function pruneExpiredArticles(articles, nowMs = Date.now()) {
   if (!Array.isArray(articles)) return [];
@@ -497,7 +421,8 @@ async function fetchLiveNews() {
     const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     updateSyncStatus(`Updated ${nowTime} • +${collected.length} fetched • 30d auto-clean`);
   } else {
-    CURRENT_GRID_ARTICLES = pruneExpiredArticles(CURRENT_GRID_ARTICLES);
+    const pruned = pruneExpiredArticles(CURRENT_GRID_ARTICLES);
+    CURRENT_GRID_ARTICLES = pruned.length > 0 ? pruned : getDefaultArticles();
     applyFilters();
     updateSyncStatus("Latest archive active (1m auto)");
   }
@@ -546,6 +471,8 @@ function renderCountryLiveVideo(regionName) {
     const info = COUNTRY_LIVE_STREAMS[key] || {
       title: `${cleanRegion} 24/7 Live Desk`,
       note: `Live coverage and dispatches for ${cleanRegion}.`,
+      skyNewsEmbedUrl: "",
+      youtubeEmbedUrl: "",
       embedUrl: "",
       mp4Url: ""
     };
@@ -553,10 +480,11 @@ function renderCountryLiveVideo(regionName) {
     if (headingEl) headingEl.textContent = info.title;
     if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
 
+    const ytSrc = info.skyNewsEmbedUrl || info.youtubeEmbedUrl || info.embedUrl;
     if (info.mp4Url) {
       stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>`;
-    } else if (info.embedUrl) {
-      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else if (ytSrc) {
+      stageEl.innerHTML = `<iframe src="${ytSrc}" title="${info.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     } else {
       stageEl.innerHTML = `
         <div class="live-video-placeholder">
@@ -612,7 +540,7 @@ function applyFilters() {
 
     const baseList = (Array.isArray(CURRENT_GRID_ARTICLES) && CURRENT_GRID_ARTICLES.length > 0)
       ? CURRENT_GRID_ARTICLES
-      : ARTICLES_DATA.filter((item) => item.id !== 0);
+      : getDefaultArticles();
 
     const filtered = baseList.filter((article) => {
       if (!article) return false;
@@ -664,7 +592,7 @@ function applyFilters() {
 
     renderNewsCards(filtered);
   } catch (e) {
-    renderNewsCards(ARTICLES_DATA.filter((item) => item.id !== 0));
+    renderNewsCards(getDefaultArticles());
   }
 }
 
@@ -696,6 +624,7 @@ function initRegionFilters() {
       event.preventDefault();
 
       const chosen = (btn.getAttribute("data-region") || "All").trim();
+      VISIBLE_NEWS_LIMIT = PAGE_BATCH_SIZE;
       setActiveRegionButton(chosen);
       applyFilters();
 
@@ -760,26 +689,16 @@ function initMobileMenu() {
   });
 }
 
-const PAGE_BATCH_SIZE = 60;
-let VISIBLE_NEWS_LIMIT = PAGE_BATCH_SIZE;
-
 function syncLoadMoreButton(totalCount) {
   const btn = document.getElementById("load-more-news-btn");
   if (!btn) return;
   if (totalCount > VISIBLE_NEWS_LIMIT) {
     btn.style.display = "inline-block";
-    btn.textContent = `Load More News (${Math.min(VISIBLE_NEWS_LIMIT, totalCount)} / ${Math.min(totalCount, 500)})`;
+    btn.textContent = `Load More News (${Math.min(VISIBLE_NEWS_LIMIT, totalCount)} / ${Math.min(totalCount, MAX_ARCHIVED_ARTICLES)})`;
   } else {
     btn.style.display = "none";
   }
 }
-
-document.addEventListener("click", (ev) => {
-  const moreBtn = ev.target.closest("#load-more-news-btn");
-  if (!moreBtn) return;
-  VISIBLE_NEWS_LIMIT = Math.min(VISIBLE_NEWS_LIMIT + PAGE_BATCH_SIZE, 500);
-  applyFilters();
-});
 
 function renderNewsCards(articles) {
   const grid = document.getElementById("news-grid");
@@ -787,13 +706,13 @@ function renderNewsCards(articles) {
   if (!grid) return;
 
   grid.innerHTML = "";
-  if (!Array.isArray(articles) || articles.length === 0) {
-    if (noResults) noResults.classList.remove("hidden");
-    return;
-  }
-  if (noResults) noResults.classList.add("hidden");`n  const cappedList = articles.slice(0, 500);`n  syncLoadMoreButton(cappedList.length);`n  cappedList.slice(0, VISIBLE_NEWS_LIMIT).forEach((article) => {
+  const list = Array.isArray(articles) && articles.length > 0 ? articles : getDefaultArticles();
+  const cappedList = list.slice(0, MAX_ARCHIVED_ARTICLES);
 
-  const cappedList = articles.slice(0, 500);`n  syncLoadMoreButton(cappedList.length);`n  cappedList.slice(0, VISIBLE_NEWS_LIMIT).forEach((article) => {
+  if (noResults) noResults.classList.add("hidden");
+  syncLoadMoreButton(cappedList.length);
+
+  cappedList.slice(0, VISIBLE_NEWS_LIMIT).forEach((article) => {
     const card = document.createElement("article");
     card.className = "news-card";
     const targetHref = article.url ? article.url : `article?id=${article.id}`;
@@ -828,14 +747,25 @@ function renderNewsCards(articles) {
 }
 
 function initNewsSearch() {
-  CURRENT_GRID_ARTICLES = loadSavedArchive() || ARTICLES_DATA.filter((item) => item.id !== 0);
+  CURRENT_GRID_ARTICLES = loadSavedArchive() || getDefaultArticles();
   applyFilters();
-  const searchInput = document.getElementById("news-search");
-  if (!searchInput) return;
 
-  searchInput.addEventListener("input", () => {
-    applyFilters();
-  });
+  const searchInput = document.getElementById("news-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      VISIBLE_NEWS_LIMIT = PAGE_BATCH_SIZE;
+      applyFilters();
+    });
+  }
+
+  const moreBtn = document.getElementById("load-more-news-btn");
+  if (moreBtn && !moreBtn.dataset.boundMore) {
+    moreBtn.dataset.boundMore = "true";
+    moreBtn.addEventListener("click", () => {
+      VISIBLE_NEWS_LIMIT = Math.min(VISIBLE_NEWS_LIMIT + PAGE_BATCH_SIZE, MAX_ARCHIVED_ARTICLES);
+      applyFilters();
+    });
+  }
 }
 
 function initSingleArticlePage() {
@@ -883,8 +813,3 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
-
-
-
-
-
