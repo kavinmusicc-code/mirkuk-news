@@ -148,6 +148,20 @@ const LIVE_RSS_FEEDS = [
     rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml"
   },
   {
+    channel: "The Hindu National",
+    region: "India",
+    category: "India",
+    imageBase: "images/local",
+    rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss"
+  },
+  {
+    channel: "The Hindu Other States",
+    region: "North East",
+    category: "North East",
+    imageBase: "images/weather",
+    rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
+  },
+  {
     channel: "BBC US & Canada",
     region: "USA",
     category: "USA",
@@ -155,18 +169,25 @@ const LIVE_RSS_FEEDS = [
     rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
   },
   {
-    channel: "The Hindu States",
-    region: "North East",
-    category: "North East",
-    imageBase: "images/weather",
-    rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
-  },
-  {
     channel: "BBC UK",
     region: "UK",
     category: "UK",
     imageBase: "images/hero",
     rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml"
+  },
+  {
+    channel: "BBC Europe",
+    region: "Europe",
+    category: "Europe",
+    imageBase: "images/culture",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
+  },
+  {
+    channel: "BBC Middle East",
+    region: "Middle East",
+    category: "Middle East",
+    imageBase: "images/hero",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
   },
   {
     channel: "BBC World",
@@ -195,20 +216,6 @@ const LIVE_RSS_FEEDS = [
     category: "Sports",
     imageBase: "images/sports",
     rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml"
-  },
-  {
-    channel: "BBC Europe",
-    region: "Europe",
-    category: "Europe",
-    imageBase: "images/culture",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
-  },
-  {
-    channel: "BBC Middle East",
-    region: "Middle East",
-    category: "Middle East",
-    imageBase: "images/hero",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
   }
 ];
 
@@ -670,6 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 
