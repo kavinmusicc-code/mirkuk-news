@@ -1,91 +1,4 @@
-﻿(function initMirkukCardCapControl() {
-  const CAP_KEY = "mirkuk_card_cap_v1";
-
-  function getCap() {
-    const saved = parseInt(localStorage.getItem(CAP_KEY) || "100", 10);
-    return saved === 200 ? 200 : 100;
-  }
-
-  function setCap(val) {
-    const clean = val === 200 ? 200 : 100;
-    localStorage.setItem(CAP_KEY, String(clean));
-    applyCardCap();
-  }
-
-  function findCardContainer() {
-    const candidates = Array.from(document.querySelectorAll("section, div, main, article"));
-    let best = null;
-    let maxCards = 0;
-
-    candidates.forEach((el) => {
-      if (el.id === "mirkuk-feedback-box") return;
-      const cards = Array.from(el.children || []).filter((child) => {
-        const tag = child.tagName;
-        const cls = (child.className || "").toString().toLowerCase();
-        return (tag === "ARTICLE" || cls.includes("card") || cls.includes("news-item") || cls.includes("story") || cls.includes("dispatch"));
-      });
-      if (cards.length > maxCards) {
-        maxCards = cards.length;
-        best = { container: el, cards };
-      }
-    });
-
-    return best;
-  }
-
-  function ensureCapToggle(cap) {
-    if (document.getElementById("mirkuk-card-cap-bar")) {
-      const btn100 = document.getElementById("mirkuk-cap-100");
-      const btn200 = document.getElementById("mirkuk-cap-200");
-      if (btn100 && btn200) {
-        btn100.style.fontWeight = cap === 100 ? "700" : "400";
-        btn200.style.fontWeight = cap === 200 ? "700" : "400";
-        btn100.style.opacity = cap === 100 ? "1" : "0.7";
-        btn200.style.opacity = cap === 200 ? "1" : "0.7";
-      }
-      return;
-    }
-
-    const heading = Array.from(document.querySelectorAll("h1, h2, h3")).find((h) =>
-      (h.textContent || "").toLowerCase().includes("latest news")
-    );
-    const anchor = heading ? heading.parentElement : document.querySelector("main") || document.body;
-    if (!anchor) return;
-
-    const bar = document.createElement("div");
-    bar.id = "mirkuk-card-cap-bar";
-    bar.style.cssText = "display:inline-flex;align-items:center;gap:6px;margin:8px 0 12px;font-size:12px;";
-    bar.innerHTML = `
-      <span>Cards:</span>
-      <button type="button" id="mirkuk-cap-100" class="mirkuk-fb-btn secondary" style="padding:4px 8px;font-size:12px;">100</button>
-      <button type="button" id="mirkuk-cap-200" class="mirkuk-fb-btn secondary" style="padding:4px 8px;font-size:12px;">200</button>
-    `;
-
-    if (heading && heading.nextSibling) {
-      heading.parentElement.insertBefore(bar, heading.nextSibling);
-    } else {
-      anchor.prepend(bar);
-    }
-
-    document.getElementById("mirkuk-cap-100")?.addEventListener("click", () => setCap(100));
-    document.getElementById("mirkuk-cap-200")?.addEventListener("click", () => setCap(200));
-  }
-
-  function applyCardCap() {
-    const cap = getCap();
-    ensureCapToggle(cap);
-    const found = findCardContainer();
-    if (!found || !found.cards.length) return;
-
-    found.cards.forEach((card, index) => {
-      card.style.display = index < cap ? "" : "none";
-    });
-  }
-
-  applyCardCap();
-  setInterval(applyCardCap, 1000);
-})();
-(function initMirkukDesktopFixPack() {
+﻿(function initMirkukDesktopFixPack() {
   const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor";
   const EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor&embedded=true";
   const FALLBACK_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
@@ -2586,7 +2499,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
-
 
 
 
