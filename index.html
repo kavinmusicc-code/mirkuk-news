@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirkuk News — Independent Journalism &amp; Breaking Coverage</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-left">
+        <span id="current-date" class="current-date">Loading date...</span>
+        <span class="edition-tag">U.S. &amp; Global Edition</span>
+      </div>
+      <div class="topbar-right">
+        <button id="dark-mode-toggle" class="theme-btn" aria-label="Toggle dark mode">
+          <span class="theme-icon">&#9790;</span> <span class="theme-label">Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo">MIRKUK NEWS</a>
+        <p class="tagline">Truth in Print. Clarity in Motion.</p>
+      </div>
+
+      <button id="mobile-menu-btn" class="hamburger" aria-label="Open navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="main-nav" class="main-nav" aria-label="Primary Navigation">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="index.html#latest-news">Latest</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero-section" aria-label="Featured Story">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <span class="category-badge">TOP STORY &bull; NATIONAL</span>
+          <h1 class="hero-title">
+            <a href="article.html?id=0">Metropolitan Transit Overhaul Secures Historic Bipartisan Infrastructure Backing</a>
+          </h1>
+          <p class="hero-excerpt">
+            City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint on Monday, promising high-speed commuter corridors, zero-emission bus fleets, and upgraded regional rail hubs across twelve major districts.
+          </p>
+          <div class="article-meta">
+            <span>By <strong>Eleanor Vance</strong></span>
+            <span>&bull;</span>
+            <span>4 min read</span>
+          </div>
+          <a href="article.html?id=0" class="btn-primary">Read Full Report</a>
+        </div>
+        <div class="hero-media">
+          <div class="media-placeholder gradient-hero" role="img" aria-label="Featured news visual">
+            <span class="media-caption">INFRASTRUCTURE DESK &mdash; SPECIAL REPORT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <section id="latest-news" class="latest-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Latest News</h2>
+          <p class="section-subtitle">Dispatches across local affairs, markets, science, and culture</p>
+        </div>
+        <div class="search-box">
+          <label for="news-search" class="sr-only">Search articles by title or category</label>
+          <input type="search" id="news-search" placeholder="Search headlines or categories..." autocomplete="off">
+        </div>
+      </div>
+
+      <div id="news-grid" class="news-grid"></div>
+
+      <div id="no-results" class="no-results hidden">
+        <p>No articles matched your search query. Try searching for <strong>Business</strong>, <strong>Tech</strong>, <strong>Weather</strong>, or clear the search box.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h3 class="footer-logo">MIRKUK NEWS</h3>
+        <p>
+          Mirkuk News is an independent American digital newspaper committed to rigorous fact-checking, clear reporting, and public-interest journalism across local and global beats.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#latest-news">Latest Coverage</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-contact">
+          <li><strong>Newsroom Desk:</strong> newsroom@mirkuknews.com</li>
+          <li><strong>Advertising &amp; Press:</strong> press@mirkuknews.com</li>
+          <li><strong>Headquarters:</strong> 450 Lexington Ave, Suite 1800, New York, NY 10017</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Mirkuk News Media Group. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
