@@ -1,23 +1,19 @@
 ﻿(function () {
-  function getShareUrl(card) {
-    if (card) {
-      var link = card.querySelector("a[href]");
-      if (link && link.href) return link.href;
-    }
-    return window.location.href;
-  }
+  var SITE_URL = "https://kavinmusicc-code.github.io/mirkuk-news/";
 
   function getShareTitle(card) {
     if (card) {
       var heading = card.querySelector("h1, h2, h3, h4, .title, .headline");
-      if (heading && heading.textContent.trim()) return heading.textContent.trim();
+      if (heading && heading.textContent.trim()) {
+        return heading.textContent.trim() + " - Mirkuk News";
+      }
     }
     return document.title || "Mirkuk News";
   }
 
   function shareItem(title, url, btn) {
     if (navigator.share) {
-      navigator.share({ title: title, url: url }).catch(function () {});
+      navigator.share({ title: title, text: title, url: url }).catch(function () {});
       return;
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -38,7 +34,7 @@
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      shareItem(getShareTitle(card), getShareUrl(card), btn);
+      shareItem(getShareTitle(card), SITE_URL, btn);
     });
     return btn;
   }
@@ -46,7 +42,8 @@
   function injectShareButtons() {
     var cards = document.querySelectorAll("article, .news-card, .card, .post");
     cards.forEach(function (card) {
-      if (card.querySelector(".mirkuk-share-btn")) return;
+      var existing = card.querySelector(".mirkuk-share-btn");
+      if (existing) return;
       card.appendChild(createShareButton(card));
     });
 
