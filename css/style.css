@@ -1397,3 +1397,80 @@ body.mirkuk-live-panel-open .mirkuk-live-desk-wrap {
 body:not(.mirkuk-live-panel-open):not([data-page="live-wire"]) .mirkuk-global-live-hidden {
   display: none !important;
 }
+
+/* Mirkuk Editorial Feedback Box */
+.mirkuk-feedback-box {
+  max-width: 1180px;
+  margin: 14px auto;
+  padding: 14px 16px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.86rem;
+}
+
+.mirkuk-feedback-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.mirkuk-feedback-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mirkuk-fb-tag {
+  padding: 5px 10px;
+  border: 1px solid #94a3b8;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mirkuk-fb-tag.is-selected {
+  background: #b91c1c;
+  color: #ffffff;
+  border-color: #b91c1c;
+}
+
+.mirkuk-fb-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mirkuk-fb-input {
+  flex: 1 1 260px;
+  padding: 7px 10px;
+  border: 1px solid #94a3b8;
+  font-size: 0.84rem;
+  color: #0f172a;
+}
+
+.mirkuk-fb-btn {
+  padding: 7px 14px;
+  border: 1px solid #0f172a;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mirkuk-fb-btn.secondary {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.mirkuk-fb-status {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #334155;
+}

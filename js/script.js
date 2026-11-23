@@ -1,4 +1,107 @@
-﻿(function initMirkukGlobalLiveWireToggle() {
+﻿(function initMirkukReaderFeedback() {
+  const FB_KEY = "mirkuk_reader_feedback_v1";
+
+  function mountFeedback() {
+    if (document.getElementById("mirkuk-feedback-box")) return;
+    const anchor =
+      document.getElementById("mirkuk-ad-slot") ||
+      document.getElementById("mirkuk-ed-footer") ||
+      document.querySelector("footer");
+    if (!anchor || !anchor.parentElement) return;
+
+    const box = document.createElement("section");
+    box.id = "mirkuk-feedback-box";
+    box.className = "mirkuk-feedback-box";
+    box.setAttribute("aria-label", "Reader Feedback");
+    box.innerHTML = `
+      <div class="mirkuk-feedback-top">
+        <strong>Reader Feedback</strong>
+        <div class="mirkuk-feedback-tags" id="mirkuk-fb-tags">
+          <button type="button" class="mirkuk-fb-tag is-selected" data-tag="Clean Layout">Clean Layout</button>
+          <button type="button" class="mirkuk-fb-tag" data-tag="Fast & Lightweight">Fast &amp; Lightweight</button>
+          <button type="button" class="mirkuk-fb-tag" data-tag="Needs Improvement">Needs Improvement</button>
+        </div>
+      </div>
+      <div class="mirkuk-fb-row">
+        <input type="text" id="mirkuk-fb-input" class="mirkuk-fb-input" placeholder="Share quick feedback on design, speed, or news sections..." maxlength="240" />
+        <button type="button" id="mirkuk-fb-save" class="mirkuk-fb-btn">Submit</button>
+        <button type="button" id="mirkuk-fb-copy" class="mirkuk-fb-btn secondary">Copy Latest</button>
+      </div>
+      <div id="mirkuk-fb-status" class="mirkuk-fb-status">Your feedback helps refine Mirkuk News.</div>
+    `;
+
+    anchor.parentElement.insertBefore(box, anchor);
+
+    let selectedTag = "Clean Layout";
+    const tagsWrap = document.getElementById("mirkuk-fb-tags");
+    const inputEl = document.getElementById("mirkuk-fb-input");
+    const saveBtn = document.getElementById("mirkuk-fb-save");
+    const copyBtn = document.getElementById("mirkuk-fb-copy");
+    const statusEl = document.getElementById("mirkuk-fb-status");
+
+    if (tagsWrap) {
+      tagsWrap.addEventListener("click", (e) => {
+        const btn = e.target && e.target.closest ? e.target.closest(".mirkuk-fb-tag") : null;
+        if (!btn) return;
+        tagsWrap.querySelectorAll(".mirkuk-fb-tag").forEach((b) => b.classList.remove("is-selected"));
+        btn.classList.add("is-selected");
+        selectedTag = btn.getAttribute("data-tag") || "Clean Layout";
+      });
+    }
+
+    function readList() {
+      try {
+        return JSON.parse(localStorage.getItem(FB_KEY) || "[]");
+      } catch (_) {
+        return [];
+      }
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener("click", () => {
+        const note = (inputEl && inputEl.value ? inputEl.value : "").trim();
+        if (!note) {
+          if (statusEl) statusEl.textContent = "Please write a short note before submitting.";
+          return;
+        }
+        const items = readList();
+        const entry = {
+          tag: selectedTag,
+          note: note,
+          time: new Date().toLocaleString()
+        };
+        items.unshift(entry);
+        try { localStorage.setItem(FB_KEY, JSON.stringify(items.slice(0, 30))); } catch (_) {}
+        if (inputEl) inputEl.value = "";
+        if (statusEl) statusEl.textContent = `Saved [${entry.tag}]: "${entry.note}"`;
+      });
+    }
+
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        const items = readList();
+        if (!items.length) {
+          if (statusEl) statusEl.textContent = "No saved feedback to copy yet.";
+          return;
+        }
+        const latest = items[0];
+        const textToCopy = `[${latest.tag}] ${latest.note} (${latest.time})`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            if (statusEl) statusEl.textContent = "Copied latest feedback to clipboard.";
+          }).catch(() => {});
+        }
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(mountFeedback, 450));
+  } else {
+    setTimeout(mountFeedback, 450);
+  }
+})();
+(function initMirkukGlobalLiveWireToggle() {
   function markGlobalLiveBlocks() {
     document.querySelectorAll("section, article, div").forEach((el) => {
       if (el === document.body || el === document.documentElement) return;
@@ -2118,6 +2221,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
