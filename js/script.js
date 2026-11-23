@@ -1,4 +1,92 @@
-﻿(function initMirkukSmartReaderHub() {
+﻿(function initMirkukEditorialFooter() {
+  const EDITION_KEY = "mirkuk_footer_edition_v1";
+
+  function buildFooter() {
+    if (document.getElementById("mirkuk-ed-footer")) return;
+
+    document.querySelectorAll("footer").forEach((f) => {
+      if (f.id !== "mirkuk-ed-footer") f.style.display = "none";
+    });
+
+    const footer = document.createElement("footer");
+    footer.id = "mirkuk-ed-footer";
+    footer.className = "mirkuk-ed-footer";
+    footer.setAttribute("role", "contentinfo");
+
+    footer.innerHTML = `
+      <div class="mirkuk-ed-footer-inner">
+        <a href="index.html" class="mirkuk-ed-brand">
+          <span class="mirkuk-ed-brand-box">M</span>
+          <span>MIRKUK NEWS</span>
+        </a>
+
+        <nav class="mirkuk-ed-links" aria-label="Footer sections">
+          <a href="index.html">Home</a>
+          <a href="live-wire.html">News</a>
+          <a href="live-wire.html">Markets</a>
+          <a href="live-wire.html">Technology</a>
+          <a href="live-wire.html">World</a>
+          <a href="live-wire.html">Gaming</a>
+          <a href="portals.html">Portals Hub</a>
+          <a href="about.html">About</a>
+        </nav>
+
+        <div class="mirkuk-ed-mid">
+          <div>
+            <label for="mirkuk-edition-select" style="font-weight:700;margin-right:8px;">Mirkuk editions &amp; desk</label>
+            <select id="mirkuk-edition-select" class="mirkuk-ed-select">
+              <option value="index.html">Global Edition (Home)</option>
+              <option value="live-wire.html">24/7 Live Wire &amp; Markets</option>
+              <option value="portals.html">All News Portals Directory</option>
+            </select>
+          </div>
+
+          <div class="mirkuk-ed-follow">
+            <span>Follow Mirkuk News:</span>
+            <a href="live-wire.html" title="Live Wire">LIVE</a>
+            <a href="portals.html" title="Portals">HUB</a>
+            <a href="about.html" title="About">INFO</a>
+          </div>
+        </div>
+
+        <div class="mirkuk-ed-bottom">
+          <div class="mirkuk-ed-legal">
+            <a href="about.html">About Mirkuk News</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="#" onclick="if (typeof openMirkukCookieSettings === 'function') { openMirkukCookieSettings(); } return false;">Cookie Settings</a>
+          </div>
+          <div>
+            Copyright &copy; 2026 Mirkuk News. Headlines and external links open their respective sources.
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(footer);
+
+    const sel = document.getElementById("mirkuk-edition-select");
+    if (sel) {
+      const saved = localStorage.getItem(EDITION_KEY);
+      if (saved && Array.from(sel.options).some((o) => o.value === saved)) {
+        sel.value = saved;
+      }
+      sel.addEventListener("change", () => {
+        try { localStorage.setItem(EDITION_KEY, sel.value); } catch (_) {}
+        if (sel.value && !window.location.pathname.endsWith(sel.value)) {
+          window.location.href = sel.value;
+        }
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(buildFooter, 300));
+  } else {
+    setTimeout(buildFooter, 300);
+  }
+})();
+(function initMirkukSmartReaderHub() {
   const SAVED_KEY = "mirkuk_saved_stories_v1";
 
   function readSavedSet() {
@@ -1615,6 +1703,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 

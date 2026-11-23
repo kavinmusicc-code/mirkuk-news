@@ -1104,3 +1104,126 @@ body.mirkuk-light-mode .mirkuk-section-heading {
 
 #mirkuk-auth-trigger, #mirkuk-auth-backdrop, #mirkuk-lang-pill, #mirkuk-theme-toggle { display: none !important; }
 
+
+/* Mirkuk Editorial Footer */
+.mirkuk-ed-footer {
+  margin-top: 36px;
+  background: #f8fafc;
+  color: #1e293b;
+  border-top: 1px solid #cbd5e1;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.mirkuk-ed-footer-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 28px;
+}
+
+.mirkuk-ed-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  color: #0f172a;
+  text-decoration: none;
+  margin-bottom: 14px;
+}
+
+.mirkuk-ed-brand-box {
+  background: #b91c1c;
+  color: #ffffff;
+  padding: 3px 8px;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.mirkuk-ed-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mirkuk-ed-links a {
+  color: #1e293b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.mirkuk-ed-links a:hover {
+  text-decoration: underline;
+  color: #b91c1c;
+}
+
+.mirkuk-ed-mid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mirkuk-ed-select {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #94a3b8;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mirkuk-ed-follow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+.mirkuk-ed-follow a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: #0f172a;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.mirkuk-ed-bottom {
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.mirkuk-ed-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.mirkuk-ed-legal a {
+  color: #334155;
+  text-decoration: none;
+}
+
+.mirkuk-ed-legal a:hover {
+  text-decoration: underline;
+}
