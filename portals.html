@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Portals Hub — Mirkuk News</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .portals-wrap {
+      max-width: 1080px;
+      margin: 24px auto;
+      padding: 0 16px 48px;
+    }
+    .portals-top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    }
+    .portals-nav-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .portals-nav-links a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .portals-add-box {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0 20px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+    .portals-add-box input,
+    .portals-add-box select {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: #0b1120;
+      color: #f8fafc;
+      font-size: 0.88rem;
+    }
+    .portals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .portal-card {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .portal-card-cat {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+    }
+    .portal-card-title {
+      margin: 4px 0;
+      font-size: 1rem;
+    }
+    .portal-card-title a {
+      color: #f8fafc;
+      text-decoration: none;
+    }
+    .portal-card-desc {
+      font-size: 0.83rem;
+      opacity: 0.85;
+      margin: 0;
+      line-height: 1.4;
+    }
+    body.mirkuk-light-mode .portals-add-box,
+    body.mirkuk-light-mode .portal-card {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+    body.mirkuk-light-mode .portals-add-box input,
+    body.mirkuk-light-mode .portals-add-box select {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+    body.mirkuk-light-mode .portal-card-title a {
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+  <div class="portals-wrap">
+    <div class="portals-top-nav">
+      <div>
+        <h1 style="margin:0;font-size:1.4rem;">Mirkuk Portals Hub</h1>
+        <p style="margin:4px 0 0;font-size:0.86rem;opacity:0.8;">Quick access to tech, markets, world, gaming &amp; video portals</p>
+      </div>
+      <div class="portals-nav-links">
+        <a href="index.html">Home</a>
+        <a href="portals.html">Portals</a>
+        <a href="about.html">About</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+    </div>
+
+    <div class="mirkuk-live-search-bar">
+      <input id="portal-search-input" type="search" class="mirkuk-live-search-input" placeholder="Filter portals by name or category (Tech, Markets, Gaming, World)...">
+    </div>
+
+    <form id="custom-portal-form" class="portals-add-box">
+      <input id="custom-portal-name" type="text" placeholder="Portal Name" required>
+      <input id="custom-portal-url" type="url" placeholder="https://example.com" required>
+      <select id="custom-portal-cat">
+        <option value="Tech">Tech</option>
+        <option value="Markets">Markets</option>
+        <option value="World">World</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Video">Video</option>
+      </select>
+      <input id="custom-portal-desc" type="text" placeholder="Short note (optional)">
+      <button type="submit" class="mirkuk-cookie-btn mirkuk-cookie-allow">Add Portal</button>
+    </form>
+
+    <div id="portals-grid" class="portals-grid"></div>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script>
+    (function initPortalsHub() {
+      const CUSTOM_KEY = "mirkuk_custom_portals_v1";
+      const DEFAULT_PORTALS = [
+        { name: "The Verge", url: "https://www.theverge.com/", cat: "Tech", desc: "Consumer tech, gadgets, science, and digital culture." },
+        { name: "TechCrunch", url: "https://techcrunch.com/", cat: "Tech", desc: "Startups, AI, software, and technology industry news." },
+        { name: "CNBC Markets", url: "https://www.cnbc.com/markets/", cat: "Markets", desc: "Global stock market indices, equities, and financial headlines." },
+        { name: "Yahoo Finance", url: "https://finance.yahoo.com/", cat: "Markets", desc: "Market trackers, earnings updates, and business coverage." },
+        { name: "BBC News", url: "https://www.bbc.com/news", cat: "World", desc: "International breaking news, politics, and global events." },
+        { name: "IGN", url: "https://www.ign.com/", cat: "Gaming", desc: "Video game news, previews, reviews, and release updates." },
+        { name: "YouTube", url: "https://www.youtube.com/", cat: "Video", desc: "Live streams, creator channels, and video briefings." }
+      ];
+
+      function getCustomPortals() {
+        try {
+          const raw = localStorage.getItem(CUSTOM_KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          return Array.isArray(arr) ? arr : [];
+        } catch (_) {
+          return [];
+        }
+      }
+
+      function saveCustomPortal(item) {
+        const current = getCustomPortals();
+        current.unshift(item);
+        const payload = JSON.stringify(current.slice(0, 30));
+        try {
+          if (typeof safeSetLocalStorage === "function") {
+            safeSetLocalStorage(CUSTOM_KEY, payload);
+          } else {
+            localStorage.setItem(CUSTOM_KEY, payload);
+          }
+        } catch (_) {}
+      }
+
+      function renderPortals() {
+        const grid = document.getElementById("portals-grid");
+        const q = (document.getElementById("portal-search-input")?.value || "").trim().toLowerCase();
+        const combined = [...getCustomPortals(), ...DEFAULT_PORTALS];
+
+        const filtered = combined.filter((p) => {
+          if (!q) return true;
+          return `${p.name} ${p.cat} ${p.desc}`.toLowerCase().includes(q);
+        });
+
+        grid.innerHTML = filtered.map((p) => {
+          const esc = (s) => String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          const safeUrl = /^https?:\/\//i.test(p.url) ? p.url : "#";
+          return `
+            <article class="portal-card">
+              <div>
+                <div class="portal-card-cat">${esc(p.cat)}</div>
+                <h2 class="portal-card-title">
+                  <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${esc(p.name)}</a>
+                </h2>
+                <p class="portal-card-desc">${esc(p.desc || "External news & media portal")}</p>
+              </div>
+              <div>
+                <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="font-size:0.82rem;color:#38bdf8;text-decoration:none;font-weight:600;">Open Portal &rarr;</a>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("portal-search-input")?.addEventListener("input", renderPortals);
+
+      document.getElementById("custom-portal-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = (document.getElementById("custom-portal-name").value || "").trim();
+        const url = (document.getElementById("custom-portal-url").value || "").trim();
+        const cat = document.getElementById("custom-portal-cat").value || "Tech";
+        const desc = (document.getElementById("custom-portal-desc").value || "").trim();
+        if (!name || !/^https?:\/\//i.test(url)) return;
+
+        saveCustomPortal({ name, url, cat, desc: desc || "Added by reader" });
+        e.target.reset();
+        renderPortals();
+      });
+
+      renderPortals();
+    })();
+  </script>
+</body>
+</html>
