@@ -1,4 +1,15 @@
-﻿(function initMirkukSmartDeskFilterSync() {
+﻿(function mirkukCleanEditorialText() {
+  function cleanCards() {
+    document.querySelectorAll(".mirkuk-live-title a").forEach((a) => {
+      const cleaned = (a.textContent || "").replace(/\s+/g, " ").trim();
+      if (cleaned && a.textContent !== cleaned) {
+        a.textContent = cleaned;
+      }
+    });
+  }
+  setInterval(cleanCards, 1500);
+})();
+(function initMirkukSmartDeskFilterSync() {
   function syncDeskAndSearch() {
     const deskBox = document.getElementById("mirkuk-live-desk");
     if (!deskBox) return;
@@ -1770,6 +1781,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
