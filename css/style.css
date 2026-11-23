@@ -604,3 +604,37 @@ html, body {
   color: var(--text-muted);
   margin-bottom: 6px;
 }
+
+/* Mirkuk News Cookie Consent Banner */
+.mirkuk-cookie-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.96);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  z-index: 9999;
+  font-size: 0.92rem;
+}
+.mirkuk-cookie-banner.is-visible { display: flex; flex-wrap: wrap; }
+.mirkuk-cookie-text { flex: 1 1 320px; line-height: 1.45; }
+.mirkuk-cookie-text a { color: #38bdf8; text-decoration: underline; }
+.mirkuk-cookie-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.mirkuk-cookie-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid transparent; font-weight: 600; cursor: pointer; font-size: 0.88rem; }
+.mirkuk-cookie-allow { background: #38bdf8; color: #0f172a; }
+.mirkuk-cookie-decline { background: transparent; color: #e2e8f0; border-color: rgba(148, 163, 184, 0.45); }
+@media (max-width: 600px) {
+  .mirkuk-cookie-banner { bottom: 10px; left: 10px; right: 10px; padding: 12px 14px; }
+  .mirkuk-cookie-actions { width: 100%; }
+  .mirkuk-cookie-btn { flex: 1; }
+}

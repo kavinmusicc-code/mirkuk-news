@@ -1,4 +1,92 @@
-﻿const ARTICLES_DATA = [
+﻿(function initMirkukCookieConsent() {
+  const CONSENT_KEY = "mirkuk_cookie_consent_v1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+
+  function applyConsentState(choice) {
+    const granted = choice === "allow";
+    try {
+      gtag("consent", "update", {
+        analytics_storage: granted ? "granted" : "denied",
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied"
+      });
+    } catch (_) {}
+  }
+
+  function saveChoice(choice) {
+    try {
+      if (typeof safeSetLocalStorage === "function") {
+        safeSetLocalStorage(CONSENT_KEY, choice);
+      } else {
+        localStorage.setItem(CONSENT_KEY, choice);
+      }
+    } catch (_) {}
+    applyConsentState(choice);
+  }
+
+  function getSavedChoice() {
+    try { return localStorage.getItem(CONSENT_KEY); } catch (_) { return null; }
+  }
+
+  try {
+    gtag("consent", "default", {
+      analytics_storage: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      wait_for_update: 500
+    });
+  } catch (_) {}
+
+  function renderBanner() {
+    if (document.getElementById("mirkuk-cookie-banner")) return;
+    const banner = document.createElement("div");
+    banner.id = "mirkuk-cookie-banner";
+    banner.className = "mirkuk-cookie-banner is-visible";
+    banner.setAttribute("role", "dialog");
+    banner.setAttribute("aria-label", "Cookie consent");
+    banner.innerHTML = `
+      <div class="mirkuk-cookie-text">
+        We use cookies and browser storage to keep feeds fast and measure site traffic. See our
+        <a href="privacy.html">Privacy Policy</a>.
+      </div>
+      <div class="mirkuk-cookie-actions">
+        <button type="button" id="mirkuk-cookie-decline" class="mirkuk-cookie-btn mirkuk-cookie-decline">Decline</button>
+        <button type="button" id="mirkuk-cookie-allow" class="mirkuk-cookie-btn mirkuk-cookie-allow">Allow</button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    document.getElementById("mirkuk-cookie-allow").addEventListener("click", () => {
+      saveChoice("allow");
+      banner.remove();
+    });
+    document.getElementById("mirkuk-cookie-decline").addEventListener("click", () => {
+      saveChoice("decline");
+      banner.remove();
+    });
+  }
+
+  window.openMirkukCookieSettings = function () {
+    try { localStorage.removeItem(CONSENT_KEY); } catch (_) {}
+    renderBanner();
+  };
+
+  const existingChoice = getSavedChoice();
+  if (existingChoice === "allow" || existingChoice === "decline") {
+    applyConsentState(existingChoice);
+    return;
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", renderBanner);
+  } else {
+    renderBanner();
+  }
+})();
+const ARTICLES_DATA = [
   {
     id: 0,
     region: "World",
@@ -851,5 +939,6 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
