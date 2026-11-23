@@ -287,10 +287,13 @@ async function fetchLiveNews() {
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.rssUrl)}`;
 
     try {
-      const response = await fetch(apiUrl);
+      const controller = new AbortController();
+      const timerId = setTimeout(() => controller.abort(), 7000);
+      const response = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timerId);
       if (!response.ok) continue;
       const data = await response.json();
-      if (data.status !== "ok" || !Array.isArray(data.items)) continue;
+      if (!data || data.status !== "ok" || !Array.isArray(data.items)) continue;
 
       const sortedFeedItems = [...data.items].sort(
         (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
@@ -451,7 +454,7 @@ function renderCurrentDate() {
 
 function initDarkMode() {
   const toggleBtn = document.getElementById("dark-mode-toggle");
-  const savedTheme = localStorage.getItem("mirkuk_theme");
+  let savedTheme = null; try { savedTheme = localStorage.getItem("mirkuk_theme"); } catch (e) {}
   if (savedTheme === "dark") document.body.classList.add("dark");
   updateThemeButtonLabel();
   if (!toggleBtn) return;
@@ -459,7 +462,7 @@ function initDarkMode() {
   toggleBtn.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     const isDark = document.body.classList.contains("dark");
-    localStorage.setItem("mirkuk_theme", isDark ? "dark" : "light");
+    try { localStorage.setItem("mirkuk_theme", isDark ? "dark" : "light"); } catch (e) {}
     updateThemeButtonLabel();
   });
 }
@@ -574,11 +577,20 @@ function initSingleArticlePage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderCurrentDate();
-  initDarkMode();
-  initMobileMenu();
-  initRegionFilters();
-  initNewsSearch();
-  initSingleArticlePage();
-  startAutoMinuteUpdates();
+  const safeRun = (fn) => {
+    try {
+      fn();
+    } catch (err) {
+      // Prevent isolated UI errors from stopping other modules
+    }
+  };
+
+  safeRun(renderCurrentDate);
+  safeRun(initDarkMode);
+  safeRun(initMobileMenu);
+  safeRun(initRegionFilters);
+  safeRun(initNewsSearch);
+  safeRun(initSingleArticlePage);
+  safeRun(startAutoMinuteUpdates);
 });
+
