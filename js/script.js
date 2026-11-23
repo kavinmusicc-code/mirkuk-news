@@ -142,6 +142,9 @@
 const LIVE_RSS_FEEDS = [
   { channel: "BBC India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml" },
   { channel: "The Hindu National", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss" },
+  { channel: "The Hindu International", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://www.thehindu.com/news/international/feeder/default.rss" },
+  { channel: "The Hindu Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://www.thehindu.com/business/feeder/default.rss" },
+  { channel: "The Hindu Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://www.thehindu.com/sport/feeder/default.rss" },
   { channel: "The Hindu Other States", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss" },
   { channel: "BBC US & Canada", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
   { channel: "BBC UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml" },
@@ -150,7 +153,14 @@ const LIVE_RSS_FEEDS = [
   { channel: "BBC World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
   { channel: "BBC Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml" },
   { channel: "BBC Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml" },
-  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" }
+  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" },
+  { channel: "Google News India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://news.google.com/rss/headlines/section/geo/India?hl=en-IN&gl=IN&ceid=IN:en" },
+  { channel: "Google News USA", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/geo/United%20States?hl=en-US&gl=US&ceid=US:en" },
+  { channel: "Google News North East", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://news.google.com/rss/search?q=North%20East%20India%20news&hl=en-IN&gl=IN&ceid=IN:en" },
+  { channel: "Google News World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-US&gl=US&ceid=US:en" },
+  { channel: "Google News Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-US&gl=US&ceid=US:en" },
+  { channel: "Google News Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-US&gl=US&ceid=US:en" },
+  { channel: "Google News Sports", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-US&gl=US&ceid=US:en" }
 ];
 
 const COUNTRY_LIVE_STREAMS = {
@@ -170,7 +180,7 @@ const COUNTRY_LIVE_STREAMS = {
 
 const AUTO_REFRESH_INTERVAL_MS = 60000;
 const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
-const MAX_ARCHIVED_ARTICLES = 160;
+const MAX_ARCHIVED_ARTICLES = 500;
 const RETENTION_DAYS = 10;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
@@ -211,7 +221,7 @@ function saveArchiveToStorage(articles) {
     localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(trimmed));
   } catch (e) {
     try {
-      const smaller = (Array.isArray(articles) ? articles : []).slice(0, 60);
+      const smaller = (Array.isArray(articles) ? articles : []).slice(0, 120);
       localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(smaller));
     } catch (err2) {}
   }
@@ -339,7 +349,7 @@ async function fetchLiveNews() {
           (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
         );
 
-        sortedFeedItems.slice(0, 3).forEach((item, idx) => {
+        sortedFeedItems.slice(0, 25).forEach((item, idx) => {
           const rawRealImg = getRealArticleImage(item);
           let finalRealImg = "";
           if (rawRealImg && !usedRealImages.has(rawRealImg)) {
@@ -635,6 +645,27 @@ function initMobileMenu() {
   });
 }
 
+const PAGE_BATCH_SIZE = 60;
+let VISIBLE_NEWS_LIMIT = PAGE_BATCH_SIZE;
+
+function syncLoadMoreButton(totalCount) {
+  const btn = document.getElementById("load-more-news-btn");
+  if (!btn) return;
+  if (totalCount > VISIBLE_NEWS_LIMIT) {
+    btn.style.display = "inline-block";
+    btn.textContent = `Load More News (${Math.min(VISIBLE_NEWS_LIMIT, totalCount)} / ${Math.min(totalCount, 500)})`;
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+document.addEventListener("click", (ev) => {
+  const moreBtn = ev.target.closest("#load-more-news-btn");
+  if (!moreBtn) return;
+  VISIBLE_NEWS_LIMIT = Math.min(VISIBLE_NEWS_LIMIT + PAGE_BATCH_SIZE, 500);
+  applyFilters();
+});
+
 function renderNewsCards(articles) {
   const grid = document.getElementById("news-grid");
   const noResults = document.getElementById("no-results");
@@ -645,9 +676,9 @@ function renderNewsCards(articles) {
     if (noResults) noResults.classList.remove("hidden");
     return;
   }
-  if (noResults) noResults.classList.add("hidden");
+  if (noResults) noResults.classList.add("hidden");`n  const cappedList = articles.slice(0, 500);`n  syncLoadMoreButton(cappedList.length);`n  cappedList.slice(0, VISIBLE_NEWS_LIMIT).forEach((article) => {
 
-  articles.forEach((article) => {
+  const cappedList = articles.slice(0, 500);`n  syncLoadMoreButton(cappedList.length);`n  cappedList.slice(0, VISIBLE_NEWS_LIMIT).forEach((article) => {
     const card = document.createElement("article");
     card.className = "news-card";
     const targetHref = article.url ? article.url : `article?id=${article.id}`;
@@ -737,3 +768,4 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
