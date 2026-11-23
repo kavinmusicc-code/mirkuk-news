@@ -1,4 +1,36 @@
-﻿(function initMirkukDedupeFeedbackButtons() {
+﻿(function initMirkukOnlyGoogleForm() {
+  const RAW_URL = (window.MIRKUK_FEEDBACK_FORM_URL || "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor").trim();
+  const EMBED_URL = RAW_URL.includes("embedded=true")
+    ? RAW_URL
+    : RAW_URL + (RAW_URL.includes("?") ? "&embedded=true" : "?embedded=true");
+
+  function renderOnlyGoogleForm() {
+    const box = document.getElementById("mirkuk-feedback-box");
+    if (!box || !RAW_URL) return;
+
+    if (box.getAttribute("data-form-only-ready") === "1") return;
+    box.setAttribute("data-form-only-ready", "1");
+
+    box.innerHTML = 
+      <div class="mirkuk-feedback-top" style="margin-bottom:10px;">
+        <strong>Reader Feedback</strong>
+        <a href=" + RAW_URL + " target="_blank" rel="noopener noreferrer" class="mirkuk-fb-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Open Form</a>
+      </div>
+      <div style="width:100%;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc;">
+        <iframe
+          src=" + EMBED_URL + "
+          title="Mirkuk News — Reader Feedback"
+          style="width:100%;height:560px;border:0;display:block;background:#ffffff;"
+          loading="lazy"
+        ></iframe>
+      </div>
+    ;
+  }
+
+  renderOnlyGoogleForm();
+  setInterval(renderOnlyGoogleForm, 1000);
+})();
+(function initMirkukDedupeFeedbackButtons() {
   function cleanDuplicateFeedbackButtons() {
     const row = document.querySelector(".mirkuk-fb-row");
     if (!row) return;
@@ -2357,6 +2389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
