@@ -140,101 +140,49 @@
 ];
 
 const LIVE_RSS_FEEDS = [
-  {
-    channel: "BBC India",
-    region: "India",
-    category: "India",
-    imageBase: "images/local",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml"
-  },
-  {
-    channel: "The Hindu National",
-    region: "India",
-    category: "India",
-    imageBase: "images/local",
-    rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss"
-  },
-  {
-    channel: "The Hindu Other States",
-    region: "North East",
-    category: "North East",
-    imageBase: "images/weather",
-    rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
-  },
-  {
-    channel: "BBC US & Canada",
-    region: "USA",
-    category: "USA",
-    imageBase: "images/business",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
-  },
-  {
-    channel: "BBC UK",
-    region: "UK",
-    category: "UK",
-    imageBase: "images/hero",
-    rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml"
-  },
-  {
-    channel: "BBC Europe",
-    region: "Europe",
-    category: "Europe",
-    imageBase: "images/culture",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
-  },
-  {
-    channel: "BBC Middle East",
-    region: "Middle East",
-    category: "Middle East",
-    imageBase: "images/hero",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml"
-  },
-  {
-    channel: "BBC World",
-    region: "World",
-    category: "World",
-    imageBase: "images/hero",
-    rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml"
-  },
-  {
-    channel: "BBC Business",
-    region: "Business",
-    category: "Business",
-    imageBase: "images/business",
-    rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml"
-  },
-  {
-    channel: "BBC Tech",
-    region: "Tech",
-    category: "Tech",
-    imageBase: "images/tech",
-    rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml"
-  },
-  {
-    channel: "BBC Sport",
-    region: "Sports",
-    category: "Sports",
-    imageBase: "images/sports",
-    rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml"
-  }
+  { channel: "BBC India", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml" },
+  { channel: "The Hindu National", region: "India", category: "India", imageBase: "images/local", rssUrl: "https://www.thehindu.com/news/national/feeder/default.rss" },
+  { channel: "The Hindu Other States", region: "North East", category: "North East", imageBase: "images/weather", rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss" },
+  { channel: "BBC US & Canada", region: "USA", category: "USA", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml" },
+  { channel: "BBC UK", region: "UK", category: "UK", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/uk/rss.xml" },
+  { channel: "BBC Europe", region: "Europe", category: "Europe", imageBase: "images/culture", rssUrl: "https://feeds.bbci.co.uk/news/world/europe/rss.xml" },
+  { channel: "BBC Middle East", region: "Middle East", category: "Middle East", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml" },
+  { channel: "BBC World", region: "World", category: "World", imageBase: "images/hero", rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+  { channel: "BBC Business", region: "Business", category: "Business", imageBase: "images/business", rssUrl: "https://feeds.bbci.co.uk/news/business/rss.xml" },
+  { channel: "BBC Tech", region: "Tech", category: "Tech", imageBase: "images/tech", rssUrl: "https://feeds.bbci.co.uk/news/technology/rss.xml" },
+  { channel: "BBC Sport", region: "Sports", category: "Sports", imageBase: "images/sports", rssUrl: "https://feeds.bbci.co.uk/sport/rss.xml" }
 ];
 
-const AUTO_REFRESH_INTERVAL_MS = 60000; // Every 1 minute
+const COUNTRY_LIVE_STREAMS = {
+  "All": { title: "All Editions — Global Live Wire", note: "Showing live updates across all editions.", embedUrl: "", mp4Url: "" },
+  "LIVE": { title: "LIVE — Continuous Global Dispatch", note: "Real-time feed updates every 1 minute.", embedUrl: "", mp4Url: "" },
+  "India": { title: "India Live Desk", note: "Live coverage and updates focused on India.", embedUrl: "", mp4Url: "" },
+  "USA": { title: "USA Live Desk", note: "Live coverage and updates focused on the United States.", embedUrl: "", mp4Url: "" },
+  "North East": { title: "North East Live Desk", note: "Regional updates across North East India.", embedUrl: "", mp4Url: "" },
+  "UK": { title: "UK Live Desk", note: "Live coverage and updates focused on the United Kingdom.", embedUrl: "", mp4Url: "" },
+  "Canada": { title: "Canada Live Desk", note: "Live coverage and updates focused on Canada.", embedUrl: "", mp4Url: "" },
+  "Australia": { title: "Australia Live Desk", note: "Live coverage and updates focused on Australia.", embedUrl: "", mp4Url: "" },
+  "Japan": { title: "Japan Live Desk", note: "Live coverage and updates focused on Japan.", embedUrl: "", mp4Url: "" },
+  "Europe": { title: "Europe Live Desk", note: "Live coverage and updates focused on Europe.", embedUrl: "", mp4Url: "" },
+  "Middle East": { title: "Middle East Live Desk", note: "Live coverage and updates focused on the Middle East.", embedUrl: "", mp4Url: "" },
+  "World": { title: "World Live Desk", note: "International headlines and cross-border coverage.", embedUrl: "", mp4Url: "" }
+};
 
+const AUTO_REFRESH_INTERVAL_MS = 60000;
 const ARCHIVE_STORAGE_KEY = "mirkuk_news_archive_v1";
 const MAX_ARCHIVED_ARTICLES = 160;
-
-// Change to 10 for 10 days or 30 for 30 days auto-cleanup
 const RETENTION_DAYS = 10;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
+let ACTIVE_REGION = "All";
+let IS_FETCHING_LIVE = false;
 
 function pruneExpiredArticles(articles, nowMs = Date.now()) {
   if (!Array.isArray(articles)) return [];
   const cutoff = nowMs - RETENTION_MS;
-
   return articles.filter((item) => {
     if (!item || !item.title) return false;
-    // Keep built-in template articles (id < 100) intact unless expired if timestamped
     const itemTime = Number(item.timestamp || item.savedAt || 0);
     if (!itemTime) {
       item.savedAt = nowMs;
@@ -251,7 +199,6 @@ function loadSavedArchive() {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed) || parsed.length === 0) return null;
     const freshOnly = pruneExpiredArticles(parsed);
-    saveArchiveToStorage(freshOnly);
     return freshOnly.length > 0 ? freshOnly : null;
   } catch (e) {
     return null;
@@ -263,7 +210,6 @@ function saveArchiveToStorage(articles) {
     const trimmed = Array.isArray(articles) ? articles.slice(0, MAX_ARCHIVED_ARTICLES) : [];
     localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(trimmed));
   } catch (e) {
-    // If storage quota is full, trim older items and retry once
     try {
       const smaller = (Array.isArray(articles) ? articles : []).slice(0, 60);
       localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(smaller));
@@ -278,6 +224,7 @@ function getArticleUniqueKey(item) {
 }
 
 function mergeAndSaveArticles(existingList, incomingList) {
+  const nowMs = Date.now();
   const map = new Map();
 
   const addItem = (item) => {
@@ -288,7 +235,6 @@ function mergeAndSaveArticles(existingList, incomingList) {
     }
   };
 
-  const nowMs = Date.now();
   const cleanIncoming = (incomingList || []).map((item) => ({
     ...item,
     timestamp: item.timestamp || nowMs,
@@ -307,25 +253,24 @@ function mergeAndSaveArticles(existingList, incomingList) {
   saveArchiveToStorage(capped);
   return capped;
 }
-let CURRENT_GRID_ARTICLES = loadSavedArchive() || ARTICLES_DATA.filter((item) => item.id !== 0);
-let ACTIVE_REGION = "All";
-let IS_FETCHING_LIVE = false;
 
 function updateSyncStatus(text) {
   const statusEl = document.getElementById("live-sync-status");
-  if (statusEl) {
-    statusEl.textContent = text;
-  }
+  if (statusEl) statusEl.textContent = text;
 }
 
 function extractImageFromHtml(htmlString) {
   if (!htmlString) return "";
-  const doc = new DOMParser().parseFromString(htmlString, "text/html");
-  const img = doc.querySelector("img");
-  if (!img) return "";
-  const src = (img.getAttribute("src") || "").trim();
-  if (!src || src.startsWith("data:")) return "";
-  return src;
+  try {
+    const doc = new DOMParser().parseFromString(htmlString, "text/html");
+    const img = doc.querySelector("img");
+    if (!img) return "";
+    const src = (img.getAttribute("src") || "").trim();
+    if (!src || src.startsWith("data:")) return "";
+    return src;
+  } catch (e) {
+    return "";
+  }
 }
 
 function getRealArticleImage(item) {
@@ -376,73 +321,68 @@ async function fetchLiveNews() {
   const collected = [];
   const usedRealImages = new Set();
 
-  for (let i = 0; i < LIVE_RSS_FEEDS.length; i++) {
-    const feed = LIVE_RSS_FEEDS[i];
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.rssUrl)}`;
+  try {
+    for (let i = 0; i < LIVE_RSS_FEEDS.length; i++) {
+      const feed = LIVE_RSS_FEEDS[i];
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.rssUrl)}`;
 
-    try {
-      const controller = new AbortController();
-      const timerId = setTimeout(() => controller.abort(), 7000);
-      const response = await fetch(apiUrl, { signal: controller.signal });
-      clearTimeout(timerId);
-      if (!response.ok) continue;
-      const data = await response.json();
-      if (!data || data.status !== "ok" || !Array.isArray(data.items)) continue;
+      try {
+        const controller = new AbortController();
+        const timerId = setTimeout(() => controller.abort(), 7000);
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timerId);
+        if (!response.ok) continue;
+        const data = await response.json();
+        if (!data || data.status !== "ok" || !Array.isArray(data.items)) continue;
 
-      const sortedFeedItems = [...data.items].sort(
-        (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
-      );
+        const sortedFeedItems = [...data.items].sort(
+          (a, b) => parsePubTimestamp(b.pubDate) - parsePubTimestamp(a.pubDate)
+        );
 
-      sortedFeedItems.slice(0, 3).forEach((item, idx) => {
-        const rawRealImg = getRealArticleImage(item);
-        let finalRealImg = "";
-        if (rawRealImg && !usedRealImages.has(rawRealImg)) {
-          usedRealImages.add(rawRealImg);
-          finalRealImg = rawRealImg;
-        }
+        sortedFeedItems.slice(0, 3).forEach((item, idx) => {
+          const rawRealImg = getRealArticleImage(item);
+          let finalRealImg = "";
+          if (rawRealImg && !usedRealImages.has(rawRealImg)) {
+            usedRealImages.add(rawRealImg);
+            finalRealImg = rawRealImg;
+          }
 
-        const ts = parsePubTimestamp(item.pubDate);
-        const cleanDesc = stripHtml(item.description);
-        const shortExcerpt =
-          cleanDesc.length > 140
-            ? `${cleanDesc.slice(0, 140)}...`
-            : cleanDesc || `Live dispatch from ${feed.channel}.`;
+          const ts = parsePubTimestamp(item.pubDate);
+          const cleanDesc = stripHtml(item.description);
+          const shortExcerpt =
+            cleanDesc.length > 140
+              ? `${cleanDesc.slice(0, 140)}...`
+              : cleanDesc || `Live dispatch from ${feed.channel}.`;
+          const sourceName = item.author || (data.feed && data.feed.title) || feed.channel;
 
-        const sourceName = item.author || (data.feed && data.feed.title) || feed.channel;
-
-        collected.push({
-          id: 100 + i * 10 + idx,
-          region: feed.region,
-          category: feed.category,
-          imageBase: feed.imageBase,
-          realImageUrl: finalRealImg,
-          isLiveFeed: true,
-          timestamp: ts,
-          title: item.title || `${feed.channel} Update`,
-          author: sourceName,
-          date: ts
-            ? new Date(ts).toLocaleString([], {
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-              })
-            : "Just now",
-          readTime: `${sourceName} • LIVE`,
-          url: item.link || "",
-          excerpt: shortExcerpt,
-          paragraphs: [
-            cleanDesc || "This item was pulled automatically from a live channel RSS feed.",
-            `Channel: ${sourceName} | Section: ${feed.region}. Open the source link to read the complete story.`
-          ]
+          collected.push({
+            id: 100 + i * 10 + idx,
+            region: feed.region,
+            category: feed.category,
+            imageBase: feed.imageBase,
+            realImageUrl: finalRealImg,
+            isLiveFeed: true,
+            timestamp: ts || Date.now(),
+            savedAt: Date.now(),
+            title: item.title || `${feed.channel} Update`,
+            author: sourceName,
+            date: ts
+              ? new Date(ts).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+              : "Just now",
+            readTime: `${sourceName} • LIVE`,
+            url: item.link || "",
+            excerpt: shortExcerpt,
+            paragraphs: [
+              cleanDesc || "This item was pulled automatically from a live channel RSS feed.",
+              `Channel: ${sourceName} | Section: ${feed.region}. Open the source link to read the complete story.`
+            ]
+          });
         });
-      });
-    } catch (err) {
-      // Keep local items intact if offline or blocked
+      } catch (err) {}
     }
+  } finally {
+    IS_FETCHING_LIVE = false;
   }
-
-  IS_FETCHING_LIVE = false;
 
   if (collected.length > 0) {
     CURRENT_GRID_ARTICLES = mergeAndSaveArticles(CURRENT_GRID_ARTICLES, collected);
@@ -450,7 +390,9 @@ async function fetchLiveNews() {
     const nowTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     updateSyncStatus(`Updated ${nowTime} (1m auto)`);
   } else {
-    updateSyncStatus("Fallback mode (1m auto)");
+    CURRENT_GRID_ARTICLES = pruneExpiredArticles(CURRENT_GRID_ARTICLES);
+    applyFilters();
+    updateSyncStatus("Latest archive active (1m auto)");
   }
 }
 
@@ -461,85 +403,64 @@ function startAutoMinuteUpdates() {
   }, AUTO_REFRESH_INTERVAL_MS);
 }
 
-const COUNTRY_LIVE_STREAMS = {
-  "All": {
-    title: "All Editions — Global Live Wire",
-    note: "Showing live updates across all editions. Tap any country button to switch the country stream.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "LIVE": {
-    title: "LIVE — Continuous Global Dispatch",
-    note: "Real-time feed updates every 1 minute with newest stories sorted first.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "India": {
-    title: "India Live Desk",
-    note: "Live coverage and updates focused on India.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "USA": {
-    title: "USA Live Desk",
-    note: "Live coverage and updates focused on the United States.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "North East": {
-    title: "North East Live Desk",
-    note: "Regional updates and dispatches across North East India.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "UK": {
-    title: "UK Live Desk",
-    note: "Live coverage and updates focused on the United Kingdom.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Canada": {
-    title: "Canada Live Desk",
-    note: "Live coverage and updates focused on Canada.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Australia": {
-    title: "Australia Live Desk",
-    note: "Live coverage and updates focused on Australia.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Japan": {
-    title: "Japan Live Desk",
-    note: "Live coverage and updates focused on Japan.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Europe": {
-    title: "Europe Live Desk",
-    note: "Live coverage and updates focused on Europe.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "Middle East": {
-    title: "Middle East Live Desk",
-    note: "Live coverage and updates focused on the Middle East.",
-    embedUrl: "",
-    mp4Url: ""
-  },
-  "World": {
-    title: "World Live Desk",
-    note: "International headlines and cross-border coverage.",
-    embedUrl: "",
-    mp4Url: ""
-  }
+window.retryCountryLiveStream = function () {
+  try {
+    renderCountryLiveVideo(ACTIVE_REGION || "All");
+    fetchLiveNews();
+  } catch (e) {}
 };
 
+window.handleStreamFallback = function (videoEl, keyName) {
+  try {
+    if (videoEl) videoEl.onerror = null;
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
+    stageEl.innerHTML = `
+      <div class="live-video-placeholder">
+        <p><strong>Stream temporarily unavailable (${keyName})</strong></p>
+        <p style="margin-top:6px;opacity:0.85;">Live news updates continue automatically every 1 minute below.</p>
+        <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Retry Stream</button>
+      </div>
+    `;
+  } catch (e) {}
+};
 
+function renderCountryLiveVideo(regionName) {
+  try {
+    const headingEl = document.getElementById("live-country-heading");
+    const subtextEl = document.getElementById("live-country-subtext");
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
 
+    const cleanRegion = String(regionName || "All").trim();
+    const key = Object.keys(COUNTRY_LIVE_STREAMS).find(
+      (k) => k.toLowerCase() === cleanRegion.toLowerCase()
+    ) || "All";
+    const info = COUNTRY_LIVE_STREAMS[key] || {
+      title: `${cleanRegion} 24/7 Live Desk`,
+      note: `Live coverage and dispatches for ${cleanRegion}.`,
+      embedUrl: "",
+      mp4Url: ""
+    };
 
+    if (headingEl) headingEl.textContent = info.title;
+    if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
 
+    if (info.mp4Url) {
+      stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>`;
+    } else if (info.embedUrl) {
+      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else {
+      stageEl.innerHTML = `
+        <div class="live-video-placeholder">
+          <p><strong>24/7 LIVE DESK — ${key.toUpperCase()}</strong></p>
+          <p style="margin-top:6px;opacity:0.85;">Latest stories for ${key} are shown below and updated every 1 minute.</p>
+          <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Sync Now</button>
+        </div>
+      `;
+    }
+  } catch (e) {}
+}
 
 function cleanIndexQueryUrl() {
   try {
@@ -563,68 +484,6 @@ function cleanIndexQueryUrl() {
   } catch (e) {}
 }
 
-
-
-window.retryCountryLiveStream = function () {
-  try {
-    renderCountryLiveVideo(ACTIVE_REGION || "All");
-    fetchLiveNews();
-  } catch (e) {}
-};
-
-window.handleStreamFallback = function (videoEl, keyName) {
-  try {
-    if (videoEl) videoEl.onerror = null;
-    const stageEl = document.getElementById("live-video-stage");
-    if (!stageEl) return;
-    stageEl.innerHTML = `
-      <div class="live-video-placeholder">
-        <p><strong>Stream temporarily unavailable (${keyName})</strong></p>
-        <p style="margin-top:6px;opacity:0.85;">Live text news updates continue automatically every 1 minute.</p>
-        <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Retry Stream</button>
-      </div>
-    `;
-  } catch (e) {}
-};
-
-function renderCountryLiveVideo(regionName) {
-  try {
-    const headingEl = document.getElementById("live-country-heading");
-    const subtextEl = document.getElementById("live-country-subtext");
-    const stageEl = document.getElementById("live-video-stage");
-    if (!stageEl) return;
-
-    const cleanRegion = String(regionName || "All").trim();
-    const key = Object.keys(COUNTRY_LIVE_STREAMS).find(
-      (k) => k.toLowerCase() === cleanRegion.toLowerCase()
-    ) || "All";
-
-    const info = COUNTRY_LIVE_STREAMS[key] || {
-      title: `${cleanRegion} 24/7 Live Desk`,
-      note: `Live coverage and dispatches for ${cleanRegion}.`,
-      embedUrl: "",
-      mp4Url: ""
-    };
-
-    if (headingEl) headingEl.textContent = info.title;
-    if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
-
-    if (info.mp4Url) {
-      stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>`;
-    } else if (info.embedUrl) {
-      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-    } else {
-      stageEl.innerHTML = `
-        <div class="live-video-placeholder">
-          <p><strong>24/7 LIVE DESK — ${key.toUpperCase()}</strong></p>
-          <p style="margin-top:6px;opacity:0.85;">Showing ${key} updates below. Add an embed/MP4 stream URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> to play video right here.</p>
-          <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Sync Now</button>
-        </div>
-      `;
-    }
-  } catch (e) {}
-}
-
 function setActiveRegionButton(regionName) {
   ACTIVE_REGION = String(regionName || "All").trim();
   const container = document.getElementById("region-filters");
@@ -632,8 +491,7 @@ function setActiveRegionButton(regionName) {
     const buttons = container.querySelectorAll(".region-btn");
     buttons.forEach((b) => {
       const btnRegion = (b.getAttribute("data-region") || "").trim();
-      const isMatch = btnRegion.toLowerCase() === ACTIVE_REGION.toLowerCase();
-      b.classList.toggle("active", isMatch);
+      b.classList.toggle("active", btnRegion.toLowerCase() === ACTIVE_REGION.toLowerCase());
     });
   }
   renderCountryLiveVideo(ACTIVE_REGION);
@@ -645,7 +503,11 @@ function applyFilters() {
     const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
     const selected = (ACTIVE_REGION || "All").toLowerCase();
 
-    const filtered = (CURRENT_GRID_ARTICLES || []).filter((article) => {
+    const baseList = (Array.isArray(CURRENT_GRID_ARTICLES) && CURRENT_GRID_ARTICLES.length > 0)
+      ? CURRENT_GRID_ARTICLES
+      : ARTICLES_DATA.filter((item) => item.id !== 0);
+
+    const filtered = baseList.filter((article) => {
       if (!article) return false;
       let matchesRegion = true;
 
@@ -676,7 +538,9 @@ function applyFilters() {
     });
 
     renderNewsCards(filtered);
-  } catch (e) {}
+  } catch (e) {
+    renderNewsCards(ARTICLES_DATA.filter((item) => item.id !== 0));
+  }
 }
 
 function initRegionFilters() {
@@ -699,7 +563,6 @@ function initRegionFilters() {
   setActiveRegionButton(initialRegion);
   applyFilters();
 
-  // Event delegation on container so clicks always register reliably
   if (!container.dataset.boundClick) {
     container.dataset.boundClick = "true";
     container.addEventListener("click", (event) => {
@@ -737,7 +600,8 @@ function renderCurrentDate() {
 
 function initDarkMode() {
   const toggleBtn = document.getElementById("dark-mode-toggle");
-  let savedTheme = null; try { savedTheme = localStorage.getItem("mirkuk_theme"); } catch (e) {}
+  let savedTheme = null;
+  try { savedTheme = localStorage.getItem("mirkuk_theme"); } catch (e) {}
   if (savedTheme === "dark") document.body.classList.add("dark");
   updateThemeButtonLabel();
   if (!toggleBtn) return;
@@ -777,7 +641,7 @@ function renderNewsCards(articles) {
   if (!grid) return;
 
   grid.innerHTML = "";
-  if (articles.length === 0) {
+  if (!Array.isArray(articles) || articles.length === 0) {
     if (noResults) noResults.classList.remove("hidden");
     return;
   }
@@ -818,8 +682,9 @@ function renderNewsCards(articles) {
 }
 
 function initNewsSearch() {
-  const searchInput = document.getElementById("news-search");
+  CURRENT_GRID_ARTICLES = loadSavedArchive() || ARTICLES_DATA.filter((item) => item.id !== 0);
   applyFilters();
+  const searchInput = document.getElementById("news-search");
   if (!searchInput) return;
 
   searchInput.addEventListener("input", () => {
@@ -861,27 +726,14 @@ function initSingleArticlePage() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const safeRun = (fn) => {
-    try {
-      fn();
-    } catch (err) {
-      // Prevent isolated UI errors from stopping other modules
-    }
+    try { fn(); } catch (err) {}
   };
 
   safeRun(renderCurrentDate);
   safeRun(initDarkMode);
   safeRun(initMobileMenu);
-  safeRun(initRegionFilters);
   safeRun(initNewsSearch);
+  safeRun(initRegionFilters);
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
-
-
-
-
-
-
-
-
-
