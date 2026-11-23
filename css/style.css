@@ -1227,3 +1227,14 @@ body.mirkuk-light-mode .mirkuk-section-heading {
 .mirkuk-ed-legal a:hover {
   text-decoration: underline;
 }
+
+/* Remove Listen To Article Bar Permanently */
+.mirkuk-audio-bar,
+#mirkuk-audio-bar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}

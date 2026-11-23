@@ -1716,3 +1716,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
