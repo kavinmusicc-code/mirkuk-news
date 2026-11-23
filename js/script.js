@@ -168,6 +168,23 @@
       "High-stakes matchups across major leagues delivered decisive late-game moments and shifting playoff pictures.",
       "Coaches and players credited late-game composure and team depth."
     ]
+  },
+  {
+    id: 10,
+    region: "Gaming",
+    category: "Gaming",
+    imageBase: "images/tech",
+    title: "Rockstar Games & Top Viral New Releases: GTA VI Spotlight and Trending Games",
+    author: "Prashant Sagar",
+    date: "November 23, 2026",
+    timestamp: Date.now(),
+    readTime: "4 min read",
+    url: "",
+    excerpt: "Tracking Rockstar Games updates, Grand Theft Auto VI milestones, and top viral new game launches across PC and consoles.",
+    paragraphs: [
+      "This desk tracks major Rockstar Games announcements, Grand Theft Auto VI developments, and viral new game releases making waves across the gaming community.",
+      "Live gaming feeds sync automatically every minute so new patch notes, trailers, and trending titles appear alongside built-in highlights."
+    ]
   }
 ];
 
@@ -834,4 +851,5 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
