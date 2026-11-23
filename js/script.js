@@ -536,107 +536,10 @@ const COUNTRY_LIVE_STREAMS = {
   }
 };
 
-window.retryCountryLiveStream = function () {
-  try {
-    renderCountryLiveVideo(ACTIVE_REGION || "All");
-    fetchLiveNews();
-  } catch (e) {}
-};
 
-function renderCountryLiveVideo(regionName) {
-  try {
-    const headingEl = document.getElementById("live-country-heading");
-    const subtextEl = document.getElementById("live-country-subtext");
-    const stageEl = document.getElementById("live-video-stage");
-    if (!stageEl) return;
 
-    const key = Object.keys(COUNTRY_LIVE_STREAMS).find(
-      (k) => k.toLowerCase() === String(regionName || "All").toLowerCase()
-    ) || "All";
-    const info = COUNTRY_LIVE_STREAMS[key] || {
-      title: `${regionName} 24/7 Live Desk`,
-      note: `Continuous live news and stream status for ${regionName}.`,
-      embedUrl: "",
-      mp4Url: ""
-    };
 
-    if (headingEl) headingEl.textContent = info.title;
-    if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
 
-    if (info.mp4Url) {
-      stageEl.innerHTML = `
-        <video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>
-      `;
-    } else if (info.embedUrl) {
-      stageEl.innerHTML = `
-        <iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      `;
-    } else {
-      stageEl.innerHTML = `
-        <div class="live-video-placeholder">
-          <p><strong>24/7 LIVE WIRE ACTIVE (${key})</strong></p>
-          <p style="margin-top:6px;opacity:0.85;">Live news feeds refresh every 1 minute below. Add an embed/MP4 URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> anytime to stream video right here.</p>
-          <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Sync Now</button>
-        </div>
-      `;
-    }
-  } catch (e) {}
-}
-
-window.handleStreamFallback = function (videoEl, keyName) {
-  try {
-    if (videoEl) videoEl.onerror = null;
-    const stageEl = document.getElementById("live-video-stage");
-    if (!stageEl) return;
-    stageEl.innerHTML = `
-      <div class="live-video-placeholder">
-        <p><strong>Stream temporarily unavailable (${keyName})</strong></p>
-        <p style="margin-top:6px;opacity:0.85;">Live text news updates continue automatically every 1 minute.</p>
-        <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Retry Stream</button>
-      </div>
-    `;
-  } catch (e) {}
-};
-
-function setActiveRegionButton(regionName) {
-  ACTIVE_REGION = regionName || "All";`n  renderCountryLiveVideo(ACTIVE_REGION);
-  const container = document.getElementById("region-filters");
-  if (!container) return;
-  const buttons = container.querySelectorAll(".region-btn");
-  buttons.forEach((b) => {
-    const btnRegion = b.getAttribute("data-region");
-    b.classList.toggle("active", btnRegion && btnRegion.toLowerCase() === ACTIVE_REGION.toLowerCase());
-  });
-}
-
-function applyFilters() {
-  const searchInput = document.getElementById("news-search");
-  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
-
-  const filtered = CURRENT_GRID_ARTICLES.filter((article) => {
-    let matchesRegion = true;
-    if (ACTIVE_REGION === "LIVE") {
-      matchesRegion = Boolean(article.isLiveFeed || article.url);
-    } else if (ACTIVE_REGION !== "All") {
-      matchesRegion =
-        (article.region && article.region.toLowerCase() === ACTIVE_REGION.toLowerCase()) ||
-        article.category.toLowerCase().includes(ACTIVE_REGION.toLowerCase()) ||
-        article.title.toLowerCase().includes(ACTIVE_REGION.toLowerCase());
-    }
-
-    const matchesSearch =
-      !query ||
-      article.title.toLowerCase().includes(query) ||
-      article.category.toLowerCase().includes(query) ||
-      (article.author && article.author.toLowerCase().includes(query)) ||
-      (article.region && article.region.toLowerCase().includes(query)) ||
-      article.excerpt.toLowerCase().includes(query);
-
-    return matchesRegion && matchesSearch;
-  });
-
-  renderNewsCards(filtered);
-}
 
 function cleanIndexQueryUrl() {
   try {
@@ -660,35 +563,164 @@ function cleanIndexQueryUrl() {
   } catch (e) {}
 }
 
+
+
+window.retryCountryLiveStream = function () {
+  try {
+    renderCountryLiveVideo(ACTIVE_REGION || "All");
+    fetchLiveNews();
+  } catch (e) {}
+};
+
+window.handleStreamFallback = function (videoEl, keyName) {
+  try {
+    if (videoEl) videoEl.onerror = null;
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
+    stageEl.innerHTML = `
+      <div class="live-video-placeholder">
+        <p><strong>Stream temporarily unavailable (${keyName})</strong></p>
+        <p style="margin-top:6px;opacity:0.85;">Live text news updates continue automatically every 1 minute.</p>
+        <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Retry Stream</button>
+      </div>
+    `;
+  } catch (e) {}
+};
+
+function renderCountryLiveVideo(regionName) {
+  try {
+    const headingEl = document.getElementById("live-country-heading");
+    const subtextEl = document.getElementById("live-country-subtext");
+    const stageEl = document.getElementById("live-video-stage");
+    if (!stageEl) return;
+
+    const cleanRegion = String(regionName || "All").trim();
+    const key = Object.keys(COUNTRY_LIVE_STREAMS).find(
+      (k) => k.toLowerCase() === cleanRegion.toLowerCase()
+    ) || "All";
+
+    const info = COUNTRY_LIVE_STREAMS[key] || {
+      title: `${cleanRegion} 24/7 Live Desk`,
+      note: `Live coverage and dispatches for ${cleanRegion}.`,
+      embedUrl: "",
+      mp4Url: ""
+    };
+
+    if (headingEl) headingEl.textContent = info.title;
+    if (subtextEl) subtextEl.textContent = `${info.note} (24/7 feed sync active every 1 minute)`;
+
+    if (info.mp4Url) {
+      stageEl.innerHTML = `<video controls autoplay muted playsinline src="${info.mp4Url}" onerror="handleStreamFallback(this, '${key}')"></video>`;
+    } else if (info.embedUrl) {
+      stageEl.innerHTML = `<iframe src="${info.embedUrl}" title="${info.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    } else {
+      stageEl.innerHTML = `
+        <div class="live-video-placeholder">
+          <p><strong>24/7 LIVE DESK — ${key.toUpperCase()}</strong></p>
+          <p style="margin-top:6px;opacity:0.85;">Showing ${key} updates below. Add an embed/MP4 stream URL in <code>COUNTRY_LIVE_STREAMS["${key}"]</code> to play video right here.</p>
+          <button type="button" class="region-btn active" style="margin-top:12px;" onclick="retryCountryLiveStream()">Sync Now</button>
+        </div>
+      `;
+    }
+  } catch (e) {}
+}
+
+function setActiveRegionButton(regionName) {
+  ACTIVE_REGION = String(regionName || "All").trim();
+  const container = document.getElementById("region-filters");
+  if (container) {
+    const buttons = container.querySelectorAll(".region-btn");
+    buttons.forEach((b) => {
+      const btnRegion = (b.getAttribute("data-region") || "").trim();
+      const isMatch = btnRegion.toLowerCase() === ACTIVE_REGION.toLowerCase();
+      b.classList.toggle("active", isMatch);
+    });
+  }
+  renderCountryLiveVideo(ACTIVE_REGION);
+}
+
+function applyFilters() {
+  try {
+    const searchInput = document.getElementById("news-search");
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+    const selected = (ACTIVE_REGION || "All").toLowerCase();
+
+    const filtered = (CURRENT_GRID_ARTICLES || []).filter((article) => {
+      if (!article) return false;
+      let matchesRegion = true;
+
+      if (selected === "live") {
+        matchesRegion = Boolean(article.isLiveFeed || article.url);
+      } else if (selected !== "all") {
+        const reg = (article.region || "").toLowerCase();
+        const cat = (article.category || "").toLowerCase();
+        const title = (article.title || "").toLowerCase();
+        const author = (article.author || "").toLowerCase();
+        matchesRegion =
+          reg === selected ||
+          reg.includes(selected) ||
+          cat.includes(selected) ||
+          title.includes(selected) ||
+          author.includes(selected);
+      }
+
+      const matchesSearch =
+        !query ||
+        (article.title || "").toLowerCase().includes(query) ||
+        (article.category || "").toLowerCase().includes(query) ||
+        (article.region || "").toLowerCase().includes(query) ||
+        (article.author || "").toLowerCase().includes(query) ||
+        (article.excerpt || "").toLowerCase().includes(query);
+
+      return matchesRegion && matchesSearch;
+    });
+
+    renderNewsCards(filtered);
+  } catch (e) {}
+}
+
 function initRegionFilters() {
   const container = document.getElementById("region-filters");
   if (!container) return;
 
-  const params = new URLSearchParams(window.location.search);
-  const viewParam = params.get("view");
-  const regionParam = params.get("region");
+  let initialRegion = "All";
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    const regionParam = params.get("region");
+    if (viewParam && viewParam.toLowerCase() === "live") {
+      initialRegion = "LIVE";
+    } else if (regionParam) {
+      initialRegion = regionParam;
+    }
+  } catch (e) {}
 
-  cleanIndexQueryUrl();`n  if (viewParam && viewParam.toLowerCase() === "live") {
-    setActiveRegionButton("LIVE");
-  } else if (regionParam) {
-    setActiveRegionButton(regionParam);
-  }
+  cleanIndexQueryUrl();
+  setActiveRegionButton(initialRegion);
+  applyFilters();
 
-  const buttons = container.querySelectorAll(".region-btn");
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const chosen = btn.getAttribute("data-region") || "All";
+  // Event delegation on container so clicks always register reliably
+  if (!container.dataset.boundClick) {
+    container.dataset.boundClick = "true";
+    container.addEventListener("click", (event) => {
+      const btn = event.target.closest(".region-btn");
+      if (!btn) return;
+      event.preventDefault();
+
+      const chosen = (btn.getAttribute("data-region") || "All").trim();
       setActiveRegionButton(chosen);
       applyFilters();
-      if (chosen === "LIVE") {
+
+      if (chosen.toUpperCase() === "LIVE") {
         fetchLiveNews();
       }
+
       const latestSec = document.getElementById("latest-news");
       if (latestSec) {
         latestSec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
-  });
+  }
 }
 
 function renderCurrentDate() {
@@ -844,6 +876,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
 
 
 

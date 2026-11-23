@@ -522,3 +522,14 @@ img { max-width: 100%; display: block; }
     grid-template-columns: 1fr;
   }
 }
+
+/* Ensure Country & Section Buttons Are Always Clickable */
+.country-strip,
+.country-strip-inner,
+#region-filters,
+.region-btn {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+  cursor: pointer;
+}
