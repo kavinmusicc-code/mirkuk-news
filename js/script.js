@@ -1,209 +1,42 @@
-﻿(function initMirkukMobilePolish() {
-  const FALLBACK_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
-    '<rect width="800" height="450" fill="#e2e8f0"/>' +
-    '<text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Georgia, serif" font-size="24">MIRKUK NEWS DESK</text>' +
-    '<text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="14">Editorial Dispatch</text>' +
-    '</svg>'
-  );
+﻿(function initMirkukSafeArtsAndCardsRepair() {
+  const FALLBACK_IMG = "images/hero.jpg";
 
-  function fixImagesAndHeader() {
+  function fixBrokenImages() {
     document.querySelectorAll("img").forEach((img) => {
-      if (img.id === "mirkuk-fallback-bound") return;
-      img.id = "mirkuk-fallback-bound";
+      if (img.dataset.mirkukSafeBound === "1") return;
+      img.dataset.mirkukSafeBound = "1";
+
       img.addEventListener("error", () => {
-        if (img.src !== FALLBACK_IMG) {
+        const src = (img.getAttribute("src") || "").toLowerCase();
+        if (src.includes("arts") && !src.includes("culture.jpg")) {
+          img.src = "images/culture.jpg";
+        } else if (!src.includes("hero.jpg")) {
           img.src = FALLBACK_IMG;
         }
       }, { once: true });
+
       if (img.complete && img.naturalWidth === 0) {
-        img.src = FALLBACK_IMG;
-      }
-    });
-
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walker.nextNode())) {
-      if (node.nodeValue && node.nodeValue.includes("Loading date...")) {
-        const nowText = new Date().toLocaleDateString("en-IN", {
-          weekday: "short",
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        });
-        node.nodeValue = node.nodeValue.replace(/Loading date\.\.\./g, nowText);
-      }
-    }
-  }
-
-  fixImagesAndHeader();
-  setInterval(fixImagesAndHeader, 1200);
-})();
-(function initMirkukOnlyGoogleForm() {
-  const RAW_URL = (window.MIRKUK_FEEDBACK_FORM_URL || "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor").trim();
-  const EMBED_URL = RAW_URL.includes("embedded=true")
-    ? RAW_URL
-    : RAW_URL + (RAW_URL.includes("?") ? "&embedded=true" : "?embedded=true");
-
-  function renderOnlyGoogleForm() {
-    const box = document.getElementById("mirkuk-feedback-box");
-    if (!box || !RAW_URL) return;
-
-    if (box.getAttribute("data-form-only-ready") === "1") return;
-    box.setAttribute("data-form-only-ready", "1");
-
-    box.innerHTML = 
-      <div class="mirkuk-feedback-top" style="margin-bottom:10px;">
-        <strong>Reader Feedback</strong>
-        <a href=" + RAW_URL + " target="_blank" rel="noopener noreferrer" class="mirkuk-fb-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Open Form</a>
-      </div>
-      <div style="width:100%;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc;">
-        <iframe
-          src=" + EMBED_URL + "
-          title="Mirkuk News — Reader Feedback"
-          style="width:100%;height:560px;border:0;display:block;background:#ffffff;"
-          loading="lazy"
-        ></iframe>
-      </div>
-    ;
-  }
-
-  renderOnlyGoogleForm();
-  setInterval(renderOnlyGoogleForm, 1000);
-})();
-(function initMirkukDedupeFeedbackButtons() {
-  function cleanDuplicateFeedbackButtons() {
-    const row = document.querySelector(".mirkuk-fb-row");
-    if (!row) return;
-
-    const buttons = Array.from(row.querySelectorAll("button, a"));
-    let seenCopyLatest = false;
-    let seenCopyAll = false;
-    let seenCopyForm = false;
-    let seenOpenForm = false;
-
-    buttons.forEach((el) => {
-      const label = (el.textContent || "").trim().toLowerCase();
-      if (label === "copy latest") {
-        if (seenCopyLatest) el.remove();
-        else seenCopyLatest = true;
-      } else if (label === "copy all") {
-        if (seenCopyAll) el.remove();
-        else seenCopyAll = true;
-      } else if (label === "copy form link") {
-        if (seenCopyForm) el.remove();
-        else seenCopyForm = true;
-      } else if (label === "open form" || label === "open feedback form") {
-        if (seenOpenForm) el.remove();
-        else {
-          seenOpenForm = true;
-          el.textContent = "Open Form";
-        }
+        const src = (img.getAttribute("src") || "").toLowerCase();
+        img.src = src.includes("arts") ? "images/culture.jpg" : FALLBACK_IMG;
       }
     });
   }
 
-  cleanDuplicateFeedbackButtons();
-  setInterval(cleanDuplicateFeedbackButtons, 800);
-})();
-(function initMirkukConnectedGoogleForm() {
-  const FB_KEY = "mirkuk_reader_feedback_v1";
-
-  function getFormUrl() {
-    return (window.MIRKUK_FEEDBACK_FORM_URL || "").trim();
+  function ensureVisibleCards() {
+    document.querySelectorAll("article, .card, .news-item, .story, .dispatch").forEach((el) => {
+      if (el.closest("#mirkuk-feedback-box")) return;
+      if (el.style.display === "none") {
+        el.style.display = "";
+      }
+    });
   }
 
-  function readSaved() {
-    try {
-      return JSON.parse(localStorage.getItem(FB_KEY) || "[]");
-    } catch (_) {
-      return [];
-    }
-  }
-
-  function copyToClipboard(text, msg, statusEl) {
-    if (!text) {
-      if (statusEl) statusEl.textContent = "Nothing to copy yet.";
-      return;
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        if (statusEl) statusEl.textContent = msg;
-      }).catch(() => {});
-    }
-  }
-
-  function syncFormControls() {
-    const formUrl = getFormUrl();
-    const row = document.querySelector(".mirkuk-fb-row");
-    const statusEl = document.getElementById("mirkuk-fb-status");
-    if (!row || !formUrl) return;
-
-    if (!document.getElementById("mirkuk-fb-copy-latest")) {
-      const btnLatest = document.createElement("button");
-      btnLatest.type = "button";
-      btnLatest.id = "mirkuk-fb-copy-latest";
-      btnLatest.className = "mirkuk-fb-btn secondary";
-      btnLatest.textContent = "Copy Latest";
-      btnLatest.addEventListener("click", () => {
-        const items = readSaved();
-        if (!items.length) {
-          if (statusEl) statusEl.textContent = "No saved feedback yet.";
-          return;
-        }
-        const x = items[0];
-        copyToClipboard(`[${x.tag}] ${x.note} (${x.time})`, "Copied latest feedback.", statusEl);
-      });
-      row.appendChild(btnLatest);
-    }
-
-    if (!document.getElementById("mirkuk-fb-copy-all")) {
-      const btnAll = document.createElement("button");
-      btnAll.type = "button";
-      btnAll.id = "mirkuk-fb-copy-all";
-      btnAll.className = "mirkuk-fb-btn secondary";
-      btnAll.textContent = "Copy All";
-      btnAll.addEventListener("click", () => {
-        const items = readSaved();
-        if (!items.length) {
-          if (statusEl) statusEl.textContent = "No saved feedback yet.";
-          return;
-        }
-        const formatted = items.map((x, i) => `${i + 1}. [${x.tag}] ${x.note} (${x.time})`).join("\n");
-        copyToClipboard(formatted, `Copied ${items.length} feedback item(s).`, statusEl);
-      });
-      row.appendChild(btnAll);
-    }
-
-    if (!document.getElementById("mirkuk-fb-copy-form-link")) {
-      const btnCopyForm = document.createElement("button");
-      btnCopyForm.type = "button";
-      btnCopyForm.id = "mirkuk-fb-copy-form-link";
-      btnCopyForm.className = "mirkuk-fb-btn secondary";
-      btnCopyForm.textContent = "Copy Form Link";
-      btnCopyForm.addEventListener("click", () => {
-        copyToClipboard(formUrl, "Copied Google Form link.", statusEl);
-      });
-      row.appendChild(btnCopyForm);
-    }
-
-    let openBtn = document.getElementById("mirkuk-fb-form-link");
-    if (!openBtn) {
-      openBtn = document.createElement("a");
-      openBtn.id = "mirkuk-fb-form-link";
-      openBtn.className = "mirkuk-fb-btn";
-      openBtn.target = "_blank";
-      openBtn.rel = "noopener noreferrer";
-      openBtn.style.textDecoration = "none";
-      openBtn.style.display = "inline-flex";
-      openBtn.style.alignItems = "center";
-      openBtn.textContent = "Open Form";
-      row.appendChild(openBtn);
-    }
-    openBtn.href = formUrl;
-  }
-
-  setInterval(syncFormControls, 1000);
+  fixBrokenImages();
+  ensureVisibleCards();
+  window.addEventListener("load", () => {
+    fixBrokenImages();
+    ensureVisibleCards();
+  });
 })();
 // MIRKUK_FORM_URL_CONFIG
 window.MIRKUK_FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeIVq5JOYw3ea3ZaFhyZ-uh2o3JBSzLgi_xgKgVKeqhoPxvEQ/viewform?usp=publish-editor";
@@ -2430,6 +2263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
