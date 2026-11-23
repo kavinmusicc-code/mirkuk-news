@@ -1304,3 +1304,40 @@ footer:not(#mirkuk-ed-footer) {
   color: #b91c1c !important;
   font-weight: 700 !important;
 }
+
+/* Mirkuk Clean Ad Partner Slot */
+.mirkuk-ad-slot {
+  max-width: 1180px;
+  margin: 18px auto 8px;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.mirkuk-ad-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  background: #e2e8f0;
+  color: #334155;
+  margin-right: 8px;
+}
+
+.mirkuk-ad-cta {
+  color: #b91c1c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mirkuk-ad-cta:hover {
+  text-decoration: underline;
+}

@@ -1,4 +1,33 @@
-﻿(function mirkukCleanEditorialText() {
+﻿(function initMirkukCleanAdSlot() {
+  function mountSlot() {
+    if (document.getElementById("mirkuk-ad-slot")) return;
+    const footer = document.getElementById("mirkuk-ed-footer") || document.querySelector("footer");
+    const slot = document.createElement("aside");
+    slot.id = "mirkuk-ad-slot";
+    slot.className = "mirkuk-ad-slot";
+    slot.setAttribute("aria-label", "Partner and Portals");
+    slot.innerHTML = `
+      <div>
+        <span class="mirkuk-ad-badge">Partner &amp; Desks</span>
+        <span>Explore global markets, tech &amp; media directories on Mirkuk Portals Hub.</span>
+      </div>
+      <a href="portals.html" class="mirkuk-ad-cta">Browse Portals &rarr;</a>
+    `;
+
+    if (footer && footer.parentElement) {
+      footer.parentElement.insertBefore(slot, footer);
+    } else {
+      document.body.appendChild(slot);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(mountSlot, 400));
+  } else {
+    setTimeout(mountSlot, 400);
+  }
+})();
+(function mirkukCleanEditorialText() {
   function cleanCards() {
     document.querySelectorAll(".mirkuk-live-title a").forEach((a) => {
       const cleaned = (a.textContent || "").replace(/\s+/g, " ").trim();
@@ -1781,6 +1810,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
