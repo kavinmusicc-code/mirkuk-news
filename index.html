@@ -64,9 +64,8 @@
           <a href="article.html?id=0" class="btn-primary">Read Full Report</a>
         </div>
         <div class="hero-media">
-          <div class="media-placeholder gradient-hero" role="img" aria-label="Featured news visual">
-            <span class="media-caption">INFRASTRUCTURE DESK &mdash; SPECIAL REPORT</span>
-          </div>
+          <img src="images/hero.jpg" data-base="images/hero" onerror="tryNextImgExt(this)" alt="Metropolitan Transit Overhaul" class="hero-img">
+          <span class="media-caption">INFRASTRUCTURE DESK &mdash; SPECIAL REPORT</span>
         </div>
       </div>
     </section>
@@ -79,9 +78,17 @@
           <h2 class="section-title">Latest News</h2>
           <p class="section-subtitle">Dispatches across local affairs, markets, science, and culture</p>
         </div>
-        <div class="search-box">
-          <label for="news-search" class="sr-only">Search articles by title or category</label>
-          <input type="search" id="news-search" placeholder="Search headlines or categories..." autocomplete="off">
+        <div class="news-controls">
+          <div id="region-filters" class="region-filters" role="group" aria-label="Filter news by region">
+            <button type="button" class="region-btn active" data-region="All">All</button>
+            <button type="button" class="region-btn" data-region="India">India</button>
+            <button type="button" class="region-btn" data-region="USA">USA</button>
+            <button type="button" class="region-btn" data-region="North East">North East</button>
+          </div>
+          <div class="search-box">
+            <label for="news-search" class="sr-only">Search articles by title or category</label>
+            <input type="search" id="news-search" placeholder="Search headlines, region, or category..." autocomplete="off">
+          </div>
         </div>
       </div>
 
@@ -129,3 +136,6 @@
   <script src="js/script.js"></script>
 </body>
 </html>
+
+
+

@@ -1,12 +1,14 @@
 ﻿const ARTICLES_DATA = [
   {
     id: 0,
+    region: "World",
     category: "National",
+    imageBase: "images/hero",
     title: "Metropolitan Transit Overhaul Secures Historic Bipartisan Infrastructure Backing",
     author: "Eleanor Vance",
     date: "November 23, 2026",
     readTime: "4 min read",
-    gradientClass: "gradient-hero",
+    url: "",
     excerpt: "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint promising high-speed commuter corridors and zero-emission fleets.",
     paragraphs: [
       "City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint on Monday, promising high-speed commuter corridors, zero-emission bus fleets, and upgraded regional rail hubs across twelve major districts. The initiative represents the largest single public transit investment in more than four decades.",
@@ -17,101 +19,243 @@
   },
   {
     id: 1,
-    category: "Local",
-    title: "Harborfront Public Library Reopens After Two-Year Architectural Restoration",
-    author: "Marcus Sterling",
+    region: "India",
+    category: "India",
+    imageBase: "images/local",
+    title: "Major Rail and Highway Corridors Expand Across Indian Metro and Regional Hubs",
+    author: "Rohan Deshmukh",
     date: "November 23, 2026",
     readTime: "3 min read",
-    gradientClass: "gradient-local",
-    excerpt: "The century-old landmark returns to civic service with expanded community reading rooms, archival digitization labs, and free evening workshops.",
+    url: "",
+    excerpt: "New connectivity upgrades aim to cut freight transit times and link tier-two cities with major industrial centers across India.",
     paragraphs: [
-      "Hundreds of residents lined the granite steps of the Harborfront Public Library on Monday morning as city officials cut the ribbon on a $28 million restoration project two years in the making.",
-      "Architects carefully preserved the building's 1924 limestone facade and coffered oak ceilings while retrofitting the interior with modern climate controls, accessible elevators, and solar-assisted lighting systems.",
-      "The renovated lower level now houses a public media and digitization lab where local families can preserve historical photographs, community newspapers, and oral history recordings free of charge.",
-      "Library administrators announced that weekend operating hours will be extended immediately to accommodate students and remote workers seeking quiet study spaces."
+      "Infrastructure authorities across India have rolled out new rail and highway milestones aimed at strengthening regional trade links and daily commuter travel.",
+      "Officials highlighted improved logistics corridors connecting manufacturing clusters with ports and urban commercial hubs."
     ]
   },
   {
     id: 2,
-    category: "Business",
+    region: "USA",
+    category: "USA",
+    imageBase: "images/business",
     title: "Midwest Manufacturing Output Climbs as Domestic Supply Chains Stabilize",
     author: "Claire Holloway",
     date: "November 23, 2026",
     readTime: "5 min read",
-    gradientClass: "gradient-business",
-    excerpt: "Regional factory orders rose for the fourth consecutive month, led by precision machinery, clean-energy components, and medical equipment.",
+    url: "",
+    excerpt: "Regional factory orders across the United States rose as precision machinery, clean-energy components, and domestic logistics steadied.",
     paragraphs: [
-      "Industrial production across the American Midwest posted stronger-than-expected gains this quarter as shorter shipping lead times and steadier raw material costs lifted factory utilization rates.",
-      "Economists tracking regional purchasing managers noted that mid-sized suppliers in Ohio, Michigan, and Illinois reported steady hiring in skilled technical roles, particularly in automated assembly and quality assurance.",
-      "Export demand for agricultural machinery and grid-scale battery enclosures also contributed to the upward trend, offsetting softer order books in traditional residential construction materials.",
-      "Market analysts say sustained capital investment in factory floor modernization positions regional manufacturers well heading into the first quarter of next year."
+      "Industrial production across the American Midwest posted stronger gains as shorter shipping lead times and steadier input costs lifted factory utilization rates.",
+      "Regional suppliers reported steady hiring in skilled technical roles, particularly in automated assembly and quality assurance."
     ]
   },
   {
     id: 3,
-    category: "Sports",
-    title: "Late Fourth-Quarter Drive Seals Championship Berth for Harbor City Wolves",
-    author: "Devon Brooks",
+    region: "North East",
+    category: "North East",
+    imageBase: "images/weather",
+    title: "Early Winter Weather and Connectivity Updates Across North East Regions",
+    author: "Owen Grant",
     date: "November 23, 2026",
-    readTime: "4 min read",
-    gradientClass: "gradient-sports",
-    excerpt: "Quarterback Julian Mercer orchestrated an 84-yard march in the final two minutes to clinch a dramatic 24-21 victory before a sold-out stadium.",
+    readTime: "3 min read",
+    url: "",
+    excerpt: "Brisk seasonal air currents, road advisories, and regional updates shape conditions across North East corridors.",
     paragraphs: [
-      "In front of 68,000 roaring supporters, the Harbor City Wolves engineered one of the most memorable finishes of the season on Sunday night, edging past the Northern Hawks 24-21 to book their spot in the national title game.",
-      "Trailing by four points with less than two minutes remaining on the clock, quarterback Julian Mercer completed six consecutive passes against a relentless blitz, capping the 84-yard drive with a pinpoint touchdown throw to the corner of the end zone.",
-      "The Wolves' defensive unit sealed the win seconds later when linebacker Andre Cole intercepted a desperate deep pass at midfield, setting off celebrations across the stadium.",
-      "Head coach Patricia Morales praised her roster's composure under pressure, noting that months of two-minute drill preparation paid off on the biggest stage."
+      "Seasonal weather patterns and brisk winds moved across North East corridors, prompting routine travel advisories and utility readiness checks.",
+      "Local authorities advised commuters and residents to plan ahead for cooler overnight temperatures and changing transit schedules."
     ]
   },
   {
     id: 4,
-    category: "Culture",
-    title: "National Symphony Launches Free Neighborhood Chamber Concert Series",
-    author: "Hannah Lindqvist",
+    region: "India",
+    category: "Business",
+    imageBase: "images/tech",
+    title: "Digital Public Infrastructure and Clean Energy Push Gains Momentum in India",
+    author: "Ananya Nair",
     date: "November 23, 2026",
-    readTime: "3 min read",
-    gradientClass: "gradient-culture",
-    excerpt: "Musicians will perform intimate classical and contemporary programs in public parks, schools, and community centers across all five boroughs.",
+    readTime: "4 min read",
+    url: "",
+    excerpt: "Startups, state grids, and enterprise hubs accelerate solar adoption and cloud-native services across Indian cities.",
     paragraphs: [
-      "Seeking to bring live orchestral music beyond traditional concert halls, the National Symphony Orchestra has announced a season-long series of forty free chamber performances hosted inside neighborhood auditoriums and public parks.",
-      "Each sixty-minute program pairs cornerstone works by Beethoven and Dvorak with newly commissioned pieces by emerging American composers, followed by informal Q&A sessions with the performers.",
-      "Cultural directors say ticket cost and downtown travel remain primary barriers for working families, making neighborhood-based programming vital to building the next generation of arts audiences.",
-      "Seating for all performances is open to the public on a first-come basis, with morning matinees reserved for local public school students."
+      "Technology and energy initiatives across India continue to expand digital access and renewable power capacity.",
+      "Analysts note rising collaboration between research institutes, domestic manufacturers, and regional enterprises."
     ]
   },
   {
     id: 5,
-    category: "Weather",
-    title: "Early Winter Cold Front Brings Brisk Winds and Clear Skies Across Northeast",
-    author: "Owen Grant",
+    region: "USA",
+    category: "Sports",
+    imageBase: "images/sports",
+    title: "Late Fourth-Quarter Drive Seals Championship Berth in U.S. Stadium Showdown",
+    author: "Devon Brooks",
     date: "November 23, 2026",
-    readTime: "3 min read",
-    gradientClass: "gradient-weather",
-    excerpt: "Temperatures are forecast to dip into the upper twenties overnight as a dry Canadian air mass sweeps across the Atlantic seaboard.",
+    readTime: "4 min read",
+    url: "",
+    excerpt: "A dramatic final-minute drive capped off an electric weekend matchup before a packed American stadium crowd.",
     paragraphs: [
-      "A crisp early-winter air mass pushed across the Great Lakes and into the Northeast on Monday morning, ushering in bright sunshine alongside noticeably brisk northwest winds.",
-      "Daytime highs across coastal cities will hover in the mid-forties before dropping into the upper twenties after sunset, prompting municipal agencies to issue routine overnight frost advisories for motorists.",
-      "National Weather Service forecasters expect dry, settled conditions to hold steady through midweek, offering favorable visibility for travelers ahead of the busy holiday corridor.",
-      "Residents are advised to secure outdoor furniture against gusts reaching thirty miles per hour and to check residential heating systems ahead of colder December temperatures."
+      "Before tens of thousands of fans, a decisive late-game scoring drive turned a tight contest into a memorable postseason victory.",
+      "Coaches and players credited disciplined execution under pressure in the closing minutes."
     ]
   },
   {
     id: 6,
-    category: "Tech",
-    title: "Open-Source Battery Research Promises Faster Charging for Grid Storage",
-    author: "Sanjay Kulkarni",
+    region: "North East",
+    category: "Culture",
+    imageBase: "images/culture",
+    title: "Community Arts, Music, and Heritage Programs Highlight North East Cultural Calendar",
+    author: "Hannah Lindqvist",
     date: "November 23, 2026",
-    readTime: "4 min read",
-    gradientClass: "gradient-tech",
-    excerpt: "University engineers published benchmark results demonstrating a cobalt-free cathode design capable of surviving ten thousand charge cycles.",
+    readTime: "3 min read",
+    url: "",
+    excerpt: "Local ensembles, schools, and cultural spaces host accessible performances and exhibitions across the North East.",
     paragraphs: [
-      "A consortium of university materials scientists released open-source test data this week detailing a novel iron-phosphate cathode architecture engineered for utility-scale energy storage.",
-      "Unlike conventional lithium cells that rely on scarce cobalt and nickel, the new design uses abundant domestic minerals while maintaining thermal stability under rapid charging loads.",
-      "In laboratory stress tests spanning eighteen months, prototype cells retained more than ninety-two percent of their original capacity after ten thousand full charge-discharge cycles.",
-      "Energy grid operators say low-cost, long-duration storage remains the missing link in balancing wind and solar generation during peak evening electricity demand."
+      "Cultural organizers across the North East have scheduled open community performances, exhibitions, and youth workshops.",
+      "The programs aim to keep arts and heritage spaces welcoming and accessible to local families."
     ]
   }
 ];
+
+const LIVE_RSS_FEEDS = [
+  {
+    region: "India",
+    category: "India",
+    imageBase: "images/local",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml"
+  },
+  {
+    region: "USA",
+    category: "USA",
+    imageBase: "images/business",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
+  },
+  {
+    region: "North East",
+    category: "North East",
+    imageBase: "images/weather",
+    rssUrl: "https://www.thehindu.com/news/national/other-states/feeder/default.rss"
+  },
+  {
+    region: "World",
+    category: "World",
+    imageBase: "images/tech",
+    rssUrl: "https://feeds.bbci.co.uk/news/world/rss.xml"
+  }
+];
+
+let CURRENT_GRID_ARTICLES = ARTICLES_DATA.filter((item) => item.id !== 0);
+let ACTIVE_REGION = "All";
+
+window.tryNextImgExt = function (imgEl) {
+  const extensions = ["jpg", "jpeg", "JPG", "JPEG"];
+  const base = imgEl.getAttribute("data-base");
+  let step = parseInt(imgEl.getAttribute("data-ext-step") || "0", 10) + 1;
+
+  if (base && step < extensions.length) {
+    imgEl.setAttribute("data-ext-step", String(step));
+    imgEl.src = `${base}.${extensions[step]}`;
+  } else {
+    imgEl.onerror = null;
+  }
+};
+
+function stripHtml(htmlText) {
+  const div = document.createElement("div");
+  div.innerHTML = htmlText || "";
+  return (div.textContent || div.innerText || "").trim();
+}
+
+async function fetchLiveNews() {
+  const collected = [];
+
+  for (let i = 0; i < LIVE_RSS_FEEDS.length; i++) {
+    const feed = LIVE_RSS_FEEDS[i];
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.rssUrl)}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) continue;
+      const data = await response.json();
+      if (data.status !== "ok" || !Array.isArray(data.items)) continue;
+
+      data.items.slice(0, 3).forEach((item, idx) => {
+        const cleanDesc = stripHtml(item.description);
+        const shortExcerpt =
+          cleanDesc.length > 140
+            ? `${cleanDesc.slice(0, 140)}...`
+            : cleanDesc || `Live ${feed.region} news dispatch.`;
+
+        collected.push({
+          id: 100 + i * 10 + idx,
+          region: feed.region,
+          category: feed.category,
+          imageBase: feed.imageBase,
+          title: item.title || `${feed.region} News Update`,
+          author: item.author || (data.feed && data.feed.title) || `${feed.region} Desk`,
+          date: item.pubDate
+            ? new Date(item.pubDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+              })
+            : "Today",
+          readTime: "Live Wire",
+          url: item.link || "",
+          excerpt: shortExcerpt,
+          paragraphs: [
+            cleanDesc || "This item was pulled automatically from a live RSS news feed.",
+            `Region: ${feed.region} | Source: ${(data.feed && data.feed.title) || "Public News RSS"}. Open the source link to read the complete story.`
+          ]
+        });
+      });
+    } catch (err) {
+      // Offline or blocked feed keeps local fallback stories intact
+    }
+  }
+
+  if (collected.length > 0) {
+    CURRENT_GRID_ARTICLES = collected;
+    applyFilters();
+  }
+}
+
+function applyFilters() {
+  const searchInput = document.getElementById("news-search");
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+  const filtered = CURRENT_GRID_ARTICLES.filter((article) => {
+    const matchesRegion =
+      ACTIVE_REGION === "All" ||
+      (article.region && article.region.toLowerCase() === ACTIVE_REGION.toLowerCase()) ||
+      article.category.toLowerCase().includes(ACTIVE_REGION.toLowerCase()) ||
+      article.title.toLowerCase().includes(ACTIVE_REGION.toLowerCase());
+
+    const matchesSearch =
+      !query ||
+      article.title.toLowerCase().includes(query) ||
+      article.category.toLowerCase().includes(query) ||
+      (article.region && article.region.toLowerCase().includes(query)) ||
+      article.excerpt.toLowerCase().includes(query);
+
+    return matchesRegion && matchesSearch;
+  });
+
+  renderNewsCards(filtered);
+}
+
+function initRegionFilters() {
+  const container = document.getElementById("region-filters");
+  if (!container) return;
+
+  const buttons = container.querySelectorAll(".region-btn");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ACTIVE_REGION = btn.getAttribute("data-region") || "All";
+      buttons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyFilters();
+    });
+  });
+}
 
 function renderCurrentDate() {
   const dateEl = document.getElementById("current-date");
@@ -176,19 +320,26 @@ function renderNewsCards(articles) {
   articles.forEach((article) => {
     const card = document.createElement("article");
     card.className = "news-card";
+    const targetHref = article.url ? article.url : `article.html?id=${article.id}`;
+    const targetAttrs = article.url ? 'target="_blank" rel="noopener noreferrer"' : "";
+    const badgeText = article.region && article.region !== article.category
+      ? `${article.region} • ${article.category}`
+      : article.category;
+
     card.innerHTML = `
-      <a href="article.html?id=${article.id}" class="card-thumb ${article.gradientClass}" aria-label="${article.title}">
-        <span class="media-caption">${article.category.toUpperCase()}</span>
+      <a href="${targetHref}" ${targetAttrs} class="card-thumb" aria-label="${article.title}">
+        <img src="${article.imageBase}.jpg" data-base="${article.imageBase}" onerror="tryNextImgExt(this)" alt="${article.title}" class="card-img">
+        <span class="media-caption">${(article.region || article.category).toUpperCase()}</span>
       </a>
       <div class="card-body">
-        <span class="category-badge">${article.category}</span>
+        <span class="category-badge">${badgeText}</span>
         <h3 class="card-title">
-          <a href="article.html?id=${article.id}">${article.title}</a>
+          <a href="${targetHref}" ${targetAttrs}>${article.title}</a>
         </h3>
         <p class="card-excerpt">${article.excerpt}</p>
         <div class="card-footer">
           <span>${article.readTime}</span>
-          <a href="article.html?id=${article.id}" class="read-more-link">Read Story &rarr;</a>
+          <a href="${targetHref}" ${targetAttrs} class="read-more-link">${article.url ? "Source &rarr;" : "Read Story &rarr;"}</a>
         </div>
       </div>
     `;
@@ -198,20 +349,11 @@ function renderNewsCards(articles) {
 
 function initNewsSearch() {
   const searchInput = document.getElementById("news-search");
-  const gridArticles = ARTICLES_DATA.filter((item) => item.id !== 0);
-  renderNewsCards(gridArticles);
+  applyFilters();
   if (!searchInput) return;
 
-  searchInput.addEventListener("input", (event) => {
-    const query = event.target.value.trim().toLowerCase();
-    const filtered = gridArticles.filter((article) => {
-      return (
-        article.title.toLowerCase().includes(query) ||
-        article.category.toLowerCase().includes(query) ||
-        article.excerpt.toLowerCase().includes(query)
-      );
-    });
-    renderNewsCards(filtered);
+  searchInput.addEventListener("input", () => {
+    applyFilters();
   });
 }
 
@@ -229,16 +371,20 @@ function initSingleArticlePage() {
   const dateEl = document.getElementById("article-date");
   const readTimeEl = document.getElementById("article-read-time");
   const imageEl = document.getElementById("article-image");
-  const captionEl = document.getElementById("article-image-caption");
   const bodyEl = document.getElementById("article-body");
 
-  if (categoryEl) categoryEl.textContent = article.category.toUpperCase();
+  if (categoryEl) categoryEl.textContent = (article.region || article.category).toUpperCase();
   titleEl.textContent = article.title;
   if (authorEl) authorEl.textContent = article.author;
   if (dateEl) dateEl.textContent = article.date;
   if (readTimeEl) readTimeEl.textContent = article.readTime;
-  if (imageEl) imageEl.className = `article-hero-image ${article.gradientClass}`;
-  if (captionEl) captionEl.textContent = `${article.category.toUpperCase()} DESK — MIRKUK NEWS ARCHIVE`;
+  if (imageEl) {
+    imageEl.className = "article-hero-image";
+    imageEl.innerHTML = `
+      <img src="${article.imageBase}.jpg" data-base="${article.imageBase}" onerror="tryNextImgExt(this)" alt="${article.title}" class="article-hero-img">
+      <span id="article-image-caption" class="media-caption">${(article.region || article.category).toUpperCase()} DESK — MIRKUK NEWS ARCHIVE</span>
+    `;
+  }
   if (bodyEl) bodyEl.innerHTML = article.paragraphs.map((p) => `<p>${p}</p>`).join("");
 }
 
@@ -246,6 +392,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCurrentDate();
   initDarkMode();
   initMobileMenu();
+  initRegionFilters();
   initNewsSearch();
   initSingleArticlePage();
+  fetchLiveNews();
 });
