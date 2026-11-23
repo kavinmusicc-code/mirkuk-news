@@ -625,7 +625,7 @@
     const input = document.createElement("input");
     input.type = "search";
     input.className = "mirkuk-live-search-input";
-    input.placeholder = "Search news (e.g. GTA 6, Rockstar, India, Tech)...";
+    input.placeholder = "Search headlines, markets, tech, or topics...";
     input.setAttribute("aria-label", "Search news");
 
     const countSpan = document.createElement("span");
@@ -718,7 +718,7 @@
 
   function initAll() {
     setupProgressBar();
-    setupLiveSearch();
+    // setupLiveSearch disabled for cleaner editorial look
     setupShareButtons();
   }
 
@@ -1770,6 +1770,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
