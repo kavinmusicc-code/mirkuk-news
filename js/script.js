@@ -464,6 +464,28 @@ function applyFilters() {
   renderNewsCards(filtered);
 }
 
+function cleanIndexQueryUrl() {
+  try {
+    if (window.location && window.history && window.history.replaceState) {
+      const url = new URL(window.location.href);
+      let changed = false;
+      if (url.searchParams.has("view") || url.searchParams.has("region")) {
+        url.searchParams.delete("view");
+        url.searchParams.delete("region");
+        changed = true;
+      }
+      if (url.pathname.endsWith("/index.html")) {
+        url.pathname = url.pathname.replace(/index\.html$/, "");
+        changed = true;
+      }
+      if (changed) {
+        const cleanPath = url.pathname + (url.search ? url.search : "") + (url.hash ? url.hash : "");
+        window.history.replaceState({}, document.title, cleanPath);
+      }
+    }
+  } catch (e) {}
+}
+
 function initRegionFilters() {
   const container = document.getElementById("region-filters");
   if (!container) return;
@@ -472,7 +494,7 @@ function initRegionFilters() {
   const viewParam = params.get("view");
   const regionParam = params.get("region");
 
-  if (viewParam && viewParam.toLowerCase() === "live") {
+  cleanIndexQueryUrl();`n  if (viewParam && viewParam.toLowerCase() === "live") {
     setActiveRegionButton("LIVE");
   } else if (regionParam) {
     setActiveRegionButton(regionParam);
@@ -558,7 +580,7 @@ function renderNewsCards(articles) {
   articles.forEach((article) => {
     const card = document.createElement("article");
     card.className = "news-card";
-    const targetHref = article.url ? article.url : `article.html?id=${article.id}`;
+    const targetHref = article.url ? article.url : `article?id=${article.id}`;
     const targetAttrs = article.url ? 'target="_blank" rel="noopener noreferrer"' : "";
     const badgeText = article.region && article.region !== article.category
       ? `${article.region} • ${article.category}`
@@ -648,5 +670,7 @@ document.addEventListener("DOMContentLoaded", () => {
   safeRun(initSingleArticlePage);
   safeRun(startAutoMinuteUpdates);
 });
+
+
 
 
