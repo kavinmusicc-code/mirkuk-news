@@ -1,4 +1,41 @@
-﻿(function mirkukAutoCleanOldCaches() {
+﻿(function initMirkukSmartDeskFilterSync() {
+  function syncDeskAndSearch() {
+    const deskBox = document.getElementById("mirkuk-live-desk");
+    if (!deskBox) return;
+
+    const searchInput = document.querySelector(".mirkuk-live-search-input");
+    const activeChip = deskBox.querySelector(".mirkuk-desk-chip.is-active");
+    const selectedDesk = activeChip ? (activeChip.getAttribute("data-desk") || "All") : "All";
+    const query = (searchInput && searchInput.value ? searchInput.value : "").trim().toLowerCase();
+
+    if (selectedDesk === "Saved") return;
+
+    const cards = Array.from(deskBox.querySelectorAll(".mirkuk-live-card:not(.mirkuk-empty-saved)"));
+    cards.forEach((card) => {
+      const metaText = (card.querySelector(".mirkuk-live-meta")?.textContent || "").toLowerCase();
+      const cardText = (card.innerText || "").toLowerCase();
+      const deskMatch = selectedDesk === "All" || metaText.includes(selectedDesk.toLowerCase());
+      const queryMatch = !query || cardText.includes(query);
+      card.style.display = (deskMatch && queryMatch) ? "" : "none";
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    if (e.target && e.target.classList && e.target.classList.contains("mirkuk-live-search-input")) {
+      syncDeskAndSearch();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target && e.target.closest ? e.target.closest(".mirkuk-desk-chip") : null;
+    if (chip) {
+      setTimeout(syncDeskAndSearch, 50);
+    }
+  });
+
+  setInterval(syncDeskAndSearch, 1500);
+})();
+(function mirkukAutoCleanOldCaches() {
   const BUILD_TAG = "mirkuk_build_2026_11_23_v2";
   try {
     if (localStorage.getItem("mirkuk_last_build") !== BUILD_TAG) {
@@ -1733,5 +1770,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
