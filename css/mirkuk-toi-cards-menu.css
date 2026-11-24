@@ -1,21 +1,47 @@
-﻿/* === MIRKUK TOI CARDS & MEGA MENU BOUNDARY START === */
+﻿/* === MIRKUK TOI REAL EDITORIAL CARDS BOUNDARY START === */
 .mirkuk-cards-showcase {
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 16px;
+  margin: 22px auto;
+  padding: 18px;
   background: var(--toi-surface, #ffffff);
   border: 1px solid var(--toi-border, #dfe3e8);
-  border-radius: 4px;
+  border-top: 3px solid var(--toi-accent, #c8102e);
+  border-radius: 2px;
+}
+
+.mirkuk-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.mirkuk-section-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--toi-ink, #18191a);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.mirkuk-section-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--toi-accent, #c8102e);
+  text-transform: uppercase;
 }
 
 .mirkuk-showcase-grid {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 245px 1fr;
   gap: 20px;
   align-items: start;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 860px) {
   .mirkuk-showcase-grid {
     grid-template-columns: 1fr;
   }
@@ -24,9 +50,9 @@
 .mirkuk-app-promo-card {
   border: 1px solid var(--toi-border, #dfe3e8);
   border-top: 3px solid var(--toi-accent, #c8102e);
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 14px;
-  background: #fafafa;
+  background: #f9fafb;
   text-align: center;
 }
 
@@ -38,8 +64,8 @@
 
 .mirkuk-app-slot-box {
   border: 1px dashed #9ca3af;
-  border-radius: 4px;
-  padding: 16px 10px;
+  border-radius: 3px;
+  padding: 18px 10px;
   margin: 10px 0;
   background: #ffffff;
   font-size: 12px;
@@ -53,40 +79,45 @@
   background: var(--toi-accent, #c8102e);
   color: #ffffff;
   border: none;
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
 
+/* TOI Style Multi-Column Cards */
 .mirkuk-cards-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 16px;
 }
 
 .mirkuk-news-card {
-  border: 1px solid var(--toi-border, #dfe3e8);
-  border-radius: 4px;
-  overflow: hidden;
+  border-bottom: 1px solid #eceff3;
+  padding-bottom: 12px;
   background: #ffffff;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.mirkuk-news-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+.mirkuk-news-card-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  margin-bottom: 8px;
+  background: #f3f4f6;
 }
 
 .mirkuk-news-card img {
   width: 100%;
-  height: 125px;
+  height: 132px;
   object-fit: cover;
   display: block;
+  transition: transform 0.2s ease;
 }
 
-.mirkuk-news-card-body {
-  padding: 10px 12px;
+.mirkuk-news-card:hover img {
+  transform: scale(1.03);
 }
 
 .mirkuk-news-tag {
@@ -95,13 +126,85 @@
   color: var(--toi-accent, #c8102e);
   text-transform: uppercase;
   margin-bottom: 4px;
+  letter-spacing: 0.03em;
 }
 
 .mirkuk-news-title {
-  margin: 0;
-  font-size: 14px;
+  margin: 0 0 8px 0;
+  font-size: 14.5px;
   line-height: 1.35;
+  font-weight: 600;
   color: var(--toi-ink, #18191a);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.mirkuk-news-card:hover .mirkuk-news-title {
+  color: var(--toi-accent, #c8102e);
+}
+
+.mirkuk-card-sublinks {
+  list-style: none;
+  margin: 4px 0 0 0;
+  padding: 8px 0 0 0;
+  border-top: 1px dotted #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mirkuk-card-sublinks li {
+  font-size: 12px;
+  line-height: 1.3;
+  color: #374151;
+  padding-left: 10px;
+  position: relative;
+}
+
+.mirkuk-card-sublinks li::before {
+  content: "•";
+  color: var(--toi-accent, #c8102e);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Compact Strip Cards Row below main grid */
+.mirkuk-compact-strip {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 18px;
+}
+
+.mirkuk-compact-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.mirkuk-compact-item:hover {
+  background: #f9fafb;
+}
+
+.mirkuk-compact-item img {
+  width: 68px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.mirkuk-compact-title {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.32;
+  color: #1f2937;
+  font-weight: 500;
 }
 
 /* Mega Menu Overlay */
@@ -126,7 +229,7 @@
   max-width: 1140px;
   background: #ffffff;
   color: #18191a;
-  border-radius: 4px;
+  border-radius: 2px;
   border-top: 4px solid var(--toi-accent, #c8102e);
   padding: 20px;
   position: relative;
@@ -143,7 +246,7 @@
   color: #111827;
   font-size: 18px;
   font-weight: 700;
-  border-radius: 3px;
+  border-radius: 2px;
   cursor: pointer;
 }
 
@@ -176,7 +279,7 @@
   font-size: 13px;
   font-weight: 600;
   color: #374151;
-  border-radius: 3px;
+  border-radius: 2px;
   cursor: pointer;
 }
 
@@ -213,4 +316,4 @@
 .mirkuk-mega-group button:hover {
   color: var(--toi-accent, #c8102e);
 }
-/* === MIRKUK TOI CARDS & MEGA MENU BOUNDARY END === */
+/* === MIRKUK TOI REAL EDITORIAL CARDS BOUNDARY END === */

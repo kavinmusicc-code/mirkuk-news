@@ -4,21 +4,55 @@
     {
       tag: "Technology",
       title: "Next-Gen Web & AI Tools Reshaping Digital Publishing",
-      image: "images/culture.jpg"
+      image: "images/culture.jpg",
+      sublinks: [
+        "Fast browser interfaces for lightweight devices",
+        "Independent creators adopting AI workflows"
+      ]
     },
     {
       tag: "Defence",
       title: "Strategic Modernization & Indigenous Tech Highlights",
-      image: "images/culture.jpg"
+      image: "images/culture.jpg",
+      sublinks: [
+        "Focus on self-reliant defence systems",
+        "Border infrastructure and security updates"
+      ]
     },
     {
       tag: "Education",
       title: "Digital Learning & Skill Pathways for Students",
-      image: "images/culture.jpg"
+      image: "images/culture.jpg",
+      sublinks: [
+        "Open schooling and flexible exam tracks",
+        "Practical tech and vocational skill programs"
+      ]
     },
     {
       tag: "Business",
       title: "Markets, Startups & Independent Creator Economy",
+      image: "images/culture.jpg",
+      sublinks: [
+        "Zero-budget digital storefronts and publishing",
+        "Weekly market & economy wrap"
+      ]
+    }
+  ];
+
+  const COMPACT_STRIP_ITEMS = [
+    {
+      topic: "Information Technology",
+      title: "How lightweight PWAs keep mobile & low-RAM browsers fast",
+      image: "images/culture.jpg"
+    },
+    {
+      topic: "World",
+      title: "Global tech shifts and cross-border digital trends",
+      image: "images/culture.jpg"
+    },
+    {
+      topic: "National",
+      title: "Key policy, public services, and infrastructure briefs",
       image: "images/culture.jpg"
     }
   ];
@@ -54,16 +88,25 @@
   }
 
   function renderCardsSection() {
-    if (document.getElementById("mirkuk-cards-showcase")) return;
+    const existing = document.getElementById("mirkuk-cards-showcase");
+    if (existing) existing.remove();
 
     const section = document.createElement("section");
     section.id = "mirkuk-cards-showcase";
     section.className = "mirkuk-cards-showcase";
 
+    const head = document.createElement("div");
+    head.className = "mirkuk-section-head";
+    head.innerHTML = 
+      <h2>Top Editorial Desks</h2>
+      <span class="mirkuk-section-badge">Mirkuk Desk</span>
+    ;
+    section.appendChild(head);
+
     const grid = document.createElement("div");
     grid.className = "mirkuk-showcase-grid";
 
-    // Left App Card (QR slot ready for future app QR/link)
+    // Left App Card (QR slot ready for your app QR/link later)
     const appCard = document.createElement("div");
     appCard.className = "mirkuk-app-promo-card";
     appCard.innerHTML = 
@@ -76,19 +119,25 @@
       </button>
     ;
 
-    // Right News Cards
+    // Right TOI-style Cards with Sub-bullets
     const cardsWrap = document.createElement("div");
     cardsWrap.className = "mirkuk-cards-row";
 
     SAMPLE_CARDS.forEach((item) => {
       const card = document.createElement("article");
       card.className = "mirkuk-news-card";
+
+      const subListHtml = (item.sublinks || [])
+        .map((sub) => <li></li>)
+        .join("");
+
       card.innerHTML = 
-        <img src="" alt="" onerror="this.style.display='none';" />
-        <div class="mirkuk-news-card-body">
-          <div class="mirkuk-news-tag"></div>
-          <h3 class="mirkuk-news-title"></h3>
+        <div class="mirkuk-news-card-media">
+          <img src="" alt="" onerror="this.parentElement.style.display='none';" />
         </div>
+        <div class="mirkuk-news-tag"></div>
+        <h3 class="mirkuk-news-title"></h3>
+        <ul class="mirkuk-card-sublinks"></ul>
       ;
       card.style.cursor = "pointer";
       card.addEventListener("click", () => runTopicFilter(item.tag));
@@ -98,6 +147,21 @@
     grid.appendChild(appCard);
     grid.appendChild(cardsWrap);
     section.appendChild(grid);
+
+    // Compact Thumbnail + Headline Strip below cards
+    const strip = document.createElement("div");
+    strip.className = "mirkuk-compact-strip";
+    COMPACT_STRIP_ITEMS.forEach((row) => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "mirkuk-compact-item";
+      itemEl.innerHTML = 
+        <img src="" alt="" onerror="this.style.display='none';" />
+        <p class="mirkuk-compact-title"></p>
+      ;
+      itemEl.addEventListener("click", () => runTopicFilter(row.topic));
+      strip.appendChild(itemEl);
+    });
+    section.appendChild(strip);
 
     const footer = document.querySelector("footer");
     if (footer && footer.parentNode) {
@@ -198,7 +262,6 @@
     overlay.appendChild(panel);
     document.body.appendChild(overlay);
 
-    // Trigger from card button or any element with [data-mirkuk-mega]
     document.addEventListener("click", (e) => {
       if (e.target.closest("#mirkuk-open-mega-from-card, [data-mirkuk-mega]")) {
         overlay.classList.add("is-open");
