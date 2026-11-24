@@ -87,9 +87,16 @@
     }
   }
 
+  function findAnchorTarget() {
+    return (
+      document.getElementById("mirkuk-auto-footer-box") ||
+      document.querySelector("footer") ||
+      document.body
+    );
+  }
+
   function renderCardsSection() {
-    const existing = document.getElementById("mirkuk-cards-showcase");
-    if (existing) existing.remove();
+    if (document.getElementById("mirkuk-cards-showcase")) return;
 
     const section = document.createElement("section");
     section.id = "mirkuk-cards-showcase";
@@ -106,7 +113,6 @@
     const grid = document.createElement("div");
     grid.className = "mirkuk-showcase-grid";
 
-    // Left App Card (QR slot ready for your app QR/link later)
     const appCard = document.createElement("div");
     appCard.className = "mirkuk-app-promo-card";
     appCard.innerHTML = 
@@ -119,7 +125,6 @@
       </button>
     ;
 
-    // Right TOI-style Cards with Sub-bullets
     const cardsWrap = document.createElement("div");
     cardsWrap.className = "mirkuk-cards-row";
 
@@ -148,7 +153,6 @@
     grid.appendChild(cardsWrap);
     section.appendChild(grid);
 
-    // Compact Thumbnail + Headline Strip below cards
     const strip = document.createElement("div");
     strip.className = "mirkuk-compact-strip";
     COMPACT_STRIP_ITEMS.forEach((row) => {
@@ -163,9 +167,9 @@
     });
     section.appendChild(strip);
 
-    const footer = document.querySelector("footer");
-    if (footer && footer.parentNode) {
-      footer.parentNode.insertBefore(section, footer);
+    const anchor = findAnchorTarget();
+    if (anchor && anchor !== document.body && anchor.parentNode) {
+      anchor.parentNode.insertBefore(section, anchor);
     } else {
       document.body.appendChild(section);
     }
@@ -279,5 +283,6 @@
   } else {
     init();
   }
+  window.addEventListener("load", () => setTimeout(init, 400));
 })();
 /* === MIRKUK TOI CARDS & MEGA MENU SCRIPT END === */
