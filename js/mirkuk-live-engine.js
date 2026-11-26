@@ -2137,3 +2137,14 @@
     setTimeout(syncWorldwideWithGuaranteedImages, 1500);
   });
 })();
+
+(function () {
+  function applyDeviceLookClass() {
+    const isMobile = window.innerWidth <= 767;
+    document.body.classList.toggle("mk-mobile-view", isMobile);
+    document.body.classList.toggle("mk-desktop-view", !isMobile);
+  }
+
+  document.addEventListener("DOMContentLoaded", applyDeviceLookClass);
+  window.addEventListener("resize", applyDeviceLookClass);
+})();
