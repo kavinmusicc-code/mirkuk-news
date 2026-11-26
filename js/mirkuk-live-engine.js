@@ -2808,3 +2808,116 @@
     }
   });
 })();
+
+(function () {
+  function buildToiBroadsheet() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    const oldStage = document.getElementById("mk-portal-showcase");
+    if (oldStage) oldStage.remove();
+
+    let stage = document.getElementById("mk-toi-broadsheet");
+    if (!stage) {
+      stage = document.createElement("section");
+      stage.id = "mk-toi-broadsheet";
+      stage.className = "mk-toi-stage";
+      stage.innerHTML = `
+        <div class="mk-toi-hero-grid">
+          <aside class="mk-toi-col-left">
+            <div class="mk-toi-col-heading">Latest Wire Briefs</div>
+            <div id="mk-toi-left-briefs"></div>
+          </aside>
+
+          <div class="mk-toi-center-lead">
+            <div id="mk-toi-lead-main"></div>
+            <div id="mk-toi-lead-sub" class="mk-toi-sub-strip"></div>
+          </div>
+
+          <aside class="mk-toi-col-right">
+            <div class="mk-toi-col-heading">Trending &amp; Top Picks</div>
+            <div id="mk-toi-right-briefs"></div>
+          </aside>
+        </div>
+
+        <div class="mk-toi-desk-bar">
+          <h3>Top Stories &amp; Global Desks</h3>
+          <span style="font-size:11px; opacity:0.75;">Multi-Source Live Coverage</span>
+        </div>
+      `;
+      grid.parentNode.insertBefore(stage, grid);
+    }
+
+    const items = Array.isArray(window.__mirkukCurrentItems) && window.__mirkukCurrentItems.length
+      ? window.__mirkukCurrentItems
+      : Array.from(grid.querySelectorAll("article")).map(art => {
+          const a = art.querySelector("h3 a, a");
+          const img = art.querySelector("img");
+          const p = art.querySelector("p");
+          const tag = art.querySelector(".mk-cat-tag");
+          return {
+            __cleanTitle: (a && a.textContent || "").trim(),
+            link: (a && a.href) || "#",
+            __img: (img && img.src) || "",
+            __genImg: (img && img.src) || "",
+            __summary: (p && p.textContent || "").trim(),
+            __source: (tag && tag.textContent || "Mirkuk Wire").trim()
+          };
+        }).filter(x => x.__cleanTitle);
+
+    if (!items.length) return;
+
+    const leftBox = document.getElementById("mk-toi-left-briefs");
+    if (leftBox) {
+      leftBox.innerHTML = items.slice(0, 6).map(it => `
+        <div class="mk-toi-brief-item">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a>
+          <small>${it.__source || "Mirkuk Wire"} • ${it.__timeAgo || "Live"}</small>
+        </div>
+      `).join("");
+    }
+
+    const lead = items[6] || items[0];
+    const leadMain = document.getElementById("mk-toi-lead-main");
+    if (leadMain && lead) {
+      leadMain.innerHTML = `
+        <a href="${lead.link}" target="_blank" rel="noopener noreferrer">
+          <img src="${lead.__img || lead.__genImg}" onerror="this.onerror=null;this.src='${lead.__genImg || ""}';" alt="" />
+        </a>
+        <div class="mk-toi-center-lead-body">
+          <span class="mk-cat-tag">${lead.__source || "Lead Story"}</span>
+          <h2><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${lead.__cleanTitle}</a></h2>
+          <p>${(lead.__summary || "").slice(0, 220)}</p>
+        </div>
+      `;
+    }
+
+    const leadSub = document.getElementById("mk-toi-lead-sub");
+    if (leadSub) {
+      leadSub.innerHTML = items.slice(7, 10).map(it => `
+        <div class="mk-toi-sub-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img || it.__genImg}" onerror="this.onerror=null;this.src='${it.__genImg || ""}';" alt="" loading="lazy" />
+            <span>${it.__cleanTitle}</span>
+          </a>
+        </div>
+      `).join("");
+    }
+
+    const rightBox = document.getElementById("mk-toi-right-briefs");
+    if (rightBox) {
+      rightBox.innerHTML = items.slice(10, 16).map(it => `
+        <div class="mk-toi-brief-item">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a>
+          <small>${it.__source || "Mirkuk Wire"}</small>
+        </div>
+      `).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(buildToiBroadsheet, 900);
+    setTimeout(buildToiBroadsheet, 2300);
+    setTimeout(buildToiBroadsheet, 4200);
+  });
+})();
