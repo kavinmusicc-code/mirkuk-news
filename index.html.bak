@@ -1,12 +1,20 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Mirkuk News — Independent Journalism &amp; Breaking Coverage</title>
+  <title>Mirkuk News ï¿½ Independent Journalism &amp; Breaking Coverage</title>
   <link rel="stylesheet" href="css/style.css?v=1795430261">
   <link rel="manifest" href="manifest.json">
   <meta name="google-site-verification" content="Gh4VO5OZdH0UDiVjt-o7qVRm5Zq4H2F8PCKTOwbkQdw" />
+  <!-- === MIRKUK LAYOUT FIX LINK START === -->
+  <link rel="stylesheet" href="css/mirkuk-layout-fix.css" />
+  <!-- === MIRKUK LAYOUT FIX LINK END === -->
+  <!-- === MIRKUK TOI THEME LINK START === -->
+  <link rel="stylesheet" href="css/mirkuk-toi-theme.css" />
+  <!-- === MIRKUK TOI THEME LINK END === -->
+  <link rel="stylesheet" href="css/mirkuk-toi-cards-menu.css" />
+  <link rel="stylesheet" href="css/mirkuk-toi-pro.css" />
 </head>
 <body>
   <div class="topbar">
@@ -190,8 +198,29 @@
   <script src="js/tracker.js"></script>
   <script src="js/ads.js"></script>
   <script src="js/share.js"></script>
+  <!-- === MIRKUK BROKEN IMG FIX START === -->
+  <script>
+    document.addEventListener("error", function (e) {
+      if (e.target && e.target.tagName === "IMG") e.target.style.display = "none";
+    }, true);
+  </script>
+  <!-- === MIRKUK BROKEN IMG FIX END === -->
+  <!-- === MIRKUK AUTO FOOTER SCRIPT START === -->
+  <script src="js/mirkuk-footer-index.js" defer></script>
+  <!-- === MIRKUK AUTO FOOTER SCRIPT END === -->
+  <!-- === MIRKUK TOI FOOTER SCRIPT START === -->
+  <script src="js/mirkuk-toi-footer.js" defer></script>
+  <!-- === MIRKUK TOI FOOTER SCRIPT END === -->
+  <script src="js/mirkuk-toi-cards-menu.js" defer></script>
+  <script src="js/mirkuk-toi-pro.js" defer></script>
+  <script src="js/mirkuk-live-desk.js" defer></script>
 </body>
 </html>
+
+
+
+
+
 
 
 

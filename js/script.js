@@ -2124,6 +2124,7 @@ function initMobileMenu() {
 }
 
 function syncLoadMoreButton(totalCount) {
+  const _b = document.getElementById('load-more-news-btn'); if (!_b) return;
   const btn = document.getElementById("load-more-news-btn");
   if (!btn) return;
   if (totalCount > VISIBLE_NEWS_LIMIT) {
@@ -2263,6 +2264,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (_) {} }
+
 
 
 
