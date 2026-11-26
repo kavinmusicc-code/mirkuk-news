@@ -1583,3 +1583,20 @@ html, body {
     height: 185px !important;
   }
 }
+
+/* Keep More Panel strictly closed until toggled */
+#mk-more-panel:not(.open) {
+  display: none !important;
+}
+
+#mk-more-panel.open {
+  display: block !important;
+}
+
+@media (min-width: 901px) {
+  #mk-source-filter,
+  #mk-search-input {
+    width: auto !important;
+    max-width: none !important;
+  }
+}
