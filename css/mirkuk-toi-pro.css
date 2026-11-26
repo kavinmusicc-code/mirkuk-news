@@ -1,0 +1,330 @@
+﻿/* === MIRKUK TOI-STYLE EDITORIAL & DROPDOWN CSS START === */
+:root {
+  --mk-ink: #14171a;
+  --mk-muted: #5c6470;
+  --mk-border: #dfe3e8;
+  --mk-surface: #ffffff;
+  --mk-soft: #f5f7f9;
+  --mk-crimson: #c8102e;
+}
+
+.mk-editorial-wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 16px 28px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--mk-ink);
+}
+
+/* Top Masthead + Nav + Three-Dot Dropdown */
+.mk-masthead {
+  background: var(--mk-surface);
+  border-bottom: 2px solid var(--mk-ink);
+  position: relative;
+  z-index: 500;
+}
+
+.mk-masthead-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--mk-muted);
+  border-bottom: 1px solid var(--mk-border);
+  flex-wrap: wrap;
+}
+
+.mk-brand-center {
+  text-align: center;
+  padding: 10px 16px 8px;
+}
+
+.mk-brand-title {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mk-ink);
+  line-height: 1.08;
+}
+
+.mk-nav-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 16px;
+  border-top: 1px solid var(--mk-border);
+  position: relative;
+}
+
+.mk-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.mk-nav-btn,
+.mk-dots-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mk-ink);
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.mk-nav-btn:hover,
+.mk-nav-btn.is-active,
+.mk-dots-btn:hover,
+.mk-dots-btn.is-open {
+  background: var(--mk-soft);
+  color: var(--mk-crimson);
+}
+
+/* Three-Dot (•••) Popover Menu */
+.mk-dots-wrap {
+  position: relative;
+}
+
+.mk-dots-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 220px;
+  background: var(--mk-surface);
+  border: 1px solid var(--mk-border);
+  border-top: 3px solid var(--mk-crimson);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  border-radius: 4px;
+  padding: 6px 0;
+  z-index: 900;
+}
+
+.mk-dots-menu.is-open {
+  display: block;
+}
+
+.mk-dots-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--mk-ink);
+  cursor: pointer;
+}
+
+.mk-dots-menu button:hover {
+  background: var(--mk-soft);
+  color: var(--mk-crimson);
+  font-weight: 600;
+}
+
+/* Rich Hover/Click Mega Dropdown (like Entertainment / Tech menus) */
+.mk-sub-dropdown {
+  display: none;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 100%;
+  background: var(--mk-surface);
+  border: 1px solid var(--mk-border);
+  border-top: 3px solid var(--mk-crimson);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+  padding: 16px;
+  z-index: 850;
+}
+
+.mk-sub-dropdown.is-open {
+  display: block;
+}
+
+.mk-sub-grid-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.mk-sub-col-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--mk-crimson);
+  margin-bottom: 8px;
+}
+
+.mk-sub-link-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--mk-ink);
+  cursor: pointer;
+}
+
+.mk-sub-link-btn:hover {
+  color: var(--mk-crimson);
+  text-decoration: underline;
+}
+
+.mk-sub-thumb-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--mk-border);
+}
+
+.mk-sub-thumb-card {
+  cursor: pointer;
+}
+
+.mk-sub-thumb-card img {
+  width: 100%;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mk-sub-thumb-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+/* 3-Column Front Page Layout */
+.mk-front-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 290px;
+  gap: 20px;
+  margin-top: 16px;
+  align-items: start;
+}
+
+.mk-side-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-right: 1px solid var(--mk-border);
+  padding-right: 14px;
+}
+
+.mk-rail-card {
+  border-bottom: 1px solid var(--mk-border);
+  padding-bottom: 12px;
+  cursor: pointer;
+}
+
+.mk-rail-card:last-child {
+  border-bottom: none;
+}
+
+.mk-rail-cat {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mk-crimson);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.mk-rail-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.mk-rail-row img {
+  width: 82px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.mk-rail-title {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.mk-lead-story {
+  text-align: center;
+  padding: 0 6px;
+}
+
+.mk-lead-headline {
+  margin: 0 0 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.18;
+  font-weight: 700;
+}
+
+.mk-lead-media img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+.mk-lead-summary {
+  margin: 12px auto 0;
+  max-width: 580px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--mk-muted);
+}
+
+.mk-right-panel {
+  border-left: 1px solid var(--mk-border);
+  padding-left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mk-box-card {
+  background: var(--mk-soft);
+  border: 1px solid var(--mk-border);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.mk-box-heading {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--mk-ink);
+}
+
+@media (max-width: 960px) {
+  .mk-front-grid {
+    grid-template-columns: 1fr;
+  }
+  .mk-side-rail,
+  .mk-right-panel {
+    border: none;
+    padding: 0;
+  }
+}
+/* === MIRKUK TOI-STYLE EDITORIAL & DROPDOWN CSS END === */
