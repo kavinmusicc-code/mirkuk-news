@@ -2666,3 +2666,115 @@
     setTimeout(syncMorePanelState, 1800);
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  const SAFE_FEEDS = [
+    "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=Elon+Musk+OR+Tesla+OR+Apple+OR+Kanye+West&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=movie+launch+OR+gaming+release+OR+scholarship+OR+scheme+OR+travel&hl=en-IN&gl=IN&ceid=IN:en"
+  ];
+
+  function makeSvg(title, source) {
+    const t = (title || "Mirkuk News Live").replace(/[<>&"']/g, "").slice(0, 68);
+    const s = (source || "MIRKUK WIRE").replace(/[<>&"']/g, "").slice(0, 24).toUpperCase();
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs><rect width="800" height="450" fill="url(#g)"/><rect x="0" y="0" width="800" height="8" fill="#ef4444"/><text x="40" y="65" fill="#fca5a5" font-family="Arial,sans-serif" font-size="14" font-weight="bold">MIRKUK NEWS LIVE</text><text x="40" y="165" fill="#ffffff" font-family="Arial,sans-serif" font-size="30" font-weight="bold">${t.slice(0, 34)}</text><text x="40" y="208" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="28" font-weight="bold">${t.slice(34, 68)}</text><text x="40" y="405" fill="#ef4444" font-family="Arial,sans-serif" font-size="15" font-weight="bold">MIRKUK NEWS</text><text x="760" y="405" text-anchor="end" fill="#d1d5db" font-family="Arial,sans-serif" font-size="14">${s}</text></svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  function ensureGridExists() {
+    let grid = document.getElementById("mk-grid-area");
+    if (!grid) {
+      const main = document.querySelector("main") || document.body;
+      grid = document.createElement("div");
+      grid.id = "mk-grid-area";
+      grid.className = "mk-grid-area";
+      grid.style.cssText = "display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; margin:16px auto; max-width:1280px; padding:0 16px;";
+      const footer = document.querySelector("footer");
+      if (footer && footer.parentNode) {
+        footer.parentNode.insertBefore(grid, footer);
+      } else {
+        main.appendChild(grid);
+      }
+    }
+    grid.style.display = "grid";
+    grid.style.visibility = "visible";
+    grid.style.opacity = "1";
+    return grid;
+  }
+
+  async function hydrateContentIfEmpty() {
+    const grid = ensureGridExists();
+    if (grid && grid.children.length >= 4) return;
+
+    const batches = await Promise.all(
+      SAFE_FEEDS.map(async u => {
+        try {
+          const r = await fetch(RELAYS[0](u));
+          const j = await r.json();
+          if (Array.isArray(j.items) && j.items.length) return j.items;
+        } catch (_) {}
+        try {
+          const r2 = await fetch(RELAYS[1](u));
+          const j2 = await r2.json();
+          if (j2 && j2.contents) {
+            const doc = new DOMParser().parseFromString(j2.contents, "text/xml");
+            return Array.from(doc.querySelectorAll("item")).map(n => ({
+              title: (n.querySelector("title")?.textContent || "").trim(),
+              link: (n.querySelector("link")?.textContent || "").trim(),
+              description: (n.querySelector("description")?.textContent || "").trim()
+            }));
+          }
+        } catch (_) {}
+        return [];
+      })
+    );
+
+    const flat = batches.flat();
+    if (!flat.length) return;
+
+    const seen = new Set();
+    const cards = [];
+    for (const it of flat) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : "Mirkuk Wire";
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+      const key = cleanT.toLowerCase().slice(0, 80);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+      const desc = (tmp.textContent || tmp.innerText || "").trim().slice(0, 150);
+      const fb = makeSvg(cleanT, src);
+      const img = (it.thumbnail && /^https?:\/\//i.test(it.thumbnail)) ? it.thumbnail : fb;
+
+      cards.push(`
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link || "#"}" target="_blank" rel="noopener noreferrer">
+            <img src="${img}" onerror="this.onerror=null;this.src='${fb}';" alt="" loading="lazy" style="width:100%;height:175px;object-fit:cover;display:block;" />
+          </a>
+          <div class="mk-grid-body" style="padding:12px;">
+            <span class="mk-cat-tag">${src}</span>
+            <h3 style="margin:6px 0;font-size:15px;"><a href="${it.link || "#"}" target="_blank" rel="noopener noreferrer">${cleanT}</a></h3>
+            <p style="margin:0;font-size:13px;opacity:0.85;">${desc}</p>
+          </div>
+        </article>
+      `);
+    }
+
+    if (cards.length) {
+      grid.innerHTML = cards.slice(0, 60).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureGridExists();
+    setTimeout(hydrateContentIfEmpty, 1200);
+    setTimeout(hydrateContentIfEmpty, 3200);
+  });
+})();
