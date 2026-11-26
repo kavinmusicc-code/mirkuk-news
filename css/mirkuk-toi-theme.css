@@ -992,3 +992,57 @@ body.mk-dark-mode .mk-buzz-btn {
   font-weight: 800;
   text-transform: uppercase;
 }
+
+/* Mega Multi-Desk Shelf & Reading Progress */
+.mk-progress-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.mk-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--mk-red);
+  transition: width 0.08s linear;
+}
+
+.mk-mega-shelf {
+  margin-top: 28px;
+}
+
+.mk-shelf-block {
+  margin-bottom: 30px;
+}
+
+.mk-shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.mk-top-btn {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: var(--mk-ink);
+  color: #ffffff;
+  border: 0;
+  border-radius: 3px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  display: none;
+  z-index: 900;
+}
+
+.mk-top-btn:hover {
+  background: var(--mk-red);
+}

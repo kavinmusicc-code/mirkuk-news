@@ -1115,3 +1115,108 @@
     }
   });
 })();
+
+(function () {
+  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+  const DESK_FEEDS = [
+    { key: "india",    title: "India & National Desk",        url: "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "business", title: "Business, Markets & Startups", url: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "world",    title: "World & Global Affairs",       url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "tech",     title: "Tech, AI & Digital",           url: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "sports",   title: "World Cricket & Sports",       url: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en" }
+  ];
+
+  async function renderMegaDesks() {
+    const shelf = document.getElementById("mk-mega-shelf");
+    const activeBtn = document.querySelector(".mk-nav-btn.active");
+    const activeCat = activeBtn ? activeBtn.getAttribute("data-mk-cat") : "top";
+    if (!shelf) return;
+
+    if (activeCat !== "top") {
+      shelf.innerHTML = "";
+      return;
+    }
+
+    try {
+      const blocks = await Promise.all(
+        DESK_FEEDS.map(async desk => {
+          try {
+            const res = await fetch(RSS_API + encodeURIComponent(desk.url));
+            const data = await res.json();
+            const items = Array.isArray(data.items) ? data.items.slice(0, 4) : [];
+            if (!items.length) return "";
+
+            const cardsHtml = items.map(it => {
+              const parts = (it.title || "").split(" - ");
+              const src = parts.length > 1 ? parts.pop().trim() : (data.feed && data.feed.title) || "Wire";
+              const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+              const tmp = document.createElement("div");
+              tmp.innerHTML = it.description || "";
+              const desc = (tmp.textContent || tmp.innerText || "").trim().slice(0, 130);
+              return `
+                <article class="mk-card mk-grid-card">
+                  <div class="mk-grid-body">
+                    <div>
+                      <span class="mk-cat-tag">${src}</span>
+                      <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${cleanT}</a></h3>
+                      <p>${desc}</p>
+                    </div>
+                    <div class="mk-meta">${src}</div>
+                  </div>
+                </article>
+              `;
+            }).join("");
+
+            return `
+              <div class="mk-shelf-block">
+                <div class="mk-section-head">
+                  <h2>${desk.title}</h2>
+                  <a href="#" class="mk-status-pill" data-mk-cat="${desk.key}">View All &rarr;</a>
+                </div>
+                <div class="mk-shelf-grid">${cardsHtml}</div>
+              </div>
+            `;
+          } catch (_) {
+            return "";
+          }
+        })
+      );
+
+      shelf.innerHTML = blocks.filter(Boolean).join("");
+    } catch (_) {}
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(renderMegaDesks, 900);
+
+    document.querySelectorAll("[data-mk-cat]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const cat = this.getAttribute("data-mk-cat");
+        if (cat === "top") {
+          setTimeout(renderMegaDesks, 900);
+        } else {
+          const shelf = document.getElementById("mk-mega-shelf");
+          if (shelf) shelf.innerHTML = "";
+        }
+      });
+    });
+
+    const progBar = document.getElementById("mk-progress-bar");
+    const topBtn = document.getElementById("mk-top-btn");
+
+    window.addEventListener("scroll", function () {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      const docHeight = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+      const pct = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+      if (progBar) progBar.style.width = pct.toFixed(1) + "%";
+      if (topBtn) topBtn.style.display = scrollTop > 450 ? "block" : "none";
+    }, { passive: true });
+
+    if (topBtn) {
+      topBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  });
+})();
