@@ -2617,3 +2617,15 @@
     setTimeout(pullShoppingDeals, 2800);
   });
 })();
+
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("div, section").forEach(el => {
+      if (el.id === "mk-more-panel" || el.closest("#mk-more-panel")) return;
+      const txt = (el.textContent || "").trim();
+      if (txt.startsWith("SCHOLARSHIPS, SCHEMES & TRAVEL") && txt.length < 450) {
+        el.remove();
+      }
+    });
+  });
+})();
