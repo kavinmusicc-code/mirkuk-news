@@ -960,3 +960,43 @@ button[aria-label*="Dark" i] {
 [class*="live-wire"] {
   display: none !important;
 }
+
+/* Mirkuk News - Clean Professional Editorial Styling */
+.mirkuk-pro-polish,
+.mirkuk-pro-polish * {
+  box-sizing: border-box;
+}
+
+.mirkuk-pro-polish {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #181b20;
+  background-color: #ffffff;
+  line-height: 1.5;
+}
+
+.mirkuk-pro-polish h1,
+.mirkuk-pro-polish h2,
+.mirkuk-pro-polish h3,
+.mirkuk-pro-polish h4 {
+  color: #111418;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.mirkuk-pro-polish a {
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.mirkuk-pro-polish .mirkuk-lead-story,
+.mirkuk-pro-polish .mirkuk-featured-videos,
+.mirkuk-pro-polish .mirkuk-sidebar-ad {
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+}
+
+.mirkuk-pro-polish .mirkuk-lead-story h2 {
+  font-weight: 700;
+}
+
+.mirkuk-pro-polish .mirkuk-featured-videos h3 {
+  font-weight: 700;
+}
