@@ -1,16 +1,54 @@
 ﻿(function () {
   const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-  // Real Google News RSS feeds by category & edition
-  const FEEDS = {
-    top:      { label: "Top Stories",   url: "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en" },
-    india:    { label: "India",         url: "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en" },
-    world:    { label: "World",         url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
-    business: { label: "Business",      url: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en" },
-    tech:     { label: "Technology",    url: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en" },
-    sports:   { label: "Sports",        url: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en" },
-    ent:      { label: "Entertainment", url: "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en" },
-    science:  { label: "Science",       url: "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en" }
+  // Multiple real sources across categories (har jagah se news kheenchne ke liye)
+  const SOURCE_POOLS = {
+    top: [
+      "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "https://www.thehindu.com/news/national/feeder/default.rss",
+      "https://indianexpress.com/section/india/feed/"
+    ],
+    india: [
+      "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://www.thehindu.com/news/national/feeder/default.rss",
+      "https://indianexpress.com/section/india/feed/"
+    ],
+    world: [
+      "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/news/world/rss.xml"
+    ],
+    business: [
+      "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://economictimes.indiatimes.com/rssfeedsdefault.cms"
+    ],
+    tech: [
+      "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/news/technology/rss.xml"
+    ],
+    sports: [
+      "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/sport/rss.xml"
+    ],
+    ent: [
+      "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
+    ],
+    science: [
+      "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml"
+    ]
+  };
+
+  const LABELS = {
+    top: "Top Stories (Multi-Source)",
+    india: "India",
+    world: "World",
+    business: "Business",
+    tech: "Technology",
+    sports: "Sports",
+    ent: "Entertainment",
+    science: "Science"
   };
 
   const EDITIONS = {
@@ -23,7 +61,6 @@
   let currentCategory = "top";
   let currentEdition = "IN";
 
-  // Clean fallback news photos (real editorial photography from Unsplash)
   const FALLBACK_PHOTOS = [
     "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80",
     "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80",
@@ -56,22 +93,38 @@
     return FALLBACK_PHOTOS[idx % FALLBACK_PHOTOS.length];
   }
 
-  function cleanTitleAndSource(rawTitle) {
+  function cleanTitleAndSource(rawTitle, feedTitle) {
     const parts = (rawTitle || "").split(" - ");
     if (parts.length > 1) {
       const source = parts.pop();
-      return { title: parts.join(" - "), source };
+      return { title: parts.join(" - ").trim(), source: source.trim() };
     }
-    return { title: rawTitle, source: "Mirkuk Wire" };
+    return { title: (rawTitle || "").trim(), source: feedTitle || "Wire" };
   }
 
-  function buildFeedUrl(catKey, searchQuery) {
+  function getUrlsForRequest(catKey, searchQuery) {
     const ed = EDITIONS[currentEdition] || EDITIONS.IN;
     if (searchQuery) {
-      return `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&${ed}`;
+      return [`https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&${ed}`];
     }
-    const base = (FEEDS[catKey] || FEEDS.top).url;
-    return base.replace(/hl=[^&]+&gl=[^&]+&ceid=[^&]+/, ed);
+    const pool = SOURCE_POOLS[catKey] || SOURCE_POOLS.top;
+    return pool.map(u =>
+      u.includes("news.google.com")
+        ? u.replace(/hl=[^&]+&gl=[^&]+&ceid=[^&]+/, ed)
+        : u
+    );
+  }
+
+  async function fetchSingleFeed(url) {
+    try {
+      const res = await fetch(RSS_API + encodeURIComponent(url));
+      const data = await res.json();
+      if (!data || !Array.isArray(data.items)) return [];
+      const feedName = (data.feed && data.feed.title) ? data.feed.title : "Live Wire";
+      return data.items.map(it => Object.assign({}, it, { __feedTitle: feedName }));
+    } catch (_) {
+      return [];
+    }
   }
 
   async function loadLiveNews(catKey = "top", searchQuery = "") {
@@ -82,39 +135,47 @@
     const gridArea = document.getElementById("mk-grid-area");
     const tickerArea = document.getElementById("mk-ticker-links");
 
-    const label = searchQuery ? `Search: "${searchQuery}"` : (FEEDS[catKey]?.label || "Top Stories");
+    const label = searchQuery ? `Search: "${searchQuery}"` : (LABELS[catKey] || "Top Stories");
     if (sectionTitle) sectionTitle.textContent = label;
-    if (statusPill) statusPill.textContent = "Fetching live wire...";
+    if (statusPill) statusPill.textContent = "Pulling from multiple live feeds...";
 
     try {
-      const rssUrl = buildFeedUrl(catKey, searchQuery);
-      const res = await fetch(RSS_API + encodeURIComponent(rssUrl));
-      const data = await res.json();
+      const urls = getUrlsForRequest(catKey, searchQuery);
+      const results = await Promise.all(urls.map(fetchSingleFeed));
+      const merged = results.flat();
 
-      if (!data.items || !data.items.length) {
+      // Deduplicate by normalized title
+      const seen = new Set();
+      const uniqueItems = [];
+      for (const it of merged) {
+        const key = (it.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 80);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        uniqueItems.push(it);
+      }
+
+      if (!uniqueItems.length) {
         throw new Error("No live stories returned");
       }
 
-      // Newest first (sorted by pubDate descending)
-      const items = data.items.slice().sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      // Newest first
+      const items = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-      // 1. Update Breaking Ticker
       if (tickerArea) {
-        tickerArea.innerHTML = items.slice(0, 6).map(item => {
-          const { title } = cleanTitleAndSource(item.title);
+        tickerArea.innerHTML = items.slice(0, 8).map(item => {
+          const { title } = cleanTitleAndSource(item.title, item.__feedTitle);
           return `<a href="${item.link}" target="_blank" rel="noopener noreferrer">&bull; ${title}</a>`;
         }).join("");
       }
 
-      // 2. Render Hero Section (1 Lead + 3 Mid Compact + 6 Right Wire)
       const lead = items[0];
-      const leadInfo = cleanTitleAndSource(lead.title);
+      const leadInfo = cleanTitleAndSource(lead.title, lead.__feedTitle);
       const leadImg = extractImage(lead, 0);
-      const leadDesc = stripHtml(lead.description).slice(0, 210);
+      const leadDesc = stripHtml(lead.description).slice(0, 220);
 
       const midItems = items.slice(1, 4);
-      const wireItems = items.slice(4, 11);
-      const gridItems = items.slice(11);
+      const wireItems = items.slice(4, 12);
+      const gridItems = items.slice(12);
 
       if (heroArea) {
         heroArea.innerHTML = `
@@ -126,14 +187,14 @@
               <div class="mk-lead-body">
                 <span class="mk-cat-tag">${label} &bull; ${leadInfo.source}</span>
                 <h1><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${leadInfo.title}</a></h1>
-                <p>${leadDesc || "Click to read the complete live report from " + leadInfo.source + "."}</p>
-                <div class="mk-meta">Published ${timeAgo(lead.pubDate)} &bull; Verified Live Feed</div>
+                <p>${leadDesc || "Read full coverage on " + leadInfo.source + "."}</p>
+                <div class="mk-meta">${timeAgo(lead.pubDate)} &bull; Multi-Source Wire</div>
               </div>
             </article>
 
             <div class="mk-mid-stack">
               ${midItems.map((it, i) => {
-                const info = cleanTitleAndSource(it.title);
+                const info = cleanTitleAndSource(it.title, it.__feedTitle);
                 const img = extractImage(it, i + 1);
                 return `
                   <article class="mk-compact-card">
@@ -154,7 +215,7 @@
               <h3>Latest Wire (Newest First)</h3>
               <ul class="mk-wire-list">
                 ${wireItems.map(it => {
-                  const info = cleanTitleAndSource(it.title);
+                  const info = cleanTitleAndSource(it.title, it.__feedTitle);
                   return `
                     <li>
                       <a href="${it.link}" target="_blank" rel="noopener noreferrer">${info.title}</a>
@@ -168,13 +229,12 @@
         `;
       }
 
-      // 3. Render Bottom Multi-Column Grid
       if (gridArea) {
         const displayGrid = gridItems.length ? gridItems : items.slice(4);
         gridArea.innerHTML = displayGrid.map((it, i) => {
-          const info = cleanTitleAndSource(it.title);
+          const info = cleanTitleAndSource(it.title, it.__feedTitle);
           const img = extractImage(it, i + 2);
-          const desc = stripHtml(it.description).slice(0, 140);
+          const desc = stripHtml(it.description).slice(0, 150);
           return `
             <article class="mk-card mk-grid-card">
               <a href="${it.link}" target="_blank" rel="noopener noreferrer">
@@ -194,18 +254,16 @@
       }
 
       if (statusPill) {
-        statusPill.textContent = `Live &bull; ${items.length} stories updated just now`;
-        statusPill.innerHTML = `Live &bull; ${items.length} real stories loaded`;
+        statusPill.innerHTML = `Live &bull; ${items.length} unique stories from ${urls.length} feeds`;
       }
     } catch (err) {
-      if (statusPill) statusPill.textContent = "Reconnecting to live feed...";
+      if (statusPill) statusPill.textContent = "Reconnecting to live feeds...";
       if (heroArea) {
-        heroArea.innerHTML = `<div class="mk-loader">Unable to reach live RSS relay right now. Please refresh or check connection.</div>`;
+        heroArea.innerHTML = `<div class="mk-loader">Unable to reach live feeds right now. Please refresh shortly.</div>`;
       }
     }
   }
 
-  // Real-time IST Date & Clock + Live Delhi Weather (Open-Meteo Free API, no key needed)
   function initClockAndWeather() {
     const dateEl = document.getElementById("mk-live-clock");
     function tick() {
@@ -240,7 +298,6 @@
   document.addEventListener("DOMContentLoaded", function () {
     initClockAndWeather();
 
-    // Category Navigation
     document.querySelectorAll("[data-mk-cat]").forEach(btn => {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -252,7 +309,6 @@
       });
     });
 
-    // Edition Switcher
     const edSel = document.getElementById("mk-edition-select");
     if (edSel) {
       edSel.addEventListener("change", function () {
@@ -261,7 +317,6 @@
       });
     }
 
-    // Live Search Form
     const searchForm = document.getElementById("mk-search-form");
     const searchInput = document.getElementById("mk-search-input");
     if (searchForm && searchInput) {
@@ -272,7 +327,8 @@
       });
     }
 
-    // Initial Load
     loadLiveNews("top", "");
+    // Auto-refresh every 10 minutes so new stories flow to top
+    setInterval(() => loadLiveNews(currentCategory, ""), 600000);
   });
 })();
