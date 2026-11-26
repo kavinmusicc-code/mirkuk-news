@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://kavinmusicc-code.github.io/mirkuk-news/sitemap.xml

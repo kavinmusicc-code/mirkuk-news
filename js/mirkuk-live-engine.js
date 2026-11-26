@@ -1720,3 +1720,47 @@
     setInterval(harvestNextSlice, 12000);
   });
 })();
+
+(function () {
+  const BASE_TITLE = document.title || "Mirkuk News — India & Global Live Newsroom";
+
+  function syncDynamicTitle() {
+    const activeCatBtn = document.querySelector(".mk-nav-btn.active");
+    const catText = activeCatBtn ? (activeCatBtn.textContent || "").trim() : "";
+    const searchInp = document.getElementById("mk-search-input");
+    const q = searchInp ? (searchInp.value || "").trim() : "";
+
+    if (q) {
+      document.title = `"${q}" — Search | Mirkuk News`;
+    } else if (catText && catText.toLowerCase() !== "top stories") {
+      document.title = `${catText} — Mirkuk News`;
+    } else {
+      document.title = BASE_TITLE;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-mk-cat]").forEach(el => {
+      el.addEventListener("click", () => setTimeout(syncDynamicTitle, 120));
+    });
+
+    const form = document.getElementById("mk-search-form");
+    if (form) {
+      form.addEventListener("submit", () => setTimeout(syncDynamicTitle, 120));
+    }
+
+    // Support ?q= search term directly from URL
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qParam = (params.get("q") || "").trim();
+      const inp = document.getElementById("mk-search-input");
+      if (qParam && inp && form) {
+        setTimeout(() => {
+          inp.value = qParam;
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+          syncDynamicTitle();
+        }, 1200);
+      }
+    } catch (_) {}
+  });
+})();
