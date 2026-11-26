@@ -1764,3 +1764,172 @@
     } catch (_) {}
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  // Global & National Major Portals Direct Feeds
+  const GLOBAL_PORTAL_FEEDS = [
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "https://feeds.bbci.co.uk/news/technology/rss.xml",
+    "https://feeds.bbci.co.uk/sport/cricket/rss.xml",
+    "https://www.aljazeera.com/xml/rss/all.xml",
+    "https://www.thehindu.com/news/national/feeder/default.rss",
+    "https://www.thehindu.com/news/international/feeder/default.rss",
+    "https://indianexpress.com/section/india/feed/",
+    "https://indianexpress.com/section/technology/feed/",
+    "https://indianexpress.com/section/sports/cricket/feed/",
+    "https://feeds.feedburner.com/ndtvnews-top-stories",
+    "https://feeds.feedburner.com/ndtvnews-world-news",
+    "https://feeds.ign.com/ign/games-all",
+    "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"
+  ];
+
+  const TOPIC_FALLBACK_IMGS = {
+    cricket: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=900&q=80",
+    gaming:  "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80",
+    tech:    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
+    biz:     "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80",
+    default: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80"
+  };
+
+  function pickFallbackByTitle(title) {
+    const t = (title || "").toLowerCase();
+    if (/\b(cricket|ipl|test|odi|t20|icc|wicket|match)\b/.test(t)) return TOPIC_FALLBACK_IMGS.cricket;
+    if (/\b(game|gaming|esports|ps5|xbox|gta|nintendo|steam)\b/.test(t)) return TOPIC_FALLBACK_IMGS.gaming;
+    if (/\b(ai|tech|chip|google|apple|microsoft|cyber|space|isro|nasa)\b/.test(t)) return TOPIC_FALLBACK_IMGS.tech;
+    if (/\b(market|stock|nifty|sensex|economy|bank|rupee|trade|startup)\b/.test(t)) return TOPIC_FALLBACK_IMGS.biz;
+    return TOPIC_FALLBACK_IMGS.default;
+  }
+
+  function extractRealImage(item) {
+    if (item.thumbnail && /^https?:\/\//i.test(item.thumbnail)) return item.thumbnail;
+    if (item.enclosure && item.enclosure.link && /^https?:\/\//i.test(item.enclosure.link)) return item.enclosure.link;
+    if (item.enclosure && item.enclosure.url && /^https?:\/\//i.test(item.enclosure.url)) return item.enclosure.url;
+
+    const rawHtml = (item.content || "") + " " + (item.description || "");
+    const m = rawHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && m[1] && /^https?:\/\//i.test(m[1]) && !/pixel|tracker|1x1|logo/i.test(m[1])) {
+      return m[1];
+    }
+    return pickFallbackByTitle(item.title);
+  }
+
+  function parseXmlWithMedia(xmlStr) {
+    try {
+      const doc = new DOMParser().parseFromString(xmlStr, "text/xml");
+      const channelTitle = (doc.querySelector("channel > title")?.textContent || "Global Portal").trim();
+      return Array.from(doc.querySelectorAll("item")).map(node => {
+        const mediaContent = node.getElementsByTagNameNS("*", "content")[0];
+        const mediaThumb = node.getElementsByTagNameNS("*", "thumbnail")[0];
+        const enc = node.querySelector("enclosure");
+        const imgUrl =
+          (mediaContent && mediaContent.getAttribute("url")) ||
+          (mediaThumb && mediaThumb.getAttribute("url")) ||
+          (enc && enc.getAttribute("url")) || "";
+
+        return {
+          title: (node.querySelector("title")?.textContent || "").trim(),
+          link: (node.querySelector("link")?.textContent || "").trim(),
+          pubDate: (node.querySelector("pubDate")?.textContent || new Date().toUTCString()).trim(),
+          description: (node.querySelector("description")?.textContent || "").trim(),
+          thumbnail: imgUrl,
+          __portalName: channelTitle
+        };
+      });
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function fetchPortalFeed(url) {
+    try {
+      const r1 = await fetch(RELAYS[0](url));
+      const j1 = await r1.json();
+      if (Array.isArray(j1.items) && j1.items.length) {
+        const feedName = (j1.feed && j1.feed.title) || "Global Portal";
+        return j1.items.map(it => Object.assign({}, it, { __portalName: feedName }));
+      }
+    } catch (_) {}
+
+    try {
+      const r2 = await fetch(RELAYS[1](url));
+      const j2 = await r2.json();
+      if (j2 && j2.contents) return parseXmlWithMedia(j2.contents);
+    } catch (_) {}
+
+    return [];
+  }
+
+  async function syncGlobalPortalsWithImages() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    const batches = await Promise.all(GLOBAL_PORTAL_FEEDS.map(fetchPortalFeed));
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const combined = batches.flat().concat(existing);
+
+    const seen = new Set();
+    const enriched = [];
+
+    for (const it of combined) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : (it.__source || it.__portalName || "Global Wire");
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.__cleanTitle || it.title || "").trim();
+      const key = cleanT.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+      const realImg = extractRealImage(it);
+
+      enriched.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: src,
+        __img: realImg,
+        __fallbackImg: pickFallbackByTitle(cleanT),
+        __summary: it.__summary || (tmp.textContent || tmp.innerText || "").trim(),
+        __timeAgo: it.__timeAgo || "Live Portal"
+      }));
+    }
+
+    enriched.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+    if (enriched.length) {
+      window.__mirkukCurrentItems = enriched;
+      window.__mirkukAllItemsBackup = enriched.slice();
+      window.__mirkukBeastProcessedFor = null;
+
+      grid.innerHTML = enriched.slice(0, 56).map(it => `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img}" onerror="this.onerror=null;this.src='${it.__fallbackImg}';" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${it.__source}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+              <p>${(it.__summary || "").slice(0, 155)}</p>
+            </div>
+            <div class="mk-meta">${it.__timeAgo}</div>
+          </div>
+        </article>
+      `).join("");
+
+      const countEl = document.getElementById("mk-grid-count");
+      if (countEl) {
+        countEl.textContent = `Global Portals Connected: Showing ${Math.min(56, enriched.length)} of ${enriched.length} stories with real media`;
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(syncGlobalPortalsWithImages, 1600);
+  });
+})();
