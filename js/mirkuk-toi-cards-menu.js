@@ -140,7 +140,7 @@
 
       card.innerHTML = 
         <div class="mirkuk-news-card-media">
-          <img src="" alt="" onerror="this.parentElement.style.display='none';" />
+          <img src="" alt="" onerror="this.closest('.mirkuk-news-card-media').style.display='none';" />
         </div>
         <div class="mirkuk-news-tag"></div>
         <h3 class="mirkuk-news-title"></h3>
