@@ -1,0 +1,79 @@
+﻿/* === MIRKUK REFRESH TO SEE NEW BANNER CSS START === */
+#mirkuk-refresh-banner {
+  position: sticky;
+  top: 0;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 16px;
+  background: #18191a;
+  color: #ffffff;
+  border-bottom: 3px solid var(--toi-accent, #c8102e);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+
+#mirkuk-refresh-banner.is-hidden {
+  display: none;
+}
+
+.mirkuk-refresh-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mirkuk-refresh-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--toi-accent, #c8102e);
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.28);
+  flex-shrink: 0;
+}
+
+.mirkuk-refresh-text {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.mirkuk-refresh-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mirkuk-refresh-btn {
+  background: var(--toi-accent, #c8102e);
+  color: #ffffff;
+  border: none;
+  border-radius: 2px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mirkuk-refresh-btn:hover {
+  opacity: 0.92;
+}
+
+.mirkuk-refresh-dismiss {
+  background: transparent;
+  color: #d1d5db;
+  border: 1px solid #4b5563;
+  border-radius: 2px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mirkuk-refresh-dismiss:hover {
+  color: #ffffff;
+  border-color: #9ca3af;
+}
+/* === MIRKUK REFRESH TO SEE NEW BANNER CSS END === */
