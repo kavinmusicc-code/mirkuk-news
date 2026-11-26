@@ -1,4 +1,4 @@
-﻿/* === MIRKUK FULL TOI-INSPIRED BROADSHEET CSS START === */
+﻿/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT CSS START === */
 :root {
   --mk-ink: #14171a;
   --mk-muted: #5c6470;
@@ -8,10 +8,14 @@
   --mk-crimson: #c8102e;
 }
 
+#mk-live-desk-box {
+  display: none !important;
+}
+
 .mk-editorial-wrap {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 14px 16px 28px;
+  padding: 12px 16px 36px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--mk-ink);
   background: var(--mk-surface);
@@ -29,7 +33,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 16px;
+  padding: 7px 16px;
   font-size: 12px;
   color: var(--mk-muted);
   border-bottom: 1px solid var(--mk-border);
@@ -210,9 +214,9 @@
 
 .mk-front-grid {
   display: grid;
-  grid-template-columns: 270px minmax(0, 1fr) 290px;
+  grid-template-columns: 265px minmax(0, 1fr) 300px;
   gap: 20px;
-  margin-top: 14px;
+  margin-top: 12px;
   align-items: start;
 }
 
@@ -314,14 +318,226 @@
   color: var(--mk-ink);
 }
 
+.mk-video-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mk-video-tile {
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #111827;
+}
+
+.mk-video-tile img {
+  width: 100%;
+  height: 78px;
+  object-fit: cover;
+  display: block;
+  opacity: 0.9;
+}
+
+.mk-video-tile-caption {
+  padding: 6px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--mk-ink);
+}
+
+.mk-audio-bar {
+  margin-top: 24px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--mk-border);
+  border-bottom: 1px solid var(--mk-border);
+  background: #fafbfc;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mk-audio-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mk-audio-play-btn {
+  background: var(--mk-crimson);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-audio-track {
+  flex: 1 1 180px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mk-audio-fill {
+  width: 28%;
+  height: 100%;
+  background: var(--mk-crimson);
+}
+
+.mk-section-block {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 2px solid var(--mk-ink);
+}
+
+.mk-section-heading-link {
+  display: inline-block;
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--mk-ink);
+  cursor: pointer;
+}
+
+.mk-section-heading-link:hover {
+  color: var(--mk-crimson);
+}
+
+.mk-three-desk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.mk-desk-col {
+  border-right: 1px solid var(--mk-border);
+  padding-right: 16px;
+}
+
+.mk-desk-col:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.mk-desk-lead-card {
+  cursor: pointer;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--mk-border);
+}
+
+.mk-desk-lead-card img {
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.mk-desk-lead-card h4 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.38;
+  font-weight: 700;
+}
+
+.mk-desk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mk-desk-list li {
+  padding: 7px 0;
+  border-bottom: 1px solid #eef1f4;
+  font-size: 13px;
+  line-height: 1.38;
+  cursor: pointer;
+}
+
+.mk-desk-list li:last-child {
+  border-bottom: none;
+}
+
+.mk-desk-list li:hover {
+  color: var(--mk-crimson);
+}
+
+.mk-ent-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+.mk-ent-top-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mk-ent-card {
+  cursor: pointer;
+}
+
+.mk-ent-card img {
+  width: 100%;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mk-ent-card p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.mk-ent-video-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.mk-ent-video-item img {
+  width: 86px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.mk-ent-video-item span {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.32;
+}
+
 @media (max-width: 960px) {
-  .mk-front-grid {
+  .mk-front-grid,
+  .mk-three-desk-grid,
+  .mk-ent-grid {
     grid-template-columns: 1fr;
   }
   .mk-side-rail,
-  .mk-right-panel {
+  .mk-right-panel,
+  .mk-desk-col {
     border: none;
     padding: 0;
   }
 }
-/* === MIRKUK FULL TOI-INSPIRED BROADSHEET CSS END === */
+/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT CSS END === */

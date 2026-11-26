@@ -1,4 +1,4 @@
-﻿/* === MIRKUK FULL TOI-INSPIRED BROADSHEET JS START === */
+﻿/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT JS START === */
 (function () {
   const NAV_SECTIONS = [
     {
@@ -61,8 +61,50 @@
   const LEFT_STORIES = [
     { cat: "Celebrities", title: "Spotlight on emerging creators, cinema, and stage stories", img: "mirkuk-news/images/culture.jpg", topic: "Celebrities" },
     { cat: "Beauty", title: "Practical skincare & grooming habits for daily routines", img: "mirkuk-news/images/arts.jpg", topic: "Beauty" },
-    { cat: "Fashion", title: "Modern streetwear, layering, and seasonal style notes", img: "mirkuk-news/images/culture.jpg", topic: "Fashion" },
-    { cat: "Tech", title: "Clean front-end architecture & fast zero-cost hosting", img: "mirkuk-news/images/tech.jpg", topic: "Technology" }
+    { cat: "Fashion", title: "Modern streetwear, layering, and seasonal style notes", img: "mirkuk-news/images/culture.jpg", topic: "Fashion" }
+  ];
+
+  const FEATURED_VIDEOS = [
+    { title: "Evening Dispatch: Key Highlights", img: "mirkuk-news/images/hero.jpg", topic: "National" },
+    { title: "Tech & Gadgets Rundown", img: "mirkuk-news/images/tech.jpg", topic: "Technology" },
+    { title: "Sports Desk Wrap", img: "mirkuk-news/images/sports.jpg", topic: "Sports" },
+    { title: "Culture & Stage Notes", img: "mirkuk-news/images/culture.jpg", topic: "Celebrities" }
+  ];
+
+  const THREE_DESKS = [
+    {
+      heading: "Technology >",
+      topic: "Technology",
+      lead: { title: "Fast browser builds & clean developer workflows for everyday use", img: "mirkuk-news/images/tech.jpg" },
+      items: [
+        "How static front-end sites stay fast on low-memory devices",
+        "Key updates in web standards, tooling, and security",
+        "Practical tips for organizing local scripts and repositories",
+        "What to check before shipping a new layout update"
+      ]
+    },
+    {
+      heading: "Gadgets Now >",
+      topic: "Gadgets",
+      lead: { title: "Everyday hardware, wearables, and mobile setups reviewed", img: "mirkuk-news/images/tech.jpg" },
+      items: [
+        "Battery life & display clarity notes for daily commutes",
+        "Choosing accessories that balance cost and durability",
+        "Storage & performance habits for smooth multitasking",
+        "Quick checklist before buying a new device"
+      ]
+    },
+    {
+      heading: "Also In News >",
+      topic: "Business",
+      lead: { title: "Small-business operations, regional updates, and public briefs", img: "mirkuk-news/images/business.jpg" },
+      items: [
+        "How local sellers streamline inventory and customer outreach",
+        "Key economic & policy takeaways for independent builders",
+        "Community & civic updates across major cities",
+        "Weekly roundup of notable stories across desks"
+      ]
+    }
   ];
 
   function filterByTopic(topic) {
@@ -78,6 +120,9 @@
   }
 
   function renderProLayout() {
+    const oldDeskBox = document.getElementById("mk-live-desk-box");
+    if (oldDeskBox) oldDeskBox.remove();
+
     if (document.getElementById("mk-pro-masthead")) return;
 
     const nowText = new Date().toLocaleString("en-IN", {
@@ -253,6 +298,30 @@
     `
     ).join("");
 
+    const videoTilesHtml = FEATURED_VIDEOS.map(
+      (v) => `
+      <div class="mk-video-tile" data-topic="${v.topic}">
+        <img src="${v.img}" alt="${v.title}" onerror="this.style.display='none';" />
+        <div class="mk-video-tile-caption">${v.title}</div>
+      </div>
+    `
+    ).join("");
+
+    const threeDesksHtml = THREE_DESKS.map(
+      (desk) => `
+      <div class="mk-desk-col">
+        <h3 class="mk-section-heading-link" data-topic="${desk.topic}">${desk.heading}</h3>
+        <div class="mk-desk-lead-card" data-topic="${desk.topic}">
+          <img src="${desk.lead.img}" alt="${desk.heading}" onerror="this.style.display='none';" />
+          <h4>${desk.lead.title}</h4>
+        </div>
+        <ul class="mk-desk-list">
+          ${desk.items.map((it) => `<li data-topic="${desk.topic}">${it}</li>`).join("")}
+        </ul>
+      </div>
+    `
+    ).join("");
+
     frontWrap.innerHTML = `
       <div class="mk-front-grid">
         <aside class="mk-side-rail" aria-label="Category Highlights">${leftHtml}</aside>
@@ -265,9 +334,12 @@
             Explore curated stories across Celebrities, Beauty, Fashion, Technology, Defence, Business, and 195 country editions in a clean broadsheet layout.
           </p>
         </main>
-        <aside class="mk-right-panel" aria-label="Quick Desks">
+        <aside class="mk-right-panel" aria-label="Featured Highlights">
           <div class="mk-box-card">
-            <h3 class="mk-box-heading">Quick Desk Filter</h3>
+            <h3 class="mk-box-heading">Mirkuk Edition Highlights</h3>
+            <p style="margin:0 0 8px;font-size:12px;color:#5c6470;">
+              Browse all 195 countries or jump straight into a desk.
+            </p>
             <div style="display:flex;flex-wrap:wrap;gap:6px;">
               <button type="button" class="mk-nav-btn" data-topic="Celebrities">Celebrities</button>
               <button type="button" class="mk-nav-btn" data-topic="Beauty">Beauty</button>
@@ -275,7 +347,59 @@
               <button type="button" class="mk-nav-btn" data-topic="Technology">Tech</button>
             </div>
           </div>
+          <div class="mk-box-card">
+            <h3 class="mk-box-heading">Featured Videos &gt;</h3>
+            <div class="mk-video-grid-2">${videoTilesHtml}</div>
+          </div>
         </aside>
+      </div>
+
+      <div class="mk-audio-bar" aria-label="Audio Briefing">
+        <button type="button" class="mk-audio-play-btn" id="mk-audio-toggle">▶ Briefing</button>
+        <span class="mk-audio-title" id="mk-audio-status">Top News Audio Briefing — Mirkuk Desk</span>
+        <div class="mk-audio-track"><div class="mk-audio-fill" id="mk-audio-fill"></div></div>
+        <span style="font-size:12px;color:#5c6470;">04:25</span>
+      </div>
+
+      <div class="mk-section-block">
+        <div class="mk-three-desk-grid">${threeDesksHtml}</div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Celebrities">Entertainment &gt;</h3>
+        <div class="mk-ent-grid">
+          <div>
+            <div class="mk-ent-top-pair">
+              <div class="mk-ent-card" data-topic="Celebrities">
+                <img src="mirkuk-news/images/culture.jpg" alt="Celebrities" onerror="this.style.display='none';" />
+                <p>Spotlight on actors, creators, and live stage events</p>
+              </div>
+              <div class="mk-ent-card" data-topic="Fashion">
+                <img src="mirkuk-news/images/arts.jpg" alt="Fashion & Style" onerror="this.style.display='none';" />
+                <p>Style &amp; beauty trends shaping seasonal looks</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <ul class="mk-desk-list">
+              <li data-topic="Celebrities">New film &amp; OTT announcements catching viewer attention</li>
+              <li data-topic="Beauty">Skincare &amp; grooming routines explained simply</li>
+              <li data-topic="Fashion">Everyday layering ideas for work and casual outings</li>
+              <li data-topic="Celebrities">Behind-the-scenes stories from music and cinema</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="margin:0 0 10px;font-size:14px;font-weight:800;">Entertainment Videos &gt;</h4>
+            <div class="mk-ent-video-item" data-topic="Celebrities">
+              <img src="mirkuk-news/images/culture.jpg" alt="Video 1" onerror="this.style.display='none';" />
+              <span>Spotlight Clips &amp; Red Carpet Moments</span>
+            </div>
+            <div class="mk-ent-video-item" data-topic="Fashion">
+              <img src="mirkuk-news/images/arts.jpg" alt="Video 2" onerror="this.style.display='none';" />
+              <span>Style &amp; Beauty Quick Walkthroughs</span>
+            </div>
+          </div>
+        </div>
       </div>
     `;
 
@@ -285,6 +409,28 @@
     });
 
     masthead.insertAdjacentElement("afterend", frontWrap);
+
+    const audioBtn = document.getElementById("mk-audio-toggle");
+    const audioStatus = document.getElementById("mk-audio-status");
+    const audioFill = document.getElementById("mk-audio-fill");
+    let playing = false;
+    let progress = 28;
+
+    if (audioBtn) {
+      audioBtn.addEventListener("click", () => {
+        playing = !playing;
+        audioBtn.textContent = playing ? "❚❚ Pause" : "▶ Briefing";
+        if (audioStatus) {
+          audioStatus.textContent = playing
+            ? "Playing Desk Briefing — Mirkuk Editorial"
+            : "Top News Audio Briefing — Mirkuk Desk";
+        }
+        if (playing && audioFill) {
+          progress = progress >= 95 ? 20 : progress + 18;
+          audioFill.style.width = progress + "%";
+        }
+      });
+    }
   }
 
   if (document.readyState === "loading") {
@@ -293,4 +439,4 @@
     renderProLayout();
   }
 })();
-/* === MIRKUK FULL TOI-INSPIRED BROADSHEET JS END === */
+/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT JS END === */
