@@ -909,3 +909,8 @@
   window.addEventListener("load", () => setTimeout(cleanupExcludedSections, 400));
 })();
 /* === MIRKUK FULL EDITION + WEATHER + LANGUAGE + E-PAPER JS END === */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof MirkukYouTube !== "undefined") {
+    MirkukYouTube.renderVideos("#live-video-stage");
+  }
+});
