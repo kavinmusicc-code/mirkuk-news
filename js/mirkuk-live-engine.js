@@ -1220,3 +1220,90 @@
     }
   });
 })();
+
+(function () {
+  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+  // Extra high-volume feeds so more stories populate across sections
+  const EXTRA_FEEDS = [
+    "https://news.google.com/rss/search?q=breaking+news+india+today&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=global+news+world+affairs&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=business+economy+startup+market&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=technology+ai+science+news&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=cricket+sports+world+news&hl=en-IN&gl=IN&ceid=IN:en"
+  ];
+
+  async function boostStoriesCount() {
+    const gridArea = document.getElementById("mk-grid-area");
+    if (!gridArea) return;
+
+    try {
+      const batches = await Promise.all(
+        EXTRA_FEEDS.map(u =>
+          fetch(RSS_API + encodeURIComponent(u))
+            .then(r => r.json())
+            .then(d => Array.isArray(d.items) ? d.items.map(it => Object.assign({}, it, { __feedTitle: (d.feed && d.feed.title) || "Global Wire" })) : [])
+            .catch(() => [])
+        )
+      );
+
+      const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+      const combined = existing.concat(batches.flat());
+
+      const seen = new Set();
+      const unique = [];
+      for (const it of combined) {
+        const key = (it.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 80);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+
+        const tmp = document.createElement("div");
+        tmp.innerHTML = it.description || "";
+        const parts = (it.title || "").split(" - ");
+        const src = parts.length > 1 ? parts.pop().trim() : (it.__source || it.__feedTitle || "Wire");
+        const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.__cleanTitle || it.title || "").trim();
+
+        unique.push(Object.assign({}, it, {
+          __cleanTitle: cleanT,
+          __source: src,
+          __summary: it.__summary || (tmp.textContent || tmp.innerText || "").trim(),
+          __timeAgo: it.__timeAgo || "Live"
+        }));
+      }
+
+      if (unique.length > existing.length) {
+        window.__mirkukCurrentItems = unique;
+        window.__mirkukAllItemsBackup = unique.slice();
+        window.__mirkukBeastProcessedFor = null;
+
+        gridArea.innerHTML = unique.slice(0, 32).map(it => `
+          <article class="mk-card mk-grid-card">
+            <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+              <img src="${it.__img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+            </a>
+            <div class="mk-grid-body">
+              <div>
+                <span class="mk-cat-tag">${it.__source}</span>
+                <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                <p>${(it.__summary || "").slice(0, 155)}</p>
+              </div>
+              <div class="mk-meta">${it.__timeAgo}</div>
+            </div>
+          </article>
+        `).join("");
+
+        const countEl = document.getElementById("mk-grid-count");
+        if (countEl) {
+          countEl.textContent = `Showing ${Math.min(32, unique.length)} of ${unique.length} live stories`;
+        }
+      }
+    } catch (_) {}
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(boostStoriesCount, 1800);
+    document.querySelectorAll("[data-mk-cat]").forEach(btn => {
+      btn.addEventListener("click", () => setTimeout(boostStoriesCount, 1800));
+    });
+  });
+})();
