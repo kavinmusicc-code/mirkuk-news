@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us — Mirkuk News</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="css/mirkuk-toi-pro.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-left">
+        <span id="current-date" class="current-date">Loading date...</span>
+        <span class="edition-tag">U.S. &amp; Global Edition</span>
+      </div>
+      <div class="topbar-right">
+        <button id="dark-mode-toggle" class="theme-btn" aria-label="Toggle dark mode">
+          <span class="theme-icon">&#9790;</span> <span class="theme-label">Dark Mode</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+        <div class="brand-lockup">
+          <span class="channel-logo" aria-hidden="true">
+            <svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="36" height="36" rx="4" fill="#c1121f"/>
+              <circle cx="20" cy="20" r="11" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+              <ellipse cx="20" cy="20" rx="5.5" ry="11" fill="none" stroke="#ffffff" stroke-width="1.4"/>
+              <line x1="9" y1="20" x2="31" y2="20" stroke="#ffffff" stroke-width="1.4"/>
+              <path d="M11 27 V14 L20 22 L29 14 V27" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/>
+            </svg>
+          </span>
+          <div class="logo-wrap">
+            <a href="../" class="logo">MIRKUK NEWS</a>
+            <p class="tagline">Truth in Print. Clarity in Motion.</p>
+          </div>
+        </div>
+
+      <button id="mobile-menu-btn" class="hamburger" aria-label="Open navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="main-nav" class="main-nav" aria-label="Primary Navigation">
+        <ul>
+          <li><a href="../">Home</a></li>
+          <li><a href="../#latest-news">Latest</a></li>
+          <li><a href="../about" class="active">About</a></li>
+          <li><a href="../privacy">Privacy Policy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-content">
+      <span class="category-badge">INSTITUTIONAL PROFILE</span>
+      <h1 class="page-title">About Mirkuk News</h1>
+
+      <div class="prose-block">
+        <p>
+          Founded on the classic principles of American print journalism, <strong>Mirkuk News</strong> delivers timely, verified, and accessible reporting for readers who value clarity over noise. From municipal council chambers to global financial exchanges, our correspondents cover the stories that shape civic life and everyday decisions.
+        </p>
+        <p>
+          In an era of fragmented headlines and rapid speculation, our newsroom prioritizes primary-source verification, disciplined editing, and transparent corrections. Every dispatch published under the Mirkuk News masthead undergoes multi-tier editorial review before reaching our readers.
+        </p>
+        <p>
+          Operating as a modern digital-first broadsheet, we combine the visual authority of traditional newspaper typography with fast, distraction-free web engineering—ensuring our coverage remains readable on every screen, anywhere in the world.
+        </p>
+
+        <h2>Our Mission</h2>
+        <p>
+          Our mission is to inform the public with accuracy, fairness, and independence. We believe an informed citizenry is the cornerstone of a healthy democracy, and we remain strictly independent of political parties, corporate conglomerates, and special-interest lobbies.
+        </p>
+        <ul class="editorial-pillars">
+          <li><strong>Accuracy First:</strong> Facts are verified across independent sources before publication.</li>
+          <li><strong>Editorial Independence:</strong> News coverage is strictly separated from commercial operations.</li>
+          <li><strong>Reader Respect:</strong> Clean presentation without intrusive clutter or sensationalized clickbait.</li>
+        </ul>
+      </div>
+
+      <div class="page-cta">
+        <a href="../" class="btn-primary">&larr; Return to Front Page</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <h3 class="footer-logo">MIRKUK NEWS</h3>
+        <p>
+          Mirkuk News is an independent American digital newspaper committed to rigorous fact-checking, clear reporting, and public-interest journalism across local and global beats.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Pages</h4>
+        <ul class="footer-links">
+          <li><a href="../">Home</a></li>
+          <li><a href="../#latest-news">Latest Coverage</a></li>
+          <li><a href="../about">About Us</a></li>
+          <li><a href="../contact">Contact</a></li>
+          <li><a href="../privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul class="footer-contact">
+          <li><strong>Newsroom Desk:</strong> newsroom@mirkuknews.com</li>
+          <li><strong>Advertising &amp; Press:</strong> press@mirkuknews.com</li>
+          <li><strong>Headquarters:</strong> 450 Lexington Ave, Suite 1800, New York, NY 10017</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Mirkuk News Media Group. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/script.js"></script>
+  <script src="js/mirkuk-toi-pro.js" defer></script>
+  <script src="js/mirkuk-live-desk.js" defer></script>
+</body>
+</html>
+
+
+
+

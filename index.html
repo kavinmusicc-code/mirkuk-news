@@ -30,6 +30,7 @@
 
       <div class="mk-util-group">
         <span id="mk-live-weather">Delhi &bull; Live</span>
+        <button type="button" id="mk-theme-toggle" class="mk-theme-btn">Dark Mode</button>
         <a href="about/index.html">About</a>
         <a href="contact/index.html" class="mk-btn-sub">Subscribe</a>
       </div>
@@ -136,6 +137,12 @@
         <span><strong>Source Filter:</strong></span>
         <select id="mk-source-filter" class="mk-select" aria-label="Filter by News Source">
           <option value="ALL" selected>All Sources</option>
+        </select>
+                <span><strong>Window:</strong></span>
+        <select id="mk-freshness-filter" class="mk-select" aria-label="Filter by Story Age">
+          <option value="ALL" selected>All Recent</option>
+          <option value="2H">Last 2 Hours</option>
+          <option value="24H">Last 24 Hours</option>
         </select>
         <span id="mk-pulse-stats" class="mk-status-pill">Ready</span>
       </div>
@@ -253,6 +260,7 @@
 </div>
 </body>
 </html>
+
 
 
 

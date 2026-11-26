@@ -1039,3 +1039,79 @@
     });
   });
 })();
+
+(function () {
+  const THEME_KEY = "mirkuk_theme_mode_v1";
+
+  function applySavedTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    const btn = document.getElementById("mk-theme-toggle");
+    if (saved === "dark") {
+      document.body.classList.add("mk-dark-mode");
+      if (btn) btn.textContent = "Light Mode";
+    } else {
+      document.body.classList.remove("mk-dark-mode");
+      if (btn) btn.textContent = "Dark Mode";
+    }
+  }
+
+  function applyFreshnessWindow(winCode) {
+    const all = window.__mirkukAllItemsBackup || window.__mirkukCurrentItems || [];
+    if (!window.__mirkukAllItemsBackup && all.length) {
+      window.__mirkukAllItemsBackup = all.slice();
+    }
+    const base = window.__mirkukAllItemsBackup || [];
+    if (!base.length) return;
+
+    const now = Date.now();
+    const maxAgeMs = winCode === "2H" ? 2 * 3600 * 1000 : (winCode === "24H" ? 24 * 3600 * 1000 : Infinity);
+    const filtered = maxAgeMs === Infinity
+      ? base.slice()
+      : base.filter(it => {
+          const t = new Date(it.pubDate).getTime();
+          return !isNaN(t) && (now - t) <= maxAgeMs;
+        });
+
+    const chosen = filtered.length ? filtered : base.slice();
+    window.__mirkukCurrentItems = chosen;
+
+    const gridArea = document.getElementById("mk-grid-area");
+    if (gridArea) {
+      gridArea.innerHTML = chosen.slice(0, 16).map(it => `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${it.__source || "Wire"}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle || it.title}</a></h3>
+              <p>${(it.__summary || "").slice(0, 155)}</p>
+            </div>
+            <div class="mk-meta">${it.__timeAgo || "Live"}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    applySavedTheme();
+
+    const themeBtn = document.getElementById("mk-theme-toggle");
+    if (themeBtn) {
+      themeBtn.addEventListener("click", function () {
+        const isDark = document.body.classList.toggle("mk-dark-mode");
+        localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+        themeBtn.textContent = isDark ? "Light Mode" : "Dark Mode";
+      });
+    }
+
+    const freshSel = document.getElementById("mk-freshness-filter");
+    if (freshSel) {
+      freshSel.addEventListener("change", function () {
+        applyFreshnessWindow(this.value);
+      });
+    }
+  });
+})();

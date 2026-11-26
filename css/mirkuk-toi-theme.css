@@ -883,3 +883,52 @@ a:hover { color: var(--mk-red); }
   font-size: 10.5px;
   font-weight: 700;
 }
+
+/* Dark Reading Mode & Freshness Controls */
+body.mk-dark-mode {
+  --mk-bg: #0e1116;
+  --mk-surface: #161b22;
+  --mk-ink: #f0f6fc;
+  --mk-body: #d0d7de;
+  --mk-muted: #9aa5b1;
+  --mk-border: #262e38;
+  --mk-hairline: #1f2630;
+}
+
+body.mk-dark-mode .mk-in-the-news,
+body.mk-dark-mode .mk-select,
+body.mk-dark-mode .mk-search,
+body.mk-dark-mode .mk-chip,
+body.mk-dark-mode .mk-save-btn,
+body.mk-dark-mode .mk-pulse-bar,
+body.mk-dark-mode .mk-reader-panel,
+body.mk-dark-mode .mk-related-card {
+  background: #161b22;
+  color: #f0f6fc;
+  border-color: #30363d;
+}
+
+body.mk-dark-mode .mk-search input {
+  color: #f0f6fc;
+}
+
+body.mk-dark-mode .mk-read-pill {
+  background: #21262d;
+  color: #c9d1d9;
+}
+
+.mk-theme-btn {
+  background: #21262d;
+  color: #ffffff;
+  border: 1px solid #3b424c;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-theme-btn:hover {
+  background: var(--mk-red);
+  border-color: var(--mk-red);
+}
