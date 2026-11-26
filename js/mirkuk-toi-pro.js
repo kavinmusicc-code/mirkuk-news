@@ -1,5 +1,73 @@
-﻿/* === MIRKUK SAFE BROADSHEET DESIGN JS START === */
+﻿/* === MIRKUK FULL EDITION + WEATHER + LANGUAGE + E-PAPER JS START === */
 (function () {
+  const EDITIONS = [
+    { code: "IN", label: "India", city: "Delhi", temp: "19°C", sky: "Sunny" },
+    { code: "US", label: "United States", city: "New York", temp: "11°C", sky: "Clear" },
+    { code: "GB", label: "United Kingdom", city: "London", temp: "9°C", sky: "Overcast" },
+    { code: "CA", label: "Canada", city: "Toronto", temp: "4°C", sky: "Breezy" },
+    { code: "AU", label: "Australia", city: "Sydney", temp: "24°C", sky: "Sunny" },
+    { code: "AE", label: "UAE", city: "Dubai", temp: "27°C", sky: "Clear" },
+    { code: "SG", label: "Singapore", city: "Singapore", temp: "30°C", sky: "Partly Cloudy" },
+    { code: "DE", label: "Germany", city: "Berlin", temp: "6°C", sky: "Cloudy" },
+    { code: "JP", label: "Japan", city: "Tokyo", temp: "14°C", sky: "Clear" },
+    { code: "KR", label: "South Korea", city: "Seoul", temp: "8°C", sky: "Crisp" }
+  ];
+
+  const LANGUAGES = [
+    { code: "en", label: "English" },
+    { code: "hi", label: "हिन्दी (Hindi)" },
+    { code: "es", label: "Español" },
+    { code: "fr", label: "Français" },
+    { code: "de", label: "Deutsch" },
+    { code: "ja", label: "日本語" },
+    { code: "ko", label: "한국어" }
+  ];
+
+  const UI_STRINGS = {
+    en: {
+      sub: "Global & India Broadsheet",
+      leadTitle: "Mirkuk News: Complete Edition Across India & Global Desks",
+      leadSummary: "Switch editions, languages, view local weather, or open Read E-Paper anytime.",
+      epaperBtn: "Read E-Paper"
+    },
+    hi: {
+      sub: "ग्लोबल और भारत ब्रॉडशीट",
+      leadTitle: "मिरकुक न्यूज़: भारत और ग्लोबल डेस्क का पूरा एडिशन",
+      leadSummary: "एडिशन और भाषा बदलें, मौसम देखें या ई-पेपर पढ़ें।",
+      epaperBtn: "ई-पेपर पढ़ें"
+    },
+    es: {
+      sub: "Edición Global e India",
+      leadTitle: "Mirkuk News: Edición Completa en India y el Mundo",
+      leadSummary: "Cambia de edición e idioma, consulta el clima o abre el E-Paper.",
+      epaperBtn: "Leer E-Paper"
+    },
+    fr: {
+      sub: "Édition Mondiale & Inde",
+      leadTitle: "Mirkuk News : Édition Complète Inde & International",
+      leadSummary: "Changez d'édition et de langue, consultez la météo ou ouvrez l'E-Paper.",
+      epaperBtn: "Lire l'E-Paper"
+    },
+    de: {
+      sub: "Globale & Indien-Ausgabe",
+      leadTitle: "Mirkuk News: Komplette Ausgabe für Indien & Welt",
+      leadSummary: "Ausgabe und Sprache wechseln, Wetter prüfen oder E-Paper öffnen.",
+      epaperBtn: "E-Paper lesen"
+    },
+    ja: {
+      sub: "グローバル＆インド版",
+      leadTitle: "Mirkuk News：インドと世界の最新エディション",
+      leadSummary: "地域版と言語の切り替え、天気確認、Eペーパー閲覧が可能です。",
+      epaperBtn: "Eペーパーを読む"
+    },
+    ko: {
+      sub: "글로벌 & 인도 에디션",
+      leadTitle: "Mirkuk News: 인도 및 글로벌 종합 에디션",
+      leadSummary: "에디션과 언어를 바꾸고 날씨 확인 및 E-페이퍼를 읽을 수 있습니다.",
+      epaperBtn: "E-페이퍼 보기"
+    }
+  };
+
   const TOP_CATEGORIES = [
     "Videos",
     "India",
@@ -148,12 +216,32 @@
     cleanupExcludedSections();
     if (document.getElementById("mk-pro-masthead")) return;
 
+    const savedEd = EDITIONS.find((e) => e.code === localStorage.getItem("mk_ed")) || EDITIONS[0];
+    const savedLang = localStorage.getItem("mk_lang") || "en";
+
     const masthead = document.createElement("header");
     masthead.id = "mk-pro-masthead";
     masthead.className = "mk-masthead";
     masthead.innerHTML = `
+      <div class="mk-utility-bar">
+        <div class="mk-utility-inner">
+          <div class="mk-util-group">
+            <span><strong>Edition:</strong></span>
+            <select id="mk-edition-select" class="mk-select-control" aria-label="Select Edition"></select>
+            <span><strong>Language:</strong></span>
+            <select id="mk-lang-select" class="mk-select-control" aria-label="Select Language"></select>
+          </div>
+          <div class="mk-util-group">
+            <span class="mk-weather-pill" id="mk-weather-badge">
+              <strong id="mk-loc-city">${savedEd.city}</strong> · <span id="mk-loc-temp">${savedEd.temp}</span> (<span id="mk-loc-sky">${savedEd.sky}</span>)
+            </span>
+            <button type="button" class="mk-mini-action-btn" id="mk-gps-btn">Use My Location</button>
+            <button type="button" class="mk-epaper-btn" id="mk-epaper-toggle">Read E-Paper</button>
+          </div>
+        </div>
+      </div>
       <div class="mk-brand-center">
-        <div class="mk-brand-sub">Global &amp; India Broadsheet</div>
+        <div class="mk-brand-sub" id="mk-brand-sub">${(UI_STRINGS[savedLang] || UI_STRINGS.en).sub} · ${savedEd.label}</div>
         <h1 class="mk-brand-title">Mirkuk News</h1>
       </div>
       <nav class="mk-cat-bar" aria-label="Categories">
@@ -170,6 +258,81 @@
       banner.parentNode.insertBefore(masthead, banner.nextSibling);
     } else {
       document.body.insertBefore(masthead, document.body.firstChild);
+    }
+
+    const editionSelect = document.getElementById("mk-edition-select");
+    const langSelect = document.getElementById("mk-lang-select");
+    const locCityEl = document.getElementById("mk-loc-city");
+    const locTempEl = document.getElementById("mk-loc-temp");
+    const locSkyEl = document.getElementById("mk-loc-sky");
+    const brandSubEl = document.getElementById("mk-brand-sub");
+    const gpsBtn = document.getElementById("mk-gps-btn");
+
+    EDITIONS.forEach((ed) => {
+      const opt = document.createElement("option");
+      opt.value = ed.code;
+      opt.textContent = ed.label;
+      if (ed.code === savedEd.code) opt.selected = true;
+      editionSelect.appendChild(opt);
+    });
+
+    LANGUAGES.forEach((lg) => {
+      const opt = document.createElement("option");
+      opt.value = lg.code;
+      opt.textContent = lg.label;
+      if (lg.code === savedLang) opt.selected = true;
+      langSelect.appendChild(opt);
+    });
+
+    function applyLocaleAndEdition() {
+      const ed = EDITIONS.find((e) => e.code === editionSelect.value) || EDITIONS[0];
+      const lgCode = langSelect.value || "en";
+      const str = UI_STRINGS[lgCode] || UI_STRINGS.en;
+
+      localStorage.setItem("mk_ed", ed.code);
+      localStorage.setItem("mk_lang", lgCode);
+
+      if (locCityEl) locCityEl.textContent = ed.city;
+      if (locTempEl) locTempEl.textContent = ed.temp;
+      if (locSkyEl) locSkyEl.textContent = ed.sky;
+      if (brandSubEl) brandSubEl.textContent = `${str.sub} · ${ed.label}`;
+
+      const leadTitleEl = document.getElementById("mk-lead-title");
+      const leadSummaryEl = document.getElementById("mk-lead-summary");
+      const epaperBtnEl = document.getElementById("mk-epaper-toggle");
+      const epaperEditionLabel = document.getElementById("mk-epaper-edition");
+
+      if (leadTitleEl) leadTitleEl.textContent = str.leadTitle;
+      if (leadSummaryEl) leadSummaryEl.textContent = str.leadSummary;
+      if (epaperBtnEl) epaperBtnEl.textContent = str.epaperBtn;
+      if (epaperEditionLabel) epaperEditionLabel.textContent = `${ed.label} (${ed.city})`;
+    }
+
+    editionSelect.addEventListener("change", applyLocaleAndEdition);
+    langSelect.addEventListener("change", applyLocaleAndEdition);
+
+    if (gpsBtn) {
+      gpsBtn.addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          if (locCityEl) locCityEl.textContent = "Delhi";
+          return;
+        }
+        gpsBtn.textContent = "Locating...";
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude.toFixed(2);
+            const lon = pos.coords.longitude.toFixed(2);
+            if (locCityEl) locCityEl.textContent = `Near (${lat}, ${lon})`;
+            if (locTempEl) locTempEl.textContent = "20°C";
+            if (locSkyEl) locSkyEl.textContent = "Clear";
+            gpsBtn.textContent = "Use My Location";
+          },
+          () => {
+            if (locCityEl) locCityEl.textContent = "Delhi";
+            gpsBtn.textContent = "Use My Location";
+          }
+        );
+      });
     }
 
     const catButtonsWrap = document.getElementById("mk-cat-buttons");
@@ -205,12 +368,11 @@
     const countryBtn = document.createElement("button");
     countryBtn.type = "button";
     countryBtn.setAttribute("role", "menuitem");
-    countryBtn.textContent = "Browse 195 Countries";
+    countryBtn.textContent = "Browse All Editions";
     countryBtn.addEventListener("click", () => {
       moreMenu.classList.remove("is-open");
       moreBtn.classList.remove("is-open");
-      const openCountries = document.getElementById("mirkuk-open-countries-btn");
-      if (openCountries) openCountries.click();
+      editionSelect.focus();
     });
     moreMenu.appendChild(countryBtn);
 
@@ -303,17 +465,36 @@
       (tag) => `<button type="button" class="mk-focus-pill" data-topic="${tag}">${tag}</button>`
     ).join("");
 
+    const initStr = UI_STRINGS[savedLang] || UI_STRINGS.en;
+
     frontWrap.innerHTML = `
+      <div class="mk-epaper-panel" id="mk-epaper-panel" aria-label="Mirkuk E-Paper Reader">
+        <div class="mk-epaper-head">
+          <div>
+            <strong>Mirkuk E-Paper</strong> — Edition: <span id="mk-epaper-edition">${savedEd.label} (${savedEd.city})</span> · Page <span id="mk-epaper-page-num">1</span> of 4
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="mk-mini-action-btn" id="mk-epaper-prev">← Prev Page</button>
+            <button type="button" class="mk-mini-action-btn" id="mk-epaper-next">Next Page →</button>
+            <button type="button" class="mk-mini-action-btn" id="mk-epaper-close">Close</button>
+          </div>
+        </div>
+        <div class="mk-epaper-sheet" id="mk-epaper-sheet">
+          <h4 id="mk-epaper-page-title" style="margin:0 0 8px;font-family:Georgia,serif;font-size:18px;">Page 1 — Front Desk &amp; National Briefs</h4>
+          <p id="mk-epaper-page-body" style="margin:0;font-size:13px;line-height:1.55;color:#555e68;">
+            Browse structured broadsheet pages by edition. Switch pages above to read desk summaries across India, Business, Tech, and Lifestyle.
+          </p>
+        </div>
+      </div>
+
       <div class="mk-front-grid">
         <aside class="mk-side-rail" aria-label="Category Highlights">${leftHtml}</aside>
         <main class="mk-lead-story">
-          <h2 class="mk-lead-headline">Mirkuk News: Clean Broadsheet Edition Across India &amp; Global Desks</h2>
+          <h2 class="mk-lead-headline" id="mk-lead-title">${initStr.leadTitle}</h2>
           <div class="mk-lead-media">
             <img src="mirkuk-news/images/hero.jpg" alt="Mirkuk News Lead" onerror="this.style.display='none';" />
           </div>
-          <p class="mk-lead-summary">
-            Read top stories across Videos, India, World, Business, Tech, Gadgets Now, Cricket, Sports, Entertainment, Auto, Travel, and TV.
-          </p>
+          <p class="mk-lead-summary" id="mk-lead-summary">${initStr.leadSummary}</p>
         </main>
         <aside class="mk-right-panel" aria-label="Featured Highlights">
           <div>
@@ -568,153 +749,44 @@
       </div>
 
       <div class="mk-section-block">
-        <div class="mk-section-head-row">
-          <div>
-            <h3 class="mk-section-heading-link" data-topic="Education">Education &gt;</h3>
-            <div class="mk-sub-inline-links" style="margin-left:0;">
-              <span data-topic="Education">Featured</span>
-              <span data-topic="Education">Exams</span>
-              <span data-topic="Education">Results</span>
-              <span data-topic="Business">Jobs</span>
-              <span data-topic="World">Study Abroad</span>
+        <div class="mk-three-desk-grid">
+          <div class="mk-desk-col">
+            <h3 class="mk-section-heading-link" data-topic="Travel">Travel &gt;</h3>
+            <div class="mk-desk-lead-card" data-topic="Travel">
+              <img src="mirkuk-news/images/weather.jpg" alt="Travel" onerror="this.style.display='none';" />
+              <h4>Smart route &amp; seasonal trip planning notes</h4>
             </div>
-          </div>
-        </div>
-        <div class="mk-ent-three-grid">
-          <div class="mk-photo-story" data-topic="Education">
-            <img src="mirkuk-news/images/local.jpg" alt="Education Lead" style="height:150px;" onerror="this.style.display='none';" />
-            <h4 style="margin-top:8px;">Student initiatives, learning paths &amp; skill programs</h4>
-          </div>
-          <ul class="mk-desk-list">
-            <li data-topic="Education">Open &amp; flexible study schedules for self-paced learners</li>
-            <li data-topic="Tech">Practical coding &amp; web portfolios for beginners</li>
-            <li data-topic="Business">Career &amp; skill-building checklists</li>
-            <li data-topic="Education">Exam dates, notices &amp; study guides</li>
-          </ul>
-          <div class="mk-side-video-stack">
-            <h4 class="mk-flat-panel-title">Study Highlights</h4>
             <ul class="mk-desk-list">
-              <li data-topic="Tech">Front-end fundamentals</li>
-              <li data-topic="Education">Self-study routines</li>
+              <li data-topic="Travel">Packing light &amp; weather tips</li>
+              <li data-topic="India">Weekend getaway ideas &amp; guides</li>
+            </ul>
+          </div>
+          <div class="mk-desk-col">
+            <h3 class="mk-section-heading-link" data-topic="Auto">Auto &gt;</h3>
+            <div class="mk-desk-lead-card" data-topic="Auto">
+              <img src="mirkuk-news/images/local.jpg" alt="Auto" onerror="this.style.display='none';" />
+              <h4>Commute efficiency, EV notes &amp; road updates</h4>
+            </div>
+            <ul class="mk-desk-list">
+              <li data-topic="Auto">Maintenance habits for longer vehicle life</li>
+              <li data-topic="India">City traffic &amp; transit updates</li>
+            </ul>
+          </div>
+          <div class="mk-desk-col">
+            <h3 class="mk-section-heading-link" data-topic="Cricket">Cricket &amp; Sports &gt;</h3>
+            <div class="mk-desk-lead-card" data-topic="Cricket">
+              <img src="mirkuk-news/images/sports.jpg" alt="Cricket & Sports" onerror="this.style.display='none';" />
+              <h4>Match reports, series notes &amp; key performances</h4>
+            </div>
+            <ul class="mk-desk-list">
+              <li data-topic="Cricket">Top moments &amp; squad updates</li>
+              <li data-topic="Sports">International &amp; domestic fixtures</li>
             </ul>
           </div>
         </div>
         <div class="mk-focus-row">
           <span class="mk-focus-label">In Focus</span>
           ${focusHtml}
-        </div>
-      </div>
-
-      <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="Defence">Defence &gt;</h3>
-        <div class="mk-six-grid">${sixStripHtml}</div>
-      </div>
-
-      <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="India">From Across Desk &gt;</h3>
-        <div class="mk-ent-three-grid">
-          <div class="mk-photo-story" data-topic="India">
-            <img src="mirkuk-news/images/hero.jpg" alt="Across Desk" style="height:150px;" onerror="this.style.display='none';" />
-            <h4 style="margin-top:8px;">Notable human-interest &amp; regional stories</h4>
-          </div>
-          <ul class="mk-desk-list">
-            <li data-topic="Lifestyle">Focus habits &amp; everyday decision making</li>
-            <li data-topic="Business">Independent journeys &amp; local enterprise</li>
-            <li data-topic="India">Community milestones across cities</li>
-            <li data-topic="Tech">Digital habits &amp; online attention</li>
-          </ul>
-          <div class="mk-side-video-stack">
-            <div class="mk-side-video-row" data-topic="Entertainment">
-              <img src="mirkuk-news/images/culture.jpg" alt="Story 1" onerror="this.style.display='none';" />
-              <span>Creative &amp; stage profiles</span>
-            </div>
-            <div class="mk-side-video-row" data-topic="Lifestyle">
-              <img src="mirkuk-news/images/arts.jpg" alt="Story 2" onerror="this.style.display='none';" />
-              <span>Mindful habits &amp; culture notes</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="Travel">Travel &gt;</h3>
-        <div class="mk-ent-three-grid">
-          <div class="mk-photo-story" data-topic="Travel">
-            <img src="mirkuk-news/images/weather.jpg" alt="Travel Lead" style="height:150px;" onerror="this.style.display='none';" />
-            <h4 style="margin-top:8px;">Rail, route &amp; seasonal trip guides</h4>
-          </div>
-          <ul class="mk-desk-list">
-            <li data-topic="Travel">Planning smooth multi-stop journeys</li>
-            <li data-topic="India">Scenic routes &amp; regional travel notes</li>
-            <li data-topic="Travel">Festivals &amp; seasonal trips to watch</li>
-            <li data-topic="World">Passport, visa &amp; transit tips</li>
-          </ul>
-          <div class="mk-side-video-stack">
-            <h4 class="mk-flat-panel-title">Trip Checklist</h4>
-            <p style="margin:0;font-size:12px;color:#555e68;">
-              Keep digital copies of tickets, check weather forecasts, and pack light for smooth travel.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="Recipes & Food News">Recipes &amp; Food News &gt;</h3>
-        <div class="mk-sub-inline-links" style="margin-left:0;margin-bottom:10px;">
-          <span data-topic="Recipes & Food News">Featured</span>
-          <span data-topic="Recipes & Food News">Recipes</span>
-          <span data-topic="Recipes & Food News">Food News</span>
-          <span data-topic="Recipes & Food News">Recipes Videos</span>
-        </div>
-        <div class="mk-ent-three-grid">
-          <div>
-            <div class="mk-photo-story" data-topic="Recipes & Food News">
-              <img src="mirkuk-news/images/arts.jpg" alt="Food Lead" style="height:140px;" onerror="this.style.display='none';" />
-              <h4 style="margin-top:8px;">Refreshing drinks &amp; quick kitchen ideas</h4>
-            </div>
-          </div>
-          <ul class="mk-desk-list">
-            <li data-topic="Recipes & Food News">Quick snacks &amp; simple everyday meals</li>
-            <li data-topic="Recipes & Food News">Warm soups &amp; spiced beverage ideas</li>
-            <li data-topic="Recipes & Food News">Easy desserts &amp; home kitchen tips</li>
-          </ul>
-          <div class="mk-side-video-stack">
-            <div class="mk-side-video-row" data-topic="Recipes & Food News">
-              <img src="mirkuk-news/images/arts.jpg" alt="Recipe 1" onerror="this.style.display='none';" />
-              <span>Spiced Tea &amp; Evening Snacks</span>
-            </div>
-            <div class="mk-side-video-row" data-topic="Recipes & Food News">
-              <img src="mirkuk-news/images/arts.jpg" alt="Recipe 2" onerror="this.style.display='none';" />
-              <span>Crispy Homemade Chips &amp; Sides</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="Opinion And Features">Opinion And Features &gt;</h3>
-        <div class="mk-sub-inline-links" style="margin-left:0;margin-bottom:10px;">
-          <span data-topic="Opinion And Features">Featured</span>
-          <span data-topic="Business">Viewpoints</span>
-          <span data-topic="Opinion And Features">Blogs</span>
-          <span data-topic="Tech">Q&amp;A</span>
-        </div>
-        <div class="mk-ent-three-grid">
-          <div class="mk-photo-story" data-topic="Opinion And Features">
-            <img src="mirkuk-news/images/local.jpg" alt="Opinion Lead" style="height:145px;" onerror="this.style.display='none';" />
-            <h4 style="margin-top:8px;">Essays &amp; columns on public policy and society</h4>
-          </div>
-          <ul class="mk-desk-list">
-            <li data-topic="Tech">Technology leadership &amp; global shifts</li>
-            <li data-topic="Business">Skills, work &amp; career perspectives</li>
-            <li data-topic="India">Independent thinking &amp; civic debate</li>
-          </ul>
-          <div class="mk-side-video-stack">
-            <h4 class="mk-flat-panel-title">Editorial Note</h4>
-            <p style="margin:0;font-size:12px;color:#555e68;">
-              Clear, structured columns covering technology, work, culture, and everyday life.
-            </p>
-          </div>
         </div>
       </div>
 
@@ -759,6 +831,53 @@
 
     masthead.insertAdjacentElement("afterend", frontWrap);
 
+    const epaperToggle = document.getElementById("mk-epaper-toggle");
+    const epaperPanel = document.getElementById("mk-epaper-panel");
+    const epaperClose = document.getElementById("mk-epaper-close");
+    const epaperPrev = document.getElementById("mk-epaper-prev");
+    const epaperNext = document.getElementById("mk-epaper-next");
+    const epaperPageNum = document.getElementById("mk-epaper-page-num");
+    const epaperPageTitle = document.getElementById("mk-epaper-page-title");
+    const epaperPageBody = document.getElementById("mk-epaper-page-body");
+
+    const EPAPER_PAGES = [
+      { title: "Page 1 — Front Desk & National Briefs", body: "Key highlights across national policy, public updates, and major developments in the selected edition." },
+      { title: "Page 2 — Business, Markets & Economy", body: "Commerce notes, small-business trends, regional enterprise updates, and global trade briefs." },
+      { title: "Page 3 — Tech, Gadgets & Digital Life", body: "Lightweight web builds, developer setups, device comparisons, and practical tech tips." },
+      { title: "Page 4 — Culture, Travel & Weekend Digest", body: "Entertainment spotlights, travel route ideas, seasonal tips, and curated desk columns." }
+    ];
+
+    let currentPage = 0;
+
+    function renderEpaperPage() {
+      const p = EPAPER_PAGES[currentPage] || EPAPER_PAGES[0];
+      if (epaperPageNum) epaperPageNum.textContent = String(currentPage + 1);
+      if (epaperPageTitle) epaperPageTitle.textContent = p.title;
+      if (epaperPageBody) epaperPageBody.textContent = p.body;
+    }
+
+    if (epaperToggle && epaperPanel) {
+      epaperToggle.addEventListener("click", () => {
+        epaperPanel.classList.toggle("is-open");
+        renderEpaperPage();
+      });
+    }
+    if (epaperClose && epaperPanel) {
+      epaperClose.addEventListener("click", () => epaperPanel.classList.remove("is-open"));
+    }
+    if (epaperPrev) {
+      epaperPrev.addEventListener("click", () => {
+        currentPage = (currentPage - 1 + EPAPER_PAGES.length) % EPAPER_PAGES.length;
+        renderEpaperPage();
+      });
+    }
+    if (epaperNext) {
+      epaperNext.addEventListener("click", () => {
+        currentPage = (currentPage + 1) % EPAPER_PAGES.length;
+        renderEpaperPage();
+      });
+    }
+
     const audioBtn = document.getElementById("mk-audio-toggle");
     const audioStatus = document.getElementById("mk-audio-status");
     const audioFill = document.getElementById("mk-audio-fill");
@@ -789,4 +908,4 @@
   }
   window.addEventListener("load", () => setTimeout(cleanupExcludedSections, 400));
 })();
-/* === MIRKUK SAFE BROADSHEET DESIGN JS END === */
+/* === MIRKUK FULL EDITION + WEATHER + LANGUAGE + E-PAPER JS END === */

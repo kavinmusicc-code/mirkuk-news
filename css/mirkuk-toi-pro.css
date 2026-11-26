@@ -1,12 +1,15 @@
-﻿/* === MIRKUK SAFE BROADSHEET DESIGN CSS START === */
+﻿/* === MIRKUK FULL EDITION + WEATHER + LANGUAGE + E-PAPER CSS START === */
 :root {
   --mk-ink: #111315;
   --mk-muted: #555e68;
-  --mk-line: #e3e6ea;
+  --mk-line: #dfe3e8;
+  --mk-soft: #f5f7f9;
   --mk-bg: #ffffff;
   --mk-accent: #c8102e;
+  --mk-navy: #14213d;
 }
 
+/* Keep excluded sections hidden */
 #mk-live-desk-box,
 [data-section="24-7-live"],
 [data-section="global-stock-market"],
@@ -19,14 +22,95 @@
   display: none !important;
 }
 
+/* Top Utility Bar: Edition, Language, Location, Weather, Read E-Paper */
 .mk-masthead {
   background: var(--mk-bg);
   border-bottom: 1px solid var(--mk-line);
   position: sticky;
   top: 0;
-  z-index: 600;
+  z-index: 650;
 }
 
+.mk-utility-bar {
+  border-bottom: 1px solid var(--mk-line);
+  background: #fafbfc;
+  font-size: 12px;
+  color: var(--mk-ink);
+}
+
+.mk-utility-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mk-util-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mk-select-control {
+  background: var(--mk-bg);
+  border: 1px solid #cfd5dd;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mk-ink);
+  cursor: pointer;
+}
+
+.mk-weather-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--mk-bg);
+  border: 1px solid var(--mk-line);
+  border-radius: 3px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mk-epaper-btn {
+  background: var(--mk-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-epaper-btn:hover {
+  background: #a50c24;
+}
+
+.mk-mini-action-btn {
+  background: var(--mk-bg);
+  color: var(--mk-ink);
+  border: 1px solid #cfd5dd;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mk-mini-action-btn:hover {
+  border-color: var(--mk-accent);
+  color: var(--mk-accent);
+}
+
+/* Centered Brand Masthead */
 .mk-brand-center {
   text-align: center;
   padding: 12px 16px 8px;
@@ -45,13 +129,14 @@
 .mk-brand-title {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(24px, 3.4vw, 36px);
+  font-size: clamp(25px, 3.6vw, 38px);
   font-weight: 800;
   letter-spacing: 0.03em;
   color: var(--mk-ink);
   line-height: 1.05;
 }
 
+/* Category Navigation Strip */
 .mk-cat-bar {
   max-width: 1240px;
   margin: 0 auto;
@@ -94,7 +179,7 @@
   position: absolute;
   right: 0;
   top: calc(100% + 6px);
-  width: 210px;
+  width: 220px;
   background: var(--mk-bg);
   border: 1px solid var(--mk-line);
   border-top: 2px solid var(--mk-accent);
@@ -126,6 +211,40 @@
   font-weight: 600;
 }
 
+/* E-Paper Drawer / Reader */
+.mk-epaper-panel {
+  display: none;
+  max-width: 1240px;
+  margin: 12px auto 0;
+  padding: 16px;
+  background: #fdfdfd;
+  border: 1px solid var(--mk-line);
+  border-left: 4px solid var(--mk-accent);
+  border-radius: 3px;
+}
+
+.mk-epaper-panel.is-open {
+  display: block;
+}
+
+.mk-epaper-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--mk-line);
+}
+
+.mk-epaper-sheet {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--mk-bg);
+  border: 1px solid var(--mk-line);
+}
+
+/* Main Broadsheet Container */
 .mk-editorial-wrap {
   max-width: 1240px;
   margin: 0 auto;
@@ -822,4 +941,4 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-/* === MIRKUK SAFE BROADSHEET DESIGN CSS END === */
+/* === MIRKUK FULL EDITION + WEATHER + LANGUAGE + E-PAPER CSS END === */
