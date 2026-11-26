@@ -949,3 +949,14 @@ button[aria-label*="Dark" i] {
   color: #616e7c;
   white-space: nowrap;
 }
+
+.edition-bar,
+.editions-bar,
+[class*="edition"],
+[class*="dark-mode"],
+[id*="dark-mode"],
+[class*="stock-ticker"],
+[id*="stock-ticker"],
+[class*="live-wire"] {
+  display: none !important;
+}

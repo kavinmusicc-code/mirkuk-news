@@ -209,21 +209,7 @@
 
     <!-- On-Page Country Live Video & News Desk -->
   
-<section id="featured-videos" class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
-  <article class="mirkuk-lead-story">
-    <span class="kicker">NEWS DESK</span>
-    <h2>Live Headlines &amp; Ground Reports Across Regions</h2>
-    
-    <p>Latest regional updates, policy shifts, markets, and video coverage curated on Mirkuk News.</p>
-    <div class="mirkuk-bottom-strip">
-      Top Briefing &amp; Video Highlights on Mirkuk News
-    </div>
-  </article>
 
-  <aside class="mirkuk-sidebar-ad" aria-label="Advertisement">
-    <div id="mirkuk-side-ad-box">Sponsor / Ad Slot</div>
-  </aside>
-</section>
 
 <section class="mirkuk-featured-videos" aria-label="Featured Videos">
   <h3>Featured Videos</h3>
@@ -231,21 +217,7 @@
 </section>
 
 
-<section id="featured-videos" class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
-  <article class="mirkuk-lead-story">
-    <span class="kicker">NEWS DESK</span>
-    <h2>Live Headlines &amp; Ground Reports Across Regions</h2>
-    
-    <p>Latest regional updates, policy shifts, markets, and video coverage curated on Mirkuk News.</p>
-    <div class="mirkuk-bottom-strip">
-      Top Briefing &amp; Video Highlights on Mirkuk News
-    </div>
-  </article>
 
-  <aside class="mirkuk-sidebar-ad" aria-label="Advertisement">
-    <div id="mirkuk-side-ad-box">Sponsor / Ad Slot</div>
-  </aside>
-</section>
 
 <section class="mirkuk-featured-videos" aria-label="Featured Videos">
   <h3>Featured Videos</h3>
@@ -315,62 +287,7 @@
     </section>
   </main>
 
-  <section id="mirkuk-newest-stream" class="mirkuk-feed-stack-wrap" aria-label="Latest Updates Stream">
-  <div class="mirkuk-feed-panel">
-    <div class="mirkuk-feed-header">
-      <h3>Latest Updates (Newest First)</h3>
-      <span style="font-size:12px; color:#555e68;">New items appear at the top; older updates move down</span>
-    </div>
-    <div id="mirkuk-feed-list" class="mirkuk-feed-list">
-      <article class="mirkuk-feed-item">
-        <div>
-          <span class="mirkuk-feed-tag">LATEST</span>
-          <h4 class="mirkuk-feed-title">Regional &amp; National Desk Updates Live on Mirkuk News</h4>
-        </div>
-        <span class="mirkuk-feed-meta">Just now</span>
-      </article>
-      <article class="mirkuk-feed-item">
-        <div>
-          <span class="mirkuk-feed-tag">PREVIOUS</span>
-          <h4 class="mirkuk-feed-title">Markets, Policy &amp; Ground Reports Archive</h4>
-        </div>
-        <span class="mirkuk-feed-meta">Earlier</span>
-      </article>
-    </div>
-  </div>
-</section>
-
-<script>
-window.MirkukFeed = window.MirkukFeed || {
-  pushTop: function (title, tag, meta) {
-    var list = document.getElementById("mirkuk-feed-list");
-    if (!list || !title) return;
-    var art = document.createElement("article");
-    art.className = "mirkuk-feed-item";
-
-    var left = document.createElement("div");
-    var spanTag = document.createElement("span");
-    spanTag.className = "mirkuk-feed-tag";
-    spanTag.textContent = tag || "UPDATE";
-
-    var h4 = document.createElement("h4");
-    h4.className = "mirkuk-feed-title";
-    h4.textContent = title;
-
-    var spanMeta = document.createElement("span");
-    spanMeta.className = "mirkuk-feed-meta";
-    spanMeta.textContent = meta || "Updated";
-
-    left.appendChild(spanTag);
-    left.appendChild(h4);
-    art.appendChild(left);
-    art.appendChild(spanMeta);
-
-    // Sabse upar insert karega aur purane items ko niche bhej dega
-    list.insertBefore(art, list.firstChild);
-  }
-};
-</script>
+  
 
 <footer class="site-footer">
     <div class="container footer-grid">
@@ -427,157 +344,23 @@ window.MirkukFeed = window.MirkukFeed || {
   <script src="js/mirkuk-toi-cards-menu.js" defer></script>
   <script src="js/mirkuk-toi-pro.js" defer></script>
   <script src="js/mirkuk-live-desk.js" defer></script>
-<section id="mirkuk-newest-stream" class="mirkuk-feed-stack-wrap" aria-label="Latest Updates Stream">
-  <div class="mirkuk-feed-panel">
-    <div class="mirkuk-feed-header">
-      <h3>Latest Updates (Newest First)</h3>
-      <span style="font-size:12px; color:#555e68;">New items appear at the top; older updates move down</span>
-    </div>
-    <div id="mirkuk-feed-list" class="mirkuk-feed-list">
-      <article class="mirkuk-feed-item">
-        <div>
-          <span class="mirkuk-feed-tag">LATEST</span>
-          <h4 class="mirkuk-feed-title">Regional &amp; National Desk Updates Live on Mirkuk News</h4>
-        </div>
-        <span class="mirkuk-feed-meta">Just now</span>
-      </article>
-      <article class="mirkuk-feed-item">
-        <div>
-          <span class="mirkuk-feed-tag">PREVIOUS</span>
-          <h4 class="mirkuk-feed-title">Markets, Policy &amp; Ground Reports Archive</h4>
-        </div>
-        <span class="mirkuk-feed-meta">Earlier</span>
-      </article>
-    </div>
-  </div>
-</section>
 
-<script>
-window.MirkukFeed = window.MirkukFeed || {
-  pushTop: function (title, tag, meta) {
-    var list = document.getElementById("mirkuk-feed-list");
-    if (!list || !title) return;
-    var art = document.createElement("article");
-    art.className = "mirkuk-feed-item";
 
-    var left = document.createElement("div");
-    var spanTag = document.createElement("span");
-    spanTag.className = "mirkuk-feed-tag";
-    spanTag.textContent = tag || "UPDATE";
 
-    var h4 = document.createElement("h4");
-    h4.className = "mirkuk-feed-title";
-    h4.textContent = title;
 
-    var spanMeta = document.createElement("span");
-    spanMeta.className = "mirkuk-feed-meta";
-    spanMeta.textContent = meta || "Updated";
-
-    left.appendChild(spanTag);
-    left.appendChild(h4);
-    art.appendChild(left);
-    art.appendChild(spanMeta);
-
-    // Sabse upar insert karega aur purane items ko niche bhej dega
-    list.insertBefore(art, list.firstChild);
-  }
-};
-</script>
-
-<footer class="mirkuk-mega-footer" aria-label="Mirkuk News Directory and Footer">
-  <div class="mirkuk-mega-wrap">
-    <div class="mirkuk-mega-grid">
-      <div class="mirkuk-mega-col">
-        <h4>Across Mirkuk &amp; Opinion</h4>
-        <ul>
-          <li><a href="#top">From Across Desk</a></li>
-          <li><a href="#top">Mirkuk Edit &amp; Opinion</a></li>
-          <li><a href="#top">Opinion &amp; Features</a></li>
-          <li><a href="#top">Sponsored Stories</a></li>
-          <li><a href="contact/index.html#subscribe">Subscribe &amp; Updates</a></li>
-        </ul>
-      </div>
-
-      <div class="mirkuk-mega-col">
-        <h4>Videos &amp; Audio</h4>
-        <ul>
-          <li><a href="#featured-videos">Videos</a></li>
-          <li><a href="#featured-videos">Trending Videos</a></li>
-          <li><a href="#live-video-desk">TV &amp; Live Desk</a></li>
-          <li><a href="#featured-videos">Entertainment &amp; Shows</a></li>
-          <li><a href="#featured-videos">Audio &amp; Briefings</a></li>
-        </ul>
-      </div>
-
-      <div class="mirkuk-mega-col">
-        <h4>Lifestyle, Food &amp; Travel</h4>
-        <ul>
-          <li><a href="#latest-news">Travels</a></li>
-          <li><a href="#latest-news">Recipes &amp; Food News</a></li>
-          <li><a href="#latest-news">Living &amp; Entertainment</a></li>
-          <li><a href="#latest-news">Culture &amp; Features</a></li>
-          <li><a href="#latest-news">Explore Across Regions</a></li>
-        </ul>
-      </div>
-
-      <div class="mirkuk-mega-col">
-        <h4>Science, Tech &amp; Insight</h4>
-        <ul>
-          <li><a href="#latest-news">Science &amp; Environment</a></li>
-          <li><a href="#latest-news">Tech Tips &amp; Digital</a></li>
-          <li><a href="#latest-news">Astrology &amp; Daily Insight</a></li>
-          <li><a href="#latest-news">Reflections &amp; Weekend</a></li>
-          <li><a href="#latest-news">Latest News</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="mirkuk-mega-grid" style="margin-bottom:10px;">
-      <div class="mirkuk-mega-col">
-        <h4>Trending Topics &amp; Hot on Web</h4>
-        <div class="mirkuk-tag-cloud">
-          <a href="#top">Breaking Headlines</a>
-          <a href="#latest-news">India Updates</a>
-          <a href="#latest-news">Global Markets</a>
-          <a href="#featured-videos">Top Clips</a>
-          <a href="#latest-news">Hot on the Web</a>
-        </div>
-      </div>
-
-      <div class="mirkuk-mega-col">
-        <h4>Popular Categories &amp; Services</h4>
-        <div class="mirkuk-tag-cloud">
-          <a href="#latest-news">News</a>
-          <a href="#featured-videos">Videos</a>
-          <a href="about/index.html">About</a>
-          <a href="contact/index.html">Contact</a>
-          <a href="privacy/index.html">Privacy Policy</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mirkuk-footer-subbar">
-    <div class="mirkuk-footer-subbar-inner">
-      <div>
-        <div class="mirkuk-footer-brand">MIRKUK NEWS</div>
-        <div style="font-size:12px; color:#9ba3ae; margin-top:2px;">
-          Copyright &copy; 2026 Mirkuk News. All rights reserved.
-        </div>
-      </div>
-
-      <div class="mirkuk-footer-legal">
-        <a href="about/index.html">About Us</a>
-        <a href="contact/index.html">Contact Us</a>
-        <a href="privacy/index.html">Privacy Policy</a>
-        <a href="privacy/index.html#terms">Terms</a>
-      </div>
-    </div>
+<footer style="margin-top:32px; padding:16px 18px; border-top:2px solid #c8102e; background:#fafafa; font-size:13px; color:#333;">
+  <div style="max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;">
+    <span><strong>Mirkuk News</strong> &copy; 2026</span>
+    <span>
+      <a href="about/index.html" style="color:inherit; margin-right:12px;">About</a>
+      <a href="contact/index.html" style="color:inherit; margin-right:12px;">Contact</a>
+      <a href="privacy/index.html" style="color:inherit;">Privacy Policy</a>
+    </span>
   </div>
 </footer>
-
 </body>
 </html>
+
 
 
 
