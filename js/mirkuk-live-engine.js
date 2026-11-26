@@ -501,3 +501,211 @@
     }
   });
 })();
+
+(function () {
+  const SAVE_KEY = "mirkuk_saved_stories_v1";
+  const CACHE_PREFIX = "mirkuk_feed_cache_v1_";
+
+  function getSavedList() {
+    try {
+      return JSON.parse(localStorage.getItem(SAVE_KEY) || "[]");
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function setSavedList(list) {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(list.slice(0, 60)));
+    } catch (_) {}
+    updateSavedCounter();
+  }
+
+  function isSaved(link) {
+    return getSavedList().some(x => x.link === link);
+  }
+
+  function updateSavedCounter() {
+    const el = document.getElementById("mk-saved-count");
+    if (el) el.textContent = String(getSavedList().length);
+  }
+
+  function toggleSaveStory(item) {
+    if (!item || !item.link) return;
+    const list = getSavedList();
+    const idx = list.findIndex(x => x.link === item.link);
+    if (idx >= 0) {
+      list.splice(idx, 1);
+    } else {
+      list.unshift({
+        title: item.__cleanTitle || item.title || "Story",
+        link: item.link,
+        source: item.__source || "Mirkuk Wire",
+        summary: item.__summary || "",
+        img: item.__img || "",
+        timeAgo: item.__timeAgo || "Saved"
+      });
+    }
+    setSavedList(list);
+  }
+
+  function cacheFeed(key, items) {
+    try {
+      localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({
+        ts: Date.now(),
+        items: items.slice(0, 50)
+      }));
+    } catch (_) {}
+  }
+
+  function readCachedFeed(key) {
+    try {
+      const raw = localStorage.getItem(CACHE_PREFIX + key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed.items) && parsed.items.length ? parsed.items : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function injectSaveButtons() {
+    const items = window.__mirkukCurrentItems || [];
+    document.querySelectorAll("#mk-grid-area .mk-grid-body").forEach((bodyEl) => {
+      if (bodyEl.querySelector(".mk-save-btn")) return;
+      const linkEl = bodyEl.querySelector("h3 a");
+      const href = linkEl ? linkEl.getAttribute("href") : "";
+      const matched = items.find(it => it.link === href);
+      if (!matched) return;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mk-save-btn" + (isSaved(href) ? " saved" : "");
+      btn.textContent = isSaved(href) ? "Saved ✓" : "+ Save";
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSaveStory(matched);
+        const nowSaved = isSaved(href);
+        btn.classList.toggle("saved", nowSaved);
+        btn.textContent = nowSaved ? "Saved ✓" : "+ Save";
+      });
+      bodyEl.appendChild(btn);
+    });
+  }
+
+  function showSavedStoriesView() {
+    const saved = getSavedList();
+    const sectionTitle = document.getElementById("mk-active-section-title");
+    const statusPill = document.getElementById("mk-feed-status");
+    const heroArea = document.getElementById("mk-hero-area");
+    const gridArea = document.getElementById("mk-grid-area");
+    const loadBtn = document.getElementById("mk-load-more-btn");
+
+    if (sectionTitle) sectionTitle.textContent = "Saved Stories";
+    if (statusPill) statusPill.textContent = `${saved.length} bookmarked on this device`;
+    if (loadBtn) loadBtn.style.display = "none";
+    if (heroArea) heroArea.innerHTML = "";
+
+    if (!gridArea) return;
+    if (!saved.length) {
+      gridArea.innerHTML = `<div class="mk-loader" style="grid-column:1/-1;">No saved stories yet. Click "+ Save" on any card to bookmark it for later.</div>`;
+      return;
+    }
+
+    gridArea.innerHTML = saved.map((it, idx) => `
+      <article class="mk-card mk-grid-card">
+        <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+          <img src="${it.img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+        </a>
+        <div class="mk-grid-body">
+          <div>
+            <span class="mk-cat-tag">${it.source || "Saved"}</span>
+            <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.title}</a></h3>
+            <p>${(it.summary || "").slice(0, 150)}</p>
+          </div>
+          <div class="mk-meta">${it.timeAgo || "Saved"}</div>
+          <button type="button" class="mk-save-btn saved" data-mk-remove-saved="${idx}">Remove Saved</button>
+        </div>
+      </article>
+    `).join("");
+
+    gridArea.querySelectorAll("[data-mk-remove-saved]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const i = parseInt(this.getAttribute("data-mk-remove-saved"), 10);
+        const cur = getSavedList();
+        cur.splice(i, 1);
+        setSavedList(cur);
+        showSavedStoriesView();
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateSavedCounter();
+
+    // Observe grid updates to attach + Save buttons cleanly
+    const gridEl = document.getElementById("mk-grid-area");
+    if (gridEl && window.MutationObserver) {
+      const obs = new MutationObserver(() => {
+        injectSaveButtons();
+        if (Array.isArray(window.__mirkukCurrentItems) && window.__mirkukCurrentItems.length) {
+          cacheFeed(window.location.pathname, window.__mirkukCurrentItems);
+        }
+      });
+      obs.observe(gridEl, { childList: true });
+    }
+
+    // Topic chips trigger search
+    document.querySelectorAll("[data-mk-topic]").forEach(chip => {
+      chip.addEventListener("click", function () {
+        document.querySelectorAll(".mk-chip").forEach(c => c.classList.remove("active"));
+        this.classList.add("active");
+        const topic = this.getAttribute("data-mk-topic");
+        const searchInput = document.getElementById("mk-search-input");
+        const searchForm = document.getElementById("mk-search-form");
+        if (searchInput && searchForm) {
+          searchInput.value = topic;
+          searchForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      });
+    });
+
+    // Saved stories button
+    const savedBtn = document.getElementById("mk-saved-view-btn");
+    if (savedBtn) {
+      savedBtn.addEventListener("click", function () {
+        document.querySelectorAll(".mk-chip").forEach(c => c.classList.remove("active"));
+        this.classList.add("active");
+        showSavedStoriesView();
+      });
+    }
+
+    // Instant cached preview if live network is slow on first second
+    setTimeout(() => {
+      const hero = document.getElementById("mk-hero-area");
+      if (hero && hero.textContent.includes("Loading live news")) {
+        const cached = readCachedFeed(window.location.pathname);
+        if (cached && cached.length) {
+          window.__mirkukCurrentItems = cached;
+          const grid = document.getElementById("mk-grid-area");
+          if (grid) {
+            grid.innerHTML = cached.slice(0, 8).map(it => `
+              <article class="mk-card mk-grid-card">
+                <div class="mk-grid-body">
+                  <div>
+                    <span class="mk-cat-tag">${it.__source || "Cached Wire"}</span>
+                    <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle || it.title}</a></h3>
+                    <p>${(it.__summary || "").slice(0, 140)}</p>
+                  </div>
+                  <div class="mk-meta">${it.__timeAgo || "Recent"}</div>
+                </div>
+              </article>
+            `).join("");
+            injectSaveButtons();
+          }
+        }
+      }
+    }, 1800);
+  });
+})();

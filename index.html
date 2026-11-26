@@ -111,6 +111,19 @@
   </div>
 
   <main class="mk-container">
+    <div class="mk-topic-bar" aria-label="Quick Topics and Saved Stories">
+      <div class="mk-chips-group">
+        <span style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:#59626c; margin-right:4px;">Trending:</span>
+        <button type="button" class="mk-chip" data-mk-topic="Startups & New Business">Startups &amp; Business</button>
+        <button type="button" class="mk-chip" data-mk-topic="Stock Market Economy">Markets</button>
+        <button type="button" class="mk-chip" data-mk-topic="Artificial Intelligence">AI &amp; Tech</button>
+        <button type="button" class="mk-chip" data-mk-topic="Cricket">Cricket</button>
+        <button type="button" class="mk-chip" data-mk-topic="Delhi NCR">Delhi NCR</button>
+      </div>
+      <div class="mk-chips-group">
+        <button type="button" id="mk-saved-view-btn" class="mk-chip">Saved (<span id="mk-saved-count">0</span>)</button>
+      </div>
+    </div>
     <div class="mk-section-head">
       <h2 id="mk-active-section-title">Top Stories</h2>
       <span id="mk-feed-status" class="mk-status-pill">Connecting...</span>
@@ -218,4 +231,5 @@
 </div>
 </body>
 </html>
+
 
