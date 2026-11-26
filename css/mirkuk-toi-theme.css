@@ -1600,3 +1600,11 @@ html, body {
     max-width: none !important;
   }
 }
+
+#mk-more-panel {
+  display: none !important;
+}
+
+#mk-more-panel.open {
+  display: block !important;
+}

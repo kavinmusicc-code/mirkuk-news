@@ -2629,3 +2629,40 @@
     });
   });
 })();
+
+(function () {
+  function syncMorePanelState() {
+    const panel = document.getElementById("mk-more-panel");
+    if (!panel) return;
+    if (!panel.dataset.userToggled) {
+      panel.classList.remove("open");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const panel = document.getElementById("mk-more-panel");
+    const openBtn = document.getElementById("mk-more-toggle-btn");
+    const closeBtn = document.getElementById("mk-more-close");
+
+    if (panel) {
+      panel.classList.remove("open");
+    }
+
+    if (openBtn && panel) {
+      openBtn.addEventListener("click", function () {
+        panel.dataset.userToggled = "1";
+        panel.classList.toggle("open");
+      });
+    }
+
+    if (closeBtn && panel) {
+      closeBtn.addEventListener("click", function () {
+        panel.dataset.userToggled = "1";
+        panel.classList.remove("open");
+      });
+    }
+
+    setTimeout(syncMorePanelState, 600);
+    setTimeout(syncMorePanelState, 1800);
+  });
+})();

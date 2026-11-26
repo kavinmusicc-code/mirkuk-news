@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function() { try {\n(function () {
   const STOP_WORDS = new Set([
     "the", "and", "for", "with", "that", "this", "from", "into", "over", "after",
     "amid", "says", "say", "will", "are", "was", "were", "has", "have", "had",
@@ -147,3 +147,4 @@
   });
 })();
 
+\n} catch (e) { console.warn('Beast Brain safe guard:', e); } })();
