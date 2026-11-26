@@ -1608,3 +1608,81 @@ html, body {
 #mk-more-panel.open {
   display: block !important;
 }
+
+/* =========================================================
+   BIG LEAD CARD + COMPACT SIDE/GRID CARDS LAYOUT
+   ========================================================= */
+.mk-grid-area {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.mk-grid-area > article.mk-lead-big {
+  grid-column: span 2 !important;
+  grid-row: span 2 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.mk-grid-area > article.mk-lead-big img {
+  width: 100% !important;
+  height: 310px !important;
+  object-fit: cover !important;
+}
+
+.mk-grid-area > article.mk-lead-big h3 {
+  font-size: 21px !important;
+  line-height: 1.28 !important;
+}
+
+.mk-grid-area > article:not(.mk-lead-big) img {
+  width: 100% !important;
+  height: 130px !important;
+  object-fit: cover !important;
+}
+
+.mk-grid-area > article:not(.mk-lead-big) h3 {
+  font-size: 14px !important;
+  line-height: 1.32 !important;
+}
+
+.mk-grid-area > article:not(.mk-lead-big) p {
+  font-size: 12px !important;
+  line-height: 1.38 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .mk-grid-area {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .mk-grid-area > article.mk-lead-big {
+    grid-column: span 2 !important;
+    grid-row: span 1 !important;
+  }
+  .mk-grid-area > article.mk-lead-big img {
+    height: 230px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .mk-grid-area {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .mk-grid-area > article.mk-lead-big {
+    grid-column: span 2 !important;
+  }
+  .mk-grid-area > article.mk-lead-big img {
+    height: 185px !important;
+  }
+  .mk-grid-area > article:not(.mk-lead-big) img {
+    height: 105px !important;
+  }
+}

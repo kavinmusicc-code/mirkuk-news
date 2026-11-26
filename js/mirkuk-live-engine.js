@@ -2778,3 +2778,33 @@
     setTimeout(hydrateContentIfEmpty, 3200);
   });
 })();
+
+(function () {
+  function applyLeadPlusSmallCardsLayout() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll("article"));
+    if (!cards.length) return;
+
+    cards.forEach((card, idx) => {
+      card.classList.add("mk-card", "mk-grid-card");
+      if (idx === 0) {
+        card.classList.add("mk-lead-big");
+      } else {
+        card.classList.remove("mk-lead-big");
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    applyLeadPlusSmallCardsLayout();
+    setTimeout(applyLeadPlusSmallCardsLayout, 1500);
+    setTimeout(applyLeadPlusSmallCardsLayout, 3500);
+
+    const grid = document.getElementById("mk-grid-area");
+    if (grid && typeof MutationObserver !== "undefined") {
+      const obs = new MutationObserver(() => applyLeadPlusSmallCardsLayout());
+      obs.observe(grid, { childList: true });
+    }
+  });
+})();
