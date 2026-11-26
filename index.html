@@ -181,62 +181,125 @@
     </div>
   </main>
 
-  <footer class="mk-footer">
+    <footer class="mk-footer" aria-label="Mirkuk News Mega Footer">
+    <!-- Top Logo + Brand Name Strip -->
+    <div class="mk-footer-brand-bar">
+      <div class="mk-footer-brand-inner">
+        <div class="mk-footer-logo-wrap">
+          <div class="mk-footer-emblem" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+              <path d="M18 14h-8"/>
+              <path d="M15 18h-5"/>
+              <path d="M10 6h8v4h-8V6Z"/>
+            </svg>
+          </div>
+          <div class="mk-footer-brand-text">
+            <div class="mk-footer-title">MIRKUK <span>NEWS</span></div>
+            <div class="mk-footer-sub">India &amp; Global Digital Newsroom &bull; 24x7 Live Wire</div>
+          </div>
+        </div>
+
+        <div class="mk-footer-badges">
+          <span class="mk-f-badge">MULTI-SOURCE ENGINE</span>
+          <span class="mk-f-badge">BEAST BRAIN RANKED</span>
+          <span class="mk-f-badge">ENGLISH &amp; हिन्दी</span>
+          <span class="mk-f-badge">AUTO-SYNC LIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6-Column Deep Directory Grid -->
     <div class="mk-footer-inner">
       <div>
-        <h4>News Sections</h4>
+        <h4>News Desks</h4>
         <ul>
-          <li><a href="#" data-mk-cat="top">Top Stories</a></li>
-          <li><a href="#" data-mk-cat="india">India &amp; NCR</a></li>
-          <li><a href="#" data-mk-cat="world">World</a></li>
-          <li><a href="#" data-mk-cat="business">Business &amp; Markets</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="top">Top Stories &amp; Lead</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="india">India &amp; National Desk</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="world">World &amp; Geopolitics</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="business">Business &amp; Economy</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="tech">Technology &amp; AI</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="sports">World Cricket &amp; Sports</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="ent">Entertainment &amp; Cinema</a></li>
+          <li><a href="#mk-hero-area" data-mk-cat="science">Science &amp; Environment</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Topics</h4>
+        <h4>Trending Hubs</h4>
         <ul>
-          <li><a href="#" data-mk-cat="tech">Tech &amp; Digital</a></li>
-          <li><a href="#" data-mk-cat="sports">Sports</a></li>
-          <li><a href="#" data-mk-cat="ent">Entertainment</a></li>
-          <li><a href="#" data-mk-cat="science">Science &amp; Environment</a></li>
+          <li><a href="#mk-hero-area" data-mk-topic="Startups & New Business">Startups &amp; New Ventures</a></li>
+          <li><a href="#mk-hero-area" data-mk-topic="Stock Market Economy">Stock Markets &amp; Finance</a></li>
+          <li><a href="#mk-hero-area" data-mk-topic="Artificial Intelligence">AI &amp; Future Tech</a></li>
+          <li><a href="#mk-hero-area" data-mk-topic="World Cricket">ICC &amp; World Cricket</a></li>
+          <li><a href="#mk-hero-area" data-mk-topic="Delhi NCR">Delhi NCR &amp; Metro</a></li>
+          <li><a href="#mk-grid-area">Latest Wire Stream</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Information</h4>
+        <h4>Global Editions</h4>
         <ul>
-          <li><a href="about/index.html">About Us</a></li>
-          <li><a href="contact/index.html">Contact Us</a></li>
+          <li><a href="#mk-edition-select" onclick="document.getElementById('mk-edition-select').value='IN';document.getElementById('mk-edition-select').dispatchEvent(new Event('change'));window.scrollTo({top:0,behavior:'smooth'});return false;">India Edition (IN)</a></li>
+          <li><a href="#mk-edition-select" onclick="document.getElementById('mk-edition-select').value='US';document.getElementById('mk-edition-select').dispatchEvent(new Event('change'));window.scrollTo({top:0,behavior:'smooth'});return false;">United States (US)</a></li>
+          <li><a href="#mk-edition-select" onclick="document.getElementById('mk-edition-select').value='GB';document.getElementById('mk-edition-select').dispatchEvent(new Event('change'));window.scrollTo({top:0,behavior:'smooth'});return false;">United Kingdom (UK)</a></li>
+          <li><a href="#mk-edition-select" onclick="document.getElementById('mk-edition-select').value='AE';document.getElementById('mk-edition-select').dispatchEvent(new Event('change'));window.scrollTo({top:0,behavior:'smooth'});return false;">Middle East &amp; GCC</a></li>
+          <li><a href="#mk-lang-select" onclick="document.getElementById('mk-lang-select').value='hi';document.getElementById('mk-lang-select').dispatchEvent(new Event('change'));window.scrollTo({top:0,behavior:'smooth'});return false;">हिन्दी संस्करण (Hindi Desk)</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Reader Tools</h4>
+        <ul>
+          <li><a href="#mk-saved-view-btn" onclick="document.getElementById('mk-saved-view-btn').click();window.scrollTo({top:0,behavior:'smooth'});return false;">Saved Bookmarks</a></li>
+          <li><a href="#mk-theme-toggle" onclick="document.getElementById('mk-theme-toggle').click();return false;">Toggle Dark / Light Mode</a></li>
+          <li><a href="#mk-source-filter" onclick="document.getElementById('mk-source-filter').focus();return false;">Filter by Publisher</a></li>
+          <li><a href="#mk-freshness-filter" onclick="document.getElementById('mk-freshness-filter').focus();return false;">2-Hour / 24-Hour Window</a></li>
+          <li><a href="#mk-force-sync-btn" onclick="document.getElementById('mk-force-sync-btn').click();window.scrollTo({top:0,behavior:'smooth'});return false;">Force Live Feed Sync</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Mirkuk Network</h4>
+        <ul>
+          <li><a href="about/index.html">About Mirkuk News</a></li>
+          <li><a href="about/index.html#editorial">Editorial Standards</a></li>
+          <li><a href="contact/index.html">Contact Newsroom</a></li>
+          <li><a href="contact/index.html#tips">Submit News Tip</a></li>
+          <li><a href="contact/index.html#advertise">Partnerships &amp; Media</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Legal &amp; Policies</h4>
+        <ul>
           <li><a href="privacy/index.html">Privacy Policy</a></li>
-          <li><a href="privacy/index.html#terms">Terms</a></li>
+          <li><a href="privacy/index.html#terms">Terms of Use</a></li>
+          <li><a href="privacy/index.html#cookies">Local Storage &amp; Cookies</a></li>
+          <li><a href="privacy/index.html#disclaimer">Aggregation Disclaimer</a></li>
+          <li><a href="contact/index.html">Reader Grievance Desk</a></li>
         </ul>
       </div>
+    </div>
 
-      <div>
-        <h4>Mirkuk News</h4>
-        <p style="margin:0; line-height:1.6; color:#9aa5b1;">
-          Real-time multi-source headlines, key developments briefing, and regional editions organized for clean reading.
-        </p>
+    <!-- Editorial Disclaimer Strip -->
+    <div class="mk-footer-note-bar">
+      <div class="mk-footer-note-inner">
+        <strong>About Our Live Wire:</strong> Mirkuk News aggregates, ranks, and categorizes real-time headlines from verified global and national RSS news feeds using automated deduplication and topic classification. Full reports and copyrights remain with their respective original publishers.
       </div>
     </div>
-    <div class="mk-jump-bar" aria-label="Jump to News Desk">
-      <strong style="text-transform:uppercase; letter-spacing:0.04em;">Desks:</strong>
-      <a href="#mk-hero-area" class="mk-jump-link">Lead &amp; Wire</a>
-      <a href="#mk-grid-area" class="mk-jump-link">All Headlines</a>
-      <a href="#mk-mega-shelf" class="mk-jump-link">India, Biz, World, Tech &amp; Cricket</a>
-      <a href="#" data-mk-cat="ent" class="mk-jump-link">Entertainment</a>
-      <a href="#" data-mk-cat="science" class="mk-jump-link">Science</a>
-    </div>
 
+    <!-- Bottom Copyright & Quick Links -->
     <div class="mk-footer-bottom">
       <div class="mk-footer-bottom-inner">
-        <span>&copy; 2026 Mirkuk News. All rights reserved.</span>
-        <span>
-          <a href="about/index.html" style="margin-right:14px;">About</a>
-          <a href="contact/index.html" style="margin-right:14px;">Contact</a>
+        <span>&copy; 2026 <strong>Mirkuk News</strong>. All rights reserved. Built for fast, clutter-free global news discovery.</span>
+        <div class="mk-footer-bottom-links">
+          <a href="#mk-hero-area">Top Stories</a>
+          <a href="about/index.html">About</a>
+          <a href="contact/index.html">Contact</a>
           <a href="privacy/index.html">Privacy Policy</a>
-        </span>
+          <a href="privacy/index.html#terms">Terms</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -280,6 +343,7 @@
 <button type="button" id="mk-top-btn" class="mk-top-btn">&uarr; Top</button>
 </body>
 </html>
+
 
 
 
