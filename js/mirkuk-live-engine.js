@@ -1574,3 +1574,149 @@
     });
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  const STREAM_FEEDS = [
+    "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=gaming+esports+news&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss?hl=hi-IN&gl=IN&ceid=IN:hi"
+  ];
+
+  let feedCursor = 0;
+  let flashIndex = 0;
+
+  function normKey(t) {
+    return (t || "").toLowerCase().replace(/[^a-z0-9\u0900-\u097F]+/g, " ").trim().slice(0, 85);
+  }
+
+  function parseXmlRss(xmlStr) {
+    try {
+      const doc = new DOMParser().parseFromString(xmlStr, "text/xml");
+      return Array.from(doc.querySelectorAll("item")).map(node => ({
+        title: (node.querySelector("title")?.textContent || "").trim(),
+        link: (node.querySelector("link")?.textContent || "").trim(),
+        pubDate: (node.querySelector("pubDate")?.textContent || new Date().toUTCString()).trim(),
+        description: (node.querySelector("description")?.textContent || "").trim()
+      }));
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function fetchFeedFast(feedUrl) {
+    try {
+      const r1 = await fetch(RELAYS[0](feedUrl));
+      const j1 = await r1.json();
+      if (Array.isArray(j1.items) && j1.items.length) return j1.items;
+    } catch (_) {}
+
+    try {
+      const r2 = await fetch(RELAYS[1](feedUrl));
+      const j2 = await r2.json();
+      if (j2 && j2.contents) return parseXmlRss(j2.contents);
+    } catch (_) {}
+
+    return [];
+  }
+
+  async function harvestNextSlice() {
+    const url = STREAM_FEEDS[feedCursor % STREAM_FEEDS.length];
+    feedCursor++;
+
+    const raw = await fetchFeedFast(url);
+    if (!raw.length) return;
+
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const seen = new Set(existing.map(it => normKey(it.__cleanTitle || it.title)));
+    const freshOnes = [];
+
+    for (const it of raw) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : "Live Wire";
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+      const k = normKey(cleanT);
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+
+      freshOnes.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: src,
+        __summary: (tmp.textContent || tmp.innerText || "").trim(),
+        __timeAgo: "Just In",
+        __isJustIn: true
+      }));
+    }
+
+    if (freshOnes.length) {
+      const merged = freshOnes.concat(existing).slice(0, 120);
+      window.__mirkukCurrentItems = merged;
+      window.__mirkukAllItemsBackup = merged.slice();
+      window.__mirkukBeastProcessedFor = null;
+
+      const grid = document.getElementById("mk-grid-area");
+      if (grid) {
+        grid.innerHTML = merged.slice(0, 48).map(it => `
+          <article class="mk-card mk-grid-card">
+            <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+              <img src="${it.__img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+            </a>
+            <div class="mk-grid-body">
+              <div>
+                <span class="mk-cat-tag">${it.__isJustIn ? '<span class="mk-new-badge">NEW</span>' : ''}${it.__source}</span>
+                <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                <p>${(it.__summary || "").slice(0, 155)}</p>
+              </div>
+              <div class="mk-meta">${it.__timeAgo || "Live"}</div>
+            </div>
+          </article>
+        `).join("");
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const clockEl = document.getElementById("mk-rt-clock");
+    const headEl = document.getElementById("mk-rt-headline");
+    const countEl = document.getElementById("mk-rt-counter");
+
+    // 1. Every 1 second: update live seconds clock & story pool counter
+    setInterval(() => {
+      if (clockEl) {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString("en-GB", { hour12: false }) + " LIVE";
+      }
+      const items = window.__mirkukCurrentItems || [];
+      if (countEl) {
+        countEl.textContent = `Pool: ${items.length} stories`;
+      }
+    }, 1000);
+
+    // 2. Every 3.5 seconds: cycle live wire flash headline smoothly
+    setInterval(() => {
+      const items = window.__mirkukCurrentItems || [];
+      if (!items.length || !headEl) return;
+      const cur = items[flashIndex % Math.min(25, items.length)];
+      flashIndex++;
+      headEl.textContent = `[${cur.__source || "WIRE"}] ${cur.__cleanTitle || cur.title}`;
+    }, 3500);
+
+    // 3. Every 12 seconds: pull next global/topic feed in background with dual-relay fallback
+    setTimeout(harvestNextSlice, 2500);
+    setInterval(harvestNextSlice, 12000);
+  });
+})();

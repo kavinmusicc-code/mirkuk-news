@@ -1307,3 +1307,47 @@ body.mk-dark-mode .mk-jump-link {
 .mk-audio-btn.stop {
   background: #30363d;
 }
+
+/* Real-Time Every-Second Pulse & Live Flasher */
+.mk-rt-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #0d1117;
+  color: #f0f6fc;
+  border-left: 4px solid #ff2a4b;
+  border-radius: 4px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+
+.mk-rt-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff2a4b;
+  margin-right: 6px;
+  box-shadow: 0 0 8px #ff2a4b;
+  animation: mkPulseDot 1s infinite;
+}
+
+@keyframes mkPulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.mk-new-badge {
+  display: inline-block;
+  background: #ff2a4b;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 6px;
+  text-transform: uppercase;
+}
