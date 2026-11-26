@@ -1,34 +1,39 @@
 ﻿(function () {
   const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-  // Multiple real sources across categories (har jagah se news kheenchne ke liye)
   const SOURCE_POOLS = {
     top: [
       "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
       "https://feeds.bbci.co.uk/news/world/rss.xml",
       "https://www.thehindu.com/news/national/feeder/default.rss",
-      "https://indianexpress.com/section/india/feed/"
+      "https://indianexpress.com/section/india/feed/",
+      "https://economictimes.indiatimes.com/rssfeedsdefault.cms"
     ],
     india: [
       "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en",
       "https://www.thehindu.com/news/national/feeder/default.rss",
-      "https://indianexpress.com/section/india/feed/"
+      "https://indianexpress.com/section/india/feed/",
+      "https://indianexpress.com/section/cities/delhi/feed/"
     ],
     world: [
       "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en",
-      "https://feeds.bbci.co.uk/news/world/rss.xml"
+      "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
     ],
     business: [
       "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
-      "https://economictimes.indiatimes.com/rssfeedsdefault.cms"
+      "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+      "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"
     ],
     tech: [
       "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en",
-      "https://feeds.bbci.co.uk/news/technology/rss.xml"
+      "https://feeds.bbci.co.uk/news/technology/rss.xml",
+      "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms"
     ],
     sports: [
       "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en",
-      "https://feeds.bbci.co.uk/sport/rss.xml"
+      "https://feeds.bbci.co.uk/sport/rss.xml",
+      "https://indianexpress.com/section/sports/feed/"
     ],
     ent: [
       "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en",
@@ -41,14 +46,14 @@
   };
 
   const LABELS = {
-    top: "Top Stories (Multi-Source)",
-    india: "India",
+    top: "Top Stories",
+    india: "India & NCR",
     world: "World",
-    business: "Business",
-    tech: "Technology",
+    business: "Business & Markets",
+    tech: "Tech & Digital",
     sports: "Sports",
     ent: "Entertainment",
-    science: "Science"
+    science: "Science & Environment"
   };
 
   const EDITIONS = {
@@ -58,9 +63,6 @@
     AE: "hl=en-AE&gl=AE&ceid=AE:en"
   };
 
-  let currentCategory = "top";
-  let currentEdition = "IN";
-
   const FALLBACK_PHOTOS = [
     "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80",
     "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80",
@@ -68,6 +70,11 @@
     "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
     "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=900&q=80"
   ];
+
+  let currentCategory = "top";
+  let currentEdition = "IN";
+  let allLoadedItems = [];
+  let visibleGridCount = 12;
 
   function timeAgo(dateStr) {
     const pub = new Date(dateStr);
@@ -105,7 +112,10 @@
   function getUrlsForRequest(catKey, searchQuery) {
     const ed = EDITIONS[currentEdition] || EDITIONS.IN;
     if (searchQuery) {
-      return [`https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&${ed}`];
+      return [
+        `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&${ed}`,
+        `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery + " India")}&${ed}`
+      ];
     }
     const pool = SOURCE_POOLS[catKey] || SOURCE_POOLS.top;
     return pool.map(u =>
@@ -127,24 +137,63 @@
     }
   }
 
+  function renderGridChunk(label) {
+    const gridArea = document.getElementById("mk-grid-area");
+    const loadBtn = document.getElementById("mk-load-more-btn");
+    const countLabel = document.getElementById("mk-grid-count");
+    if (!gridArea) return;
+
+    const pool = allLoadedItems.slice(12);
+    const slice = pool.slice(0, visibleGridCount);
+
+    gridArea.innerHTML = slice.map((it, i) => {
+      const info = cleanTitleAndSource(it.title, it.__feedTitle);
+      const img = extractImage(it, i + 2);
+      const desc = stripHtml(it.description).slice(0, 150);
+      return `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${img}" alt="" loading="lazy" onerror="this.src='${FALLBACK_PHOTOS[(i+2)%FALLBACK_PHOTOS.length]}'" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${info.source}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${info.title}</a></h3>
+              <p>${desc}</p>
+            </div>
+            <div class="mk-meta">${timeAgo(it.pubDate)}</div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    if (countLabel) {
+      countLabel.textContent = `Showing ${Math.min(allLoadedItems.length, 12 + slice.length)} of ${allLoadedItems.length} stories (${label})`;
+    }
+
+    if (loadBtn) {
+      loadBtn.style.display = slice.length < pool.length ? "inline-block" : "none";
+    }
+  }
+
   async function loadLiveNews(catKey = "top", searchQuery = "") {
     currentCategory = catKey;
+    visibleGridCount = 12;
+
     const sectionTitle = document.getElementById("mk-active-section-title");
     const statusPill = document.getElementById("mk-feed-status");
     const heroArea = document.getElementById("mk-hero-area");
-    const gridArea = document.getElementById("mk-grid-area");
     const tickerArea = document.getElementById("mk-ticker-links");
 
     const label = searchQuery ? `Search: "${searchQuery}"` : (LABELS[catKey] || "Top Stories");
     if (sectionTitle) sectionTitle.textContent = label;
-    if (statusPill) statusPill.textContent = "Pulling from multiple live feeds...";
+    if (statusPill) statusPill.textContent = "Syncing live desk...";
 
     try {
       const urls = getUrlsForRequest(catKey, searchQuery);
       const results = await Promise.all(urls.map(fetchSingleFeed));
       const merged = results.flat();
 
-      // Deduplicate by normalized title
       const seen = new Set();
       const uniqueItems = [];
       for (const it of merged) {
@@ -154,28 +203,29 @@
         uniqueItems.push(it);
       }
 
-      if (!uniqueItems.length) {
-        throw new Error("No live stories returned");
-      }
+      if (!uniqueItems.length) throw new Error("No stories returned");
 
-      // Newest first
-      const items = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      allLoadedItems = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
       if (tickerArea) {
-        tickerArea.innerHTML = items.slice(0, 8).map(item => {
+        tickerArea.innerHTML = allLoadedItems.slice(0, 8).map(item => {
           const { title } = cleanTitleAndSource(item.title, item.__feedTitle);
           return `<a href="${item.link}" target="_blank" rel="noopener noreferrer">&bull; ${title}</a>`;
         }).join("");
       }
 
-      const lead = items[0];
+      const lead = allLoadedItems[0];
       const leadInfo = cleanTitleAndSource(lead.title, lead.__feedTitle);
       const leadImg = extractImage(lead, 0);
       const leadDesc = stripHtml(lead.description).slice(0, 220);
 
-      const midItems = items.slice(1, 4);
-      const wireItems = items.slice(4, 12);
-      const gridItems = items.slice(12);
+      const briefItems = allLoadedItems.slice(1, 4).map(it => {
+        const inf = cleanTitleAndSource(it.title, it.__feedTitle);
+        return `<li><a href="${it.link}" target="_blank" rel="noopener noreferrer">${inf.title}</a></li>`;
+      }).join("");
+
+      const midItems = allLoadedItems.slice(4, 7);
+      const wireItems = allLoadedItems.slice(7, 15);
 
       if (heroArea) {
         heroArea.innerHTML = `
@@ -188,7 +238,11 @@
                 <span class="mk-cat-tag">${label} &bull; ${leadInfo.source}</span>
                 <h1><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${leadInfo.title}</a></h1>
                 <p>${leadDesc || "Read full coverage on " + leadInfo.source + "."}</p>
-                <div class="mk-meta">${timeAgo(lead.pubDate)} &bull; Multi-Source Wire</div>
+                <div class="mk-meta">${timeAgo(lead.pubDate)} &bull; Live Newsroom</div>
+                <div class="mk-brief-box">
+                  <div class="mk-brief-title">Key Developments</div>
+                  <ul class="mk-brief-list">${briefItems}</ul>
+                </div>
               </div>
             </article>
 
@@ -229,37 +283,15 @@
         `;
       }
 
-      if (gridArea) {
-        const displayGrid = gridItems.length ? gridItems : items.slice(4);
-        gridArea.innerHTML = displayGrid.map((it, i) => {
-          const info = cleanTitleAndSource(it.title, it.__feedTitle);
-          const img = extractImage(it, i + 2);
-          const desc = stripHtml(it.description).slice(0, 150);
-          return `
-            <article class="mk-card mk-grid-card">
-              <a href="${it.link}" target="_blank" rel="noopener noreferrer">
-                <img src="${img}" alt="" loading="lazy" onerror="this.src='${FALLBACK_PHOTOS[(i+2)%FALLBACK_PHOTOS.length]}'" />
-              </a>
-              <div class="mk-grid-body">
-                <div>
-                  <span class="mk-cat-tag">${info.source}</span>
-                  <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${info.title}</a></h3>
-                  <p>${desc}</p>
-                </div>
-                <div class="mk-meta">${timeAgo(it.pubDate)}</div>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
+      renderGridChunk(label);
 
       if (statusPill) {
-        statusPill.innerHTML = `Live &bull; ${items.length} unique stories from ${urls.length} feeds`;
+        statusPill.innerHTML = `Live &bull; ${allLoadedItems.length} stories across ${urls.length} feeds`;
       }
-    } catch (err) {
+    } catch (_) {
       if (statusPill) statusPill.textContent = "Reconnecting to live feeds...";
       if (heroArea) {
-        heroArea.innerHTML = `<div class="mk-loader">Unable to reach live feeds right now. Please refresh shortly.</div>`;
+        heroArea.innerHTML = `<div class="mk-loader">Unable to load live stories right now. Please refresh shortly.</div>`;
       }
     }
   }
@@ -288,7 +320,7 @@
         .then(r => r.json())
         .then(d => {
           if (d && d.current_weather) {
-            weatherEl.textContent = `New Delhi ${Math.round(d.current_weather.temperature)}°C`;
+            weatherEl.textContent = `Delhi ${Math.round(d.current_weather.temperature)}°C`;
           }
         })
         .catch(() => {});
@@ -327,8 +359,15 @@
       });
     }
 
+    const loadMoreBtn = document.getElementById("mk-load-more-btn");
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener("click", function () {
+        visibleGridCount += 12;
+        renderGridChunk(LABELS[currentCategory] || "Top Stories");
+      });
+    }
+
     loadLiveNews("top", "");
-    // Auto-refresh every 10 minutes so new stories flow to top
     setInterval(() => loadLiveNews(currentCategory, ""), 600000);
   });
 })();
