@@ -23,6 +23,10 @@
     "description": "Multi-source live news aggregation and editorial newsroom across India and global desks."
   }
   </script>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="theme-color" content="#c8102e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Mirkuk News" />
 </head>
 <body>
   <div class="mk-progress-wrap"><div id="mk-progress-bar" class="mk-progress-bar"></div></div>
@@ -377,8 +381,16 @@
   </div>
 </div>
 <button type="button" id="mk-top-btn" class="mk-top-btn">&uarr; Top</button>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js").catch(function () {});
+  });
+}
+</script>
 </body>
 </html>
+
 
 
 
