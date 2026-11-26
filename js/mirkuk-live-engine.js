@@ -205,7 +205,17 @@
 
       if (!uniqueItems.length) throw new Error("No stories returned");
 
-      allLoadedItems = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+            allLoadedItems = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).map((it, idx) => {
+        const inf = cleanTitleAndSource(it.title, it.__feedTitle);
+        return Object.assign({}, it, {
+          __cleanTitle: inf.title,
+          __source: inf.source,
+          __img: extractImage(it, idx),
+          __summary: stripHtml(it.description),
+          __timeAgo: timeAgo(it.pubDate)
+        });
+      });
+      window.__mirkukCurrentItems = allLoadedItems;
 
       if (tickerArea) {
         tickerArea.innerHTML = allLoadedItems.slice(0, 8).map(item => {
@@ -370,4 +380,99 @@
     loadLiveNews("top", "");
     setInterval(() => loadLiveNews(currentCategory, ""), 600000);
   });
+})();
+
+
+
+(function () {
+  const backdrop = document.getElementById("mk-reader-backdrop");
+  const closeBtn = document.getElementById("mk-reader-close");
+  const copyBtn = document.getElementById("mk-reader-copy");
+  if (!backdrop) return;
+
+  function openReaderByIndex(idx) {
+    const items = window.__mirkukCurrentItems || [];
+    const item = items[idx];
+    if (!item) return;
+
+    document.getElementById("mk-reader-source").textContent = item.__source || "Mirkuk Wire";
+    document.getElementById("mk-reader-title").textContent = item.__cleanTitle || item.title || "Story";
+    document.getElementById("mk-reader-meta").textContent = (item.__timeAgo || "Just now") + " • Mirkuk News Reader";
+
+    const imgEl = document.getElementById("mk-reader-img");
+    if (item.__img) {
+      imgEl.src = item.__img;
+      imgEl.style.display = "block";
+    } else {
+      imgEl.style.display = "none";
+    }
+
+    document.getElementById("mk-reader-summary").textContent =
+      item.__summary || "Open the original source link below to read the complete report.";
+
+    const extLink = document.getElementById("mk-reader-ext");
+    extLink.href = item.link || "#";
+    if (copyBtn) copyBtn.setAttribute("data-url", item.link || "");
+
+    const relBox = document.getElementById("mk-reader-related");
+    if (relBox) {
+      const picks = items.filter((_, i) => i !== idx).slice(0, 3);
+      relBox.innerHTML = picks.map((p) => {
+        const pIdx = items.indexOf(p);
+        return 
+          <div class="mk-related-card" data-mk-open-idx="">
+            <span class="mk-cat-tag"></span>
+            <h4></h4>
+            <div class="mk-meta"></div>
+          </div>
+        ;
+      }).join("");
+    }
+
+    backdrop.classList.add("open");
+  }
+
+  document.addEventListener("click", function (e) {
+    const trigger = e.target.closest("[data-mk-open-idx]");
+    if (trigger) {
+      e.preventDefault();
+      const idx = parseInt(trigger.getAttribute("data-mk-open-idx"), 10);
+      if (!isNaN(idx)) openReaderByIndex(idx);
+      return;
+    }
+
+    // Intercept story links inside hero/grid/wire so reader opens first
+    const storyLink = e.target.closest("#mk-hero-area a, #mk-grid-area a, .mk-wire-list a");
+    if (storyLink && !storyLink.hasAttribute("data-mk-open-idx")) {
+      const items = window.__mirkukCurrentItems || [];
+      const href = storyLink.getAttribute("href");
+      const foundIdx = items.findIndex(it => it.link === href);
+      if (foundIdx >= 0) {
+        e.preventDefault();
+        openReaderByIndex(foundIdx);
+      }
+    }
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      backdrop.classList.remove("open");
+    });
+  }
+
+  backdrop.addEventListener("click", function (e) {
+    if (e.target === backdrop) backdrop.classList.remove("open");
+  });
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      const u = this.getAttribute("data-url") || window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(u).then(() => {
+          copyBtn.textContent = "Link Copied!";
+          setTimeout(() => { copyBtn.textContent = "Copy Story Link"; }, 1800);
+        });
+      }
+    });
+  }
 })();
