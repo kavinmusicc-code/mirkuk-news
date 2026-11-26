@@ -1307,3 +1307,77 @@
     });
   });
 })();
+
+(function () {
+  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+  const FULL_DESKS = [
+    { key: "india",    title: "India & National Desk",        url: "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "business", title: "Business, Markets & Startups", url: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "world",    title: "World & Global Affairs",       url: "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "tech",     title: "Tech, AI & Digital",           url: "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "sports",   title: "World Cricket & Sports",       url: "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "ent",      title: "Entertainment & Cinema",       url: "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=en-IN&gl=IN&ceid=IN:en" },
+    { key: "science",  title: "Science & Environment",        url: "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=en-IN&gl=IN&ceid=IN:en" }
+  ];
+
+  async function renderFullMegaShelf() {
+    const shelf = document.getElementById("mk-mega-shelf");
+    const activeBtn = document.querySelector(".mk-nav-btn.active");
+    const activeCat = activeBtn ? activeBtn.getAttribute("data-mk-cat") : "top";
+    if (!shelf || activeCat !== "top") return;
+
+    const blocks = await Promise.all(
+      FULL_DESKS.map(async desk => {
+        try {
+          const res = await fetch(RSS_API + encodeURIComponent(desk.url));
+          const data = await res.json();
+          const items = Array.isArray(data.items) ? data.items.slice(0, 6) : [];
+          if (!items.length) return "";
+
+          const cardsHtml = items.map(it => {
+            const parts = (it.title || "").split(" - ");
+            const src = parts.length > 1 ? parts.pop().trim() : (data.feed && data.feed.title) || "Wire";
+            const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+            const tmp = document.createElement("div");
+            tmp.innerHTML = it.description || "";
+            const desc = (tmp.textContent || tmp.innerText || "").trim().slice(0, 135);
+            return `
+              <article class="mk-card mk-grid-card">
+                <div class="mk-grid-body">
+                  <div>
+                    <span class="mk-cat-tag">${src}</span>
+                    <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${cleanT}</a></h3>
+                    <p>${desc}</p>
+                  </div>
+                  <div class="mk-meta">${src}</div>
+                </div>
+              </article>
+            `;
+          }).join("");
+
+          return `
+            <div class="mk-shelf-block">
+              <div class="mk-section-head">
+                <h2>${desk.title}</h2>
+                <a href="#" class="mk-status-pill" data-mk-cat="${desk.key}">Explore ${desk.title} &rarr;</a>
+              </div>
+              <div class="mk-shelf-grid">${cardsHtml}</div>
+            </div>
+          `;
+        } catch (_) {
+          return "";
+        }
+      })
+    );
+
+    const valid = blocks.filter(Boolean);
+    if (valid.length) {
+      shelf.innerHTML = valid.join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(renderFullMegaShelf, 1400);
+  });
+})();
