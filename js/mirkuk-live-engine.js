@@ -2148,3 +2148,22 @@
   document.addEventListener("DOMContentLoaded", applyDeviceLookClass);
   window.addEventListener("resize", applyDeviceLookClass);
 })();
+
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    const panel = document.getElementById("mk-more-panel");
+    if (!panel) return;
+
+    panel.querySelectorAll("[data-mk-topic]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        const topic = (btn.getAttribute("data-mk-topic") || "").trim();
+        const inp = document.getElementById("mk-search-input");
+        const form = document.getElementById("mk-search-form");
+        if (topic && inp && form) {
+          inp.value = topic;
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      });
+    });
+  });
+})();

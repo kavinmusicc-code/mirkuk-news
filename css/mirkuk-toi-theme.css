@@ -1467,3 +1467,38 @@ body.mk-dark-mode .mk-jump-link {
     padding: 22px 14px;
   }
 }
+
+/* Expanded Multi-Group Mega Panel Layout */
+.mk-more-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.mk-more-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.mk-more-box h5 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ff6b81;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.mk-sub-label {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9aa5b1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
