@@ -2185,3 +2185,21 @@
     });
   });
 })();
+
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-mk-topic]").forEach(btn => {
+      if (btn.dataset.mkTopicBound === "1") return;
+      btn.dataset.mkTopicBound = "1";
+      btn.addEventListener("click", function () {
+        const topic = (btn.getAttribute("data-mk-topic") || "").trim();
+        const inp = document.getElementById("mk-search-input");
+        const form = document.getElementById("mk-search-form");
+        if (topic && inp && form) {
+          inp.value = topic;
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      });
+    });
+  });
+})();
