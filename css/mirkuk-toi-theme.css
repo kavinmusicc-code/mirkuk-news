@@ -808,3 +808,28 @@ a:hover { color: var(--mk-red); }
   color: #ffffff;
   border-color: var(--mk-ink);
 }
+
+/* Language Switcher & Story Share Controls */
+.mk-lang-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mk-share-wa {
+  background: #16803c;
+  color: #ffffff !important;
+  padding: 8px 13px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mk-share-x {
+  background: #111315;
+  color: #ffffff !important;
+  padding: 8px 13px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+}

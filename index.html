@@ -11,6 +11,13 @@
   <div class="mk-topbar">
     <div class="mk-topbar-inner">
       <div class="mk-util-group">
+                <span class="mk-lang-group">
+          <label for="mk-lang-select"><strong>Lang:</strong></label>
+          <select id="mk-lang-select" class="mk-select" aria-label="Select Language">
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+          </select>
+        </span>
         <label for="mk-edition-select"><strong>Edition:</strong></label>
         <select id="mk-edition-select" class="mk-select" aria-label="Select Edition">
           <option value="IN" selected>India</option>
@@ -222,6 +229,8 @@
     <div class="mk-reader-actions">
       <a id="mk-reader-ext" href="#" target="_blank" rel="noopener noreferrer" class="mk-reader-btn-primary">Read Full Story at Source &rarr;</a>
       <button type="button" id="mk-reader-copy" class="mk-reader-btn-secondary">Copy Story Link</button>
+            <a id="mk-reader-wa" href="#" target="_blank" rel="noopener noreferrer" class="mk-share-wa">Share on WhatsApp</a>
+      <a id="mk-reader-x" href="#" target="_blank" rel="noopener noreferrer" class="mk-share-x">Share on X</a>
     </div>
     <div>
       <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:0.04em;">More Stories From This Feed</strong>
@@ -231,5 +240,6 @@
 </div>
 </body>
 </html>
+
 
 

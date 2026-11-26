@@ -709,3 +709,191 @@
     }, 1800);
   });
 })();
+
+(function () {
+  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+  const HI_FEEDS = {
+    top:      "https://news.google.com/rss?hl=hi-IN&gl=IN&ceid=IN:hi",
+    india:    "https://news.google.com/rss/headlines/section/topic/NATION?hl=hi-IN&gl=IN&ceid=IN:hi",
+    world:    "https://news.google.com/rss/headlines/section/topic/WORLD?hl=hi-IN&gl=IN&ceid=IN:hi",
+    business: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=hi-IN&gl=IN&ceid=IN:hi",
+    tech:     "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=hi-IN&gl=IN&ceid=IN:hi",
+    sports:   "https://news.google.com/rss/headlines/section/topic/SPORTS?hl=hi-IN&gl=IN&ceid=IN:hi",
+    ent:      "https://news.google.com/rss/headlines/section/topic/ENTERTAINMENT?hl=hi-IN&gl=IN&ceid=IN:hi",
+    science:  "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=hi-IN&gl=IN&ceid=IN:hi"
+  };
+
+  function updateShareLinks(item) {
+    const title = item.__cleanTitle || item.title || "Mirkuk News";
+    const link = item.link || window.location.href;
+    const text = `${title} — ${link}`;
+    const waEl = document.getElementById("mk-reader-wa");
+    const xEl = document.getElementById("mk-reader-x");
+    if (waEl) waEl.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    if (xEl) xEl.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(link)}`;
+  }
+
+  async function loadHindiFeed(cat, q) {
+    const hero = document.getElementById("mk-hero-area");
+    const grid = document.getElementById("mk-grid-area");
+    const ticker = document.getElementById("mk-ticker-links");
+    const status = document.getElementById("mk-feed-status");
+    const titleEl = document.getElementById("mk-active-section-title");
+    const loadBtn = document.getElementById("mk-load-more-btn");
+
+    if (titleEl) titleEl.textContent = q ? `खोज: "${q}"` : `हिन्दी समाचार (${cat.toUpperCase()})`;
+    if (status) status.textContent = "हिन्दी लाइव फ़ीड लोड हो रही है...";
+    if (loadBtn) loadBtn.style.display = "none";
+
+    const rssUrl = q
+      ? `https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=hi-IN&gl=IN&ceid=IN:hi`
+      : (HI_FEEDS[cat] || HI_FEEDS.top);
+
+    try {
+      const res = await fetch(RSS_API + encodeURIComponent(rssUrl));
+      const data = await res.json();
+      const rawItems = Array.isArray(data.items) ? data.items : [];
+      if (!rawItems.length) throw new Error("No Hindi items");
+
+      const items = rawItems
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+        .map(it => {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = it.description || "";
+          const parts = (it.title || "").split(" - ");
+          const src = parts.length > 1 ? parts.pop().trim() : "Mirkuk Hindi";
+          const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+          return Object.assign({}, it, {
+            __cleanTitle: cleanT,
+            __source: src,
+            __summary: (tmp.textContent || tmp.innerText || "").trim(),
+            __timeAgo: "ताज़ा"
+          });
+        });
+
+      window.__mirkukCurrentItems = items;
+
+      if (ticker) {
+        ticker.innerHTML = items.slice(0, 8).map(it =>
+          `<a href="${it.link}" target="_blank" rel="noopener noreferrer">&bull; ${it.__cleanTitle}</a>`
+        ).join("");
+      }
+
+      const lead = items[0];
+      if (hero) {
+        hero.innerHTML = `
+          <div class="mk-hero-grid">
+            <article class="mk-card mk-lead-card">
+              <div class="mk-lead-body">
+                <span class="mk-cat-tag">${lead.__source}</span>
+                <h1><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${lead.__cleanTitle}</a></h1>
+                <p>${lead.__summary.slice(0, 220)}</p>
+                <div class="mk-meta">Mirkuk News Hindi Desk</div>
+              </div>
+            </article>
+            <div class="mk-mid-stack">
+              ${items.slice(1, 4).map(it => `
+                <article class="mk-compact-card" style="grid-template-columns:1fr;">
+                  <div>
+                    <span class="mk-cat-tag">${it.__source}</span>
+                    <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            <aside class="mk-wire-box">
+              <h3>ताज़ा खबरें</h3>
+              <ul class="mk-wire-list">
+                ${items.slice(4, 11).map(it => `
+                  <li>
+                    <a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a>
+                    <span class="mk-wire-time">${it.__source}</span>
+                  </li>
+                `).join("")}
+              </ul>
+            </aside>
+          </div>
+        `;
+      }
+
+      if (grid) {
+        grid.innerHTML = items.slice(11, 27).map(it => `
+          <article class="mk-card">
+            <div class="mk-grid-body">
+              <div>
+                <span class="mk-cat-tag">${it.__source}</span>
+                <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                <p>${it.__summary.slice(0, 150)}</p>
+              </div>
+              <div class="mk-meta">${it.__source}</div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      if (status) status.textContent = `लाइव • ${items.length} हिन्दी खबरें`;
+    } catch (_) {
+      if (status) status.textContent = "हिन्दी फ़ीड फ़िलहाल उपलब्ध नहीं है";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const langSel = document.getElementById("mk-lang-select");
+    let activeCat = "top";
+    let activeQuery = "";
+
+    function syncByLang() {
+      if (langSel && langSel.value === "hi") {
+        loadHindiFeed(activeCat, activeQuery);
+      }
+    }
+
+    if (langSel) {
+      langSel.addEventListener("change", function () {
+        if (this.value === "hi") {
+          loadHindiFeed(activeCat, activeQuery);
+        } else {
+          const homeBtn = document.querySelector('.mk-nav-btn[data-mk-cat="' + activeCat + '"]') || document.querySelector(".mk-nav-btn");
+          if (homeBtn) homeBtn.click();
+        }
+      });
+    }
+
+    document.querySelectorAll("[data-mk-cat]").forEach(btn => {
+      btn.addEventListener("click", function () {
+        activeCat = this.getAttribute("data-mk-cat") || "top";
+        activeQuery = "";
+        if (langSel && langSel.value === "hi") {
+          setTimeout(() => loadHindiFeed(activeCat, ""), 60);
+        }
+      });
+    });
+
+    const sf = document.getElementById("mk-search-form");
+    const si = document.getElementById("mk-search-input");
+    if (sf && si) {
+      sf.addEventListener("submit", function () {
+        activeQuery = si.value.trim();
+        if (langSel && langSel.value === "hi" && activeQuery) {
+          setTimeout(() => loadHindiFeed(activeCat, activeQuery), 60);
+        }
+      });
+    }
+
+    // Hook share buttons whenever reader opens
+    document.addEventListener("click", function (e) {
+      const trigger = e.target.closest("[data-mk-open-idx], #mk-hero-area a, #mk-grid-area a, .mk-wire-list a");
+      if (!trigger) return;
+      setTimeout(() => {
+        const items = window.__mirkukCurrentItems || [];
+        const titleEl = document.getElementById("mk-reader-title");
+        if (!titleEl || !items.length) return;
+        const found = items.find(it => (it.__cleanTitle || it.title) === titleEl.textContent) || items[0];
+        if (found) updateShareLinks(found);
+      }, 40);
+    });
+
+    syncByLang();
+  });
+})();
