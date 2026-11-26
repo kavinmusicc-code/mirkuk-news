@@ -24,12 +24,13 @@
 .mk-editorial-wrap {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 12px 16px 40px;
+  padding: 12px 16px 44px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--mk-ink);
   background: var(--mk-surface);
 }
 
+/* Masthead & Nav */
 .mk-masthead {
   background: var(--mk-surface);
   border-bottom: 2px solid var(--mk-ink);
@@ -102,6 +103,7 @@
   color: var(--mk-crimson);
 }
 
+/* Three-Dot (•••) Menu */
 .mk-dots-wrap {
   position: relative;
 }
@@ -143,6 +145,7 @@
   font-weight: 600;
 }
 
+/* Section Dropdown */
 .mk-sub-dropdown {
   display: none;
   position: absolute;
@@ -420,7 +423,7 @@
 
 .mk-section-heading-link {
   display: inline-block;
-  margin: 0;
+  margin: 0 0 12px;
   font-size: 18px;
   font-weight: 800;
   color: var(--mk-ink);
@@ -493,7 +496,7 @@
   color: var(--mk-crimson);
 }
 
-/* 6-Card Horizontal Strip (Spotlight / City Crime / Desk Picks) */
+/* 6-Card Horizontal Strip */
 .mk-six-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -520,13 +523,20 @@
   font-weight: 600;
 }
 
+/* 5-Card Strip (Mantra / Culture Videos) */
+.mk-five-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
 /* In Focus Pill Row */
 .mk-focus-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 14px;
-  padding: 10px 0;
+  padding-top: 10px;
   flex-wrap: wrap;
 }
 
@@ -551,10 +561,10 @@
   color: var(--mk-crimson);
 }
 
-/* World / Sports + Side Videos Layout */
+/* Split Section + Side Videos / Horoscope */
 .mk-split-video-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 295px;
   gap: 20px;
   align-items: start;
 }
@@ -586,16 +596,185 @@
   font-weight: 700;
 }
 
+.mk-side-video-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mk-side-video-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mk-side-video-row img {
+  width: 88px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.mk-side-video-row span {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+/* Conversation Banner */
+.mk-convo-banner {
+  margin: 18px auto 6px;
+  max-width: 520px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  overflow: hidden;
+  text-align: center;
+  background: #ffffff;
+}
+
+.mk-convo-top {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.mk-convo-btn {
+  background: #ffffff;
+  color: #1e3a8a;
+  border: 1px solid #1e3a8a;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-convo-badge {
+  background: var(--mk-crimson);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 2px;
+}
+
+.mk-convo-bottom {
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+}
+
+/* Dark Spotlight Banner (Select style) */
+.mk-select-showcase {
+  background: linear-gradient(120deg, #17202a 0%, #243447 55%, #1c2833 100%);
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.mk-select-cta {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 7px 16px;
+  border: 1px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-select-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mk-select-card {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 150px;
+  background: #0f172a;
+}
+
+.mk-select-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  opacity: 0.72;
+}
+
+.mk-select-card-label {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+/* Entertainment 3-Column Row */
+.mk-ent-three-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 295px;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Sub-links strip next to section titles (Business / Tech / Travel) */
+.mk-sub-inline-links {
+  display: inline-flex;
+  gap: 12px;
+  margin-left: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--mk-muted);
+}
+
+.mk-sub-inline-links span {
+  cursor: pointer;
+}
+
+.mk-sub-inline-links span:hover {
+  color: var(--mk-crimson);
+  text-decoration: underline;
+}
+
 @media (max-width: 1060px) {
   .mk-six-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .mk-five-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .mk-select-showcase {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 960px) {
   .mk-front-grid,
   .mk-three-desk-grid,
-  .mk-split-video-grid {
+  .mk-split-video-grid,
+  .mk-ent-three-grid,
+  .mk-select-cards {
     grid-template-columns: 1fr;
   }
   .mk-side-rail,
@@ -607,7 +786,9 @@
 }
 
 @media (max-width: 600px) {
-  .mk-six-grid {
+  .mk-six-grid,
+  .mk-five-grid,
+  .mk-two-photo-pair {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
