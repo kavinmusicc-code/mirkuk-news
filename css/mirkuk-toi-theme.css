@@ -1502,3 +1502,84 @@ body.mk-dark-mode .mk-jump-link {
   margin-top: 6px;
   margin-bottom: 2px;
 }
+
+/* =========================================================
+   ANDROID TABLET-LIKE FIT & ZERO OVERFLOW FIX
+   ========================================================= */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  .mk-container,
+  .mk-header-inner,
+  .mk-nav-inner,
+  .mk-breaking-inner,
+  .mk-card,
+  .mk-grid-body {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent wide select boxes or search inputs from overflowing right edge */
+  select,
+  input[type="text"],
+  input[type="search"],
+  .mk-select,
+  #mk-source-filter,
+  #mk-search-input {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Tablet-like balanced spacing and 2-column card layout on wider phones/tablets */
+  .mk-container {
+    padding: 10px 12px 28px !important;
+  }
+
+  .mk-grid-area {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .mk-card.mk-grid-card img {
+    width: 100% !important;
+    height: 145px !important;
+    object-fit: cover !important;
+  }
+
+  .mk-grid-body {
+    padding: 10px !important;
+  }
+
+  .mk-grid-body h3 {
+    font-size: 14px !important;
+    line-height: 1.32 !important;
+  }
+
+  .mk-grid-body p {
+    font-size: 12px !important;
+    line-height: 1.38 !important;
+  }
+
+  /* Compact top controls so nothing spills horizontally */
+  .mk-nav-inner,
+  .mk-breaking-inner {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Very narrow screens keep single-column readability without horizontal overflow */
+  .mk-grid-area {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mk-card.mk-grid-card img {
+    height: 185px !important;
+  }
+}
