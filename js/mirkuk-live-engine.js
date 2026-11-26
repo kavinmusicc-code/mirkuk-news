@@ -1473,3 +1473,104 @@
     setupAudioBriefing();
   });
 })();
+
+(function () {
+  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+  const BLACK_HOLE_SOURCES = [
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss?hl=en-GB&gl=GB&ceid=GB:en",
+    "https://news.google.com/rss/search?q=video+games+gaming+esports+news&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=world+news+breaking+headlines&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=india+news+economy+tech+cricket&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://feeds.bbci.co.uk/news/technology/rss.xml"
+  ];
+
+  function normalizeKey(title) {
+    return (title || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .slice(0, 85);
+  }
+
+  async function pullBlackHoleStream() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    try {
+      const batches = await Promise.all(
+        BLACK_HOLE_SOURCES.map(url =>
+          fetch(RSS_API + encodeURIComponent(url))
+            .then(r => r.json())
+            .then(d => Array.isArray(d.items)
+              ? d.items.map(it => Object.assign({}, it, { __bhFeed: (d.feed && d.feed.title) || "Global Wire" }))
+              : [])
+            .catch(() => [])
+        )
+      );
+
+      const current = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+      const merged = current.concat(batches.flat());
+
+      const seen = new Set();
+      const pulled = [];
+
+      for (const it of merged) {
+        const key = normalizeKey(it.title);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+
+        const tmp = document.createElement("div");
+        tmp.innerHTML = it.description || "";
+        const parts = (it.title || "").split(" - ");
+        const src = parts.length > 1 ? parts.pop().trim() : (it.__source || it.__bhFeed || "Black Hole Wire");
+        const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.__cleanTitle || it.title || "").trim();
+
+        pulled.push(Object.assign({}, it, {
+          __cleanTitle: cleanT,
+          __source: src,
+          __summary: it.__summary || (tmp.textContent || tmp.innerText || "").trim(),
+          __timeAgo: it.__timeAgo || "Live Wire"
+        }));
+      }
+
+      pulled.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+      if (pulled.length > current.length) {
+        window.__mirkukCurrentItems = pulled;
+        window.__mirkukAllItemsBackup = pulled.slice();
+        window.__mirkukBeastProcessedFor = null;
+
+        grid.innerHTML = pulled.slice(0, 40).map(it => `
+          <article class="mk-card mk-grid-card">
+            <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+              <img src="${it.__img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+            </a>
+            <div class="mk-grid-body">
+              <div>
+                <span class="mk-cat-tag">${it.__source}</span>
+                <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                <p>${(it.__summary || "").slice(0, 155)}</p>
+              </div>
+              <div class="mk-meta">${it.__timeAgo}</div>
+            </div>
+          </article>
+        `).join("");
+
+        const countEl = document.getElementById("mk-grid-count");
+        if (countEl) {
+          countEl.textContent = `Black Hole Stream: Showing ${Math.min(40, pulled.length)} of ${pulled.length} stories`;
+        }
+      }
+    } catch (_) {}
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(pullBlackHoleStream, 2100);
+    document.querySelectorAll("[data-mk-cat], [data-mk-topic]").forEach(el => {
+      el.addEventListener("click", () => setTimeout(pullBlackHoleStream, 2100));
+    });
+  });
+})();

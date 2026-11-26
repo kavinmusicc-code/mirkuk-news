@@ -8,7 +8,7 @@
   ]);
 
   const TOPIC_RULES = [
-    { tag: "AI & Tech", re: /\b(ai|artificial intelligence|tech|chip|semiconductor|software|cyber|google|apple|microsoft|openai|startup|app|data)\b/i },
+    { tag: "Gaming", re: /\b(gaming|gamer|esports|playstation|xbox|nintendo|gta|steam|mobile game|tournament)\b/i },`n    { tag: "AI & Tech", re: /\b(ai|artificial intelligence|tech|chip|semiconductor|software|cyber|google|apple|microsoft|openai|startup|app|data)\b/i },
     { tag: "Markets & Biz", re: /\b(market|stock|nifty|sensex|rupee|rbi|bank|economy|gdp|trade|investment|ipo|business|company|profit)\b/i },
     { tag: "Sports", re: /\b(cricket|ipl|match|test|odi|goal|win|cup|league|tournament|player|olympic|football|tennis)\b/i },
     { tag: "World", re: /\b(un|global|us|usa|china|europe|uk|russia|ukraine|israel|gaza|summit|president|minister|diplomacy)\b/i },
@@ -146,3 +146,4 @@
     setTimeout(runBeastBrain, 1500);
   });
 })();
+
