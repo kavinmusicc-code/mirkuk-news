@@ -1,4 +1,4 @@
-﻿/* === MIRKUK TOI-STYLE EDITORIAL & DROPDOWN JS START === */
+﻿/* === MIRKUK FULL TOI-INSPIRED BROADSHEET JS START === */
 (function () {
   const NAV_SECTIONS = [
     {
@@ -293,4 +293,4 @@
     renderProLayout();
   }
 })();
-/* === MIRKUK TOI-STYLE EDITORIAL & DROPDOWN JS END === */
+/* === MIRKUK FULL TOI-INSPIRED BROADSHEET JS END === */
