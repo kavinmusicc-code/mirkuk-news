@@ -1381,3 +1381,95 @@
     setTimeout(renderFullMegaShelf, 1400);
   });
 })();
+
+(function () {
+  const CITIES = [
+    { label: "Delhi",    tz: "Asia/Kolkata" },
+    { label: "London",   tz: "Europe/London" },
+    { label: "New York", tz: "America/New_York" },
+    { label: "Dubai",    tz: "Asia/Dubai" },
+    { label: "Tokyo",    tz: "Asia/Tokyo" }
+  ];
+
+  function renderWorldClocks() {
+    const box = document.getElementById("mk-world-clocks");
+    if (!box) return;
+    const now = new Date();
+    const parts = CITIES.map(c => {
+      let timeStr = "";
+      try {
+        timeStr = new Intl.DateTimeFormat("en-US", {
+          timeZone: c.tz,
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        }).format(now);
+      } catch (_) {
+        timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      }
+      return `<span class="mk-clock-item"><strong>${c.label}:</strong> ${timeStr}</span>`;
+    });
+
+    box.innerHTML = `<strong style="text-transform:uppercase; letter-spacing:0.05em; color:#f0f6fc;">World Clock:</strong>` + parts.join("");
+  }
+
+  function setupAudioBriefing() {
+    const btn = document.getElementById("mk-listen-btn");
+    if (!btn) return;
+
+    const hasSpeech = ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window);
+    let speaking = false;
+
+    function stopSpeech() {
+      if (hasSpeech) {
+        try { window.speechSynthesis.cancel(); } catch (_) {}
+      }
+      speaking = false;
+      btn.classList.remove("stop");
+      btn.innerHTML = "&#9654; Listen Top Briefing";
+    }
+
+    btn.addEventListener("click", function () {
+      if (!hasSpeech) {
+        alert("Your browser does not support built-in voice briefing.");
+        return;
+      }
+
+      if (speaking) {
+        stopSpeech();
+        return;
+      }
+
+      const items = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice(0, 6) : [];
+      if (!items.length) return;
+
+      const scriptText = "Mirkuk News Top Briefing. " + items.map((it, idx) => {
+        const title = it.__cleanTitle || it.title || "";
+        return `Story ${idx + 1}: ${title}.`;
+      }).join(" ");
+
+      stopSpeech();
+      const utter = new SpeechSynthesisUtterance(scriptText);
+      utter.rate = 1.02;
+      utter.pitch = 1.0;
+      utter.onend = stopSpeech;
+      utter.onerror = stopSpeech;
+
+      speaking = true;
+      btn.classList.add("stop");
+      btn.innerHTML = "&#9632; Stop Briefing";
+
+      try {
+        window.speechSynthesis.speak(utter);
+      } catch (_) {
+        stopSpeech();
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    renderWorldClocks();
+    setInterval(renderWorldClocks, 30000);
+    setupAudioBriefing();
+  });
+})();
