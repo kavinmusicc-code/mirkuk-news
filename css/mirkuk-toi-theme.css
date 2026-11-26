@@ -1840,3 +1840,39 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   TOI-STYLE MULTI-DESK / SECTION HEADER & VIEW POLISH
+   ========================================================= */
+.mk-active-desk-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 12px 0 14px;
+  border-left: 4px solid #c8102e;
+  background: rgba(200, 16, 46, 0.08);
+  border-radius: 4px;
+}
+
+.mk-active-desk-banner strong {
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.mk-desk-reset-btn {
+  padding: 6px 12px;
+  background: #c8102e;
+  color: #ffffff;
+  border: 0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mk-desk-reset-btn:hover {
+  opacity: 0.92;
+}

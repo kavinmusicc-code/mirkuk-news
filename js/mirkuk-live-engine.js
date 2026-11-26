@@ -2921,3 +2921,97 @@
     setTimeout(buildToiBroadsheet, 4200);
   });
 })();
+
+(function () {
+  const DESK_QUERIES = {
+    top: { label: "Top Stories — Front Page", q: "breaking top news India world" },
+    india: { label: "India Desk", q: "India news politics policy states" },
+    world: { label: "World Desk", q: "world news international global affairs" },
+    business: { label: "Business & Economy Desk", q: "business economy finance markets India global" },
+    tech: { label: "Tech & Gadgets Desk", q: "technology AI gadgets software launches" },
+    ent: { label: "Entertainment, Movies, Series & Celebs", q: "movies web series TV shows celebrities entertainment" },
+    sports: { label: "Sports & Gaming Desk", q: "cricket football sports gaming esports" }
+  };
+
+  function ensureDeskBanner() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid || !grid.parentNode) return null;
+
+    let banner = document.getElementById("mk-active-desk-banner");
+    if (!banner) {
+      banner = document.createElement("div");
+      banner.id = "mk-active-desk-banner";
+      banner.className = "mk-active-desk-banner";
+      banner.style.display = "none";
+      grid.parentNode.insertBefore(banner, grid);
+    }
+    return banner;
+  }
+
+  function showDeskView(titleText, queryText) {
+    const banner = ensureDeskBanner();
+    if (banner) {
+      banner.style.display = "flex";
+      banner.innerHTML = `
+        <div>
+          <strong>${titleText}</strong>
+          <div style="font-size:12px; opacity:0.8;">Filtered Desk Feed • Click "All Front Page" anytime to return to full broadsheet</div>
+        </div>
+        <button type="button" id="mk-back-to-frontpage" class="mk-desk-reset-btn">All Front Page</button>
+      `;
+      const resetBtn = document.getElementById("mk-back-to-frontpage");
+      if (resetBtn) {
+        resetBtn.onclick = function () {
+          banner.style.display = "none";
+          const inp = document.getElementById("mk-search-input");
+          const form = document.getElementById("mk-search-form");
+          if (inp && form) {
+            inp.value = "";
+            form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+          }
+          if (typeof window.__mirkukRenderGrid === "function") {
+            window.__mirkukRenderGrid();
+          }
+        };
+      }
+    }
+
+    const inp = document.getElementById("mk-search-input");
+    const form = document.getElementById("mk-search-form");
+    if (queryText && inp && form) {
+      inp.value = queryText;
+      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    }
+
+    const panel = document.getElementById("mk-more-panel");
+    if (panel) panel.classList.remove("open");
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureDeskBanner();
+
+    document.querySelectorAll("[data-mk-cat]").forEach(btn => {
+      if (btn.dataset.mkDeskBound === "1") return;
+      btn.dataset.mkDeskBound = "1";
+      btn.addEventListener("click", function () {
+        const cat = (btn.getAttribute("data-mk-cat") || "").trim().toLowerCase();
+        const cfg = DESK_QUERIES[cat];
+        if (cfg) {
+          showDeskView(cfg.label, cfg.q);
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-mk-topic]").forEach(btn => {
+      if (btn.dataset.mkTopicDeskBound === "1") return;
+      btn.dataset.mkTopicDeskBound = "1";
+      btn.addEventListener("click", function () {
+        const topic = (btn.getAttribute("data-mk-topic") || "").trim();
+        const labelText = (btn.textContent || topic || "Section").trim();
+        if (topic) {
+          showDeskView(labelText + " — Section Desk", topic);
+        }
+      });
+    });
+  });
+})();
