@@ -1933,3 +1933,207 @@
     setTimeout(syncGlobalPortalsWithImages, 1600);
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  // Expanded Worldwide & Regional News Feeds
+  const WORLDWIDE_FEEDS = [
+    "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "https://feeds.bbci.co.uk/news/technology/rss.xml",
+    "https://feeds.bbci.co.uk/sport/cricket/rss.xml",
+    "https://www.aljazeera.com/xml/rss/all.xml",
+    "https://www.thehindu.com/news/national/feeder/default.rss",
+    "https://www.thehindu.com/news/international/feeder/default.rss",
+    "https://indianexpress.com/section/india/feed/",
+    "https://indianexpress.com/section/technology/feed/",
+    "https://indianexpress.com/section/sports/cricket/feed/",
+    "https://feeds.feedburner.com/ndtvnews-top-stories",
+    "https://feeds.feedburner.com/ndtvnews-world-news",
+    "https://feeds.ign.com/ign/games-all",
+    "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss?hl=en-GB&gl=GB&ceid=GB:en",
+    "https://news.google.com/rss?hl=en-AE&gl=AE&ceid=AE:en",
+    "https://news.google.com/rss?hl=en-SG&gl=SG&ceid=SG:en",
+    "https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en"
+  ];
+
+  function escapeXml(str) {
+    return (str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+  }
+
+  function pickThemeColors(title) {
+    const t = (title || "").toLowerCase();
+    if (/\b(cricket|ipl|test|odi|t20|icc|sport|match|goal)\b/.test(t)) return { bg1: "#0f2942", bg2: "#1d5b8c", accent: "#38bdf8", tag: "SPORTS WIRE" };
+    if (/\b(game|gaming|esports|ps5|xbox|gta|nintendo|steam)\b/.test(t)) return { bg1: "#1c103b", bg2: "#5b21b6", accent: "#c084fc", tag: "GAMING DESK" };
+    if (/\b(ai|tech|chip|google|apple|microsoft|cyber|space|science)\b/.test(t)) return { bg1: "#0b2530", bg2: "#0f766e", accent: "#2dd4bf", tag: "TECH & SCIENCE" };
+    if (/\b(market|stock|nifty|sensex|economy|bank|rupee|trade|business)\b/.test(t)) return { bg1: "#1e293b", bg2: "#991b1b", accent: "#f87171", tag: "MARKETS & BIZ" };
+    return { bg1: "#14181f", bg2: "#7f1d1d", accent: "#ef4444", tag: "MIRKUK WIRE" };
+  }
+
+  // Generates a guaranteed non-empty visual graphic card image when real image is missing/blocked
+  function buildGeneratedCardImage(title, source) {
+    const theme = pickThemeColors(title);
+    const words = (title || "Global News Update").trim().split(/\s+/).slice(0, 9).join(" ");
+    const line1 = escapeXml(words.slice(0, 34));
+    const line2 = escapeXml(words.slice(34, 68));
+    const srcSafe = escapeXml((source || "MIRKUK NEWS").slice(0, 24).toUpperCase());
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="${theme.bg1}"/>
+          <stop offset="100%" stop-color="${theme.bg2}"/>
+        </linearGradient>
+      </defs>
+      <rect width="800" height="450" fill="url(#g)"/>
+      <rect x="0" y="0" width="800" height="8" fill="${theme.accent}"/>
+      <rect x="40" y="42" width="170" height="30" rx="4" fill="rgba(255,255,255,0.14)"/>
+      <text x="54" y="62" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="bold">${theme.tag}</text>
+      <text x="40" y="155" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" font-weight="bold">${line1}</text>
+      <text x="40" y="198" fill="#f1f5f9" font-family="Arial, sans-serif" font-size="28" font-weight="bold">${line2}</text>
+      <line x1="40" y1="365" x2="760" y2="365" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+      <text x="40" y="402" fill="${theme.accent}" font-family="Arial, sans-serif" font-size="15" font-weight="bold">MIRKUK NEWS</text>
+      <text x="760" y="402" text-anchor="end" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="14">${srcSafe}</text>
+    </svg>`;
+
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  function extractRealImage(item) {
+    if (item.thumbnail && /^https?:\/\//i.test(item.thumbnail)) return item.thumbnail;
+    if (item.enclosure && item.enclosure.link && /^https?:\/\//i.test(item.enclosure.link)) return item.enclosure.link;
+    if (item.enclosure && item.enclosure.url && /^https?:\/\//i.test(item.enclosure.url)) return item.enclosure.url;
+
+    const rawHtml = (item.content || "") + " " + (item.description || "");
+    const m = rawHtml.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && m[1] && /^https?:\/\//i.test(m[1]) && !/pixel|tracker|1x1|logo|icon/i.test(m[1])) {
+      return m[1];
+    }
+    return "";
+  }
+
+  function parseXmlWithMedia(xmlStr) {
+    try {
+      const doc = new DOMParser().parseFromString(xmlStr, "text/xml");
+      const channelTitle = (doc.querySelector("channel > title")?.textContent || "World Wire").trim();
+      return Array.from(doc.querySelectorAll("item")).map(node => {
+        const mediaContent = node.getElementsByTagNameNS("*", "content")[0];
+        const mediaThumb = node.getElementsByTagNameNS("*", "thumbnail")[0];
+        const enc = node.querySelector("enclosure");
+        const imgUrl =
+          (mediaContent && mediaContent.getAttribute("url")) ||
+          (mediaThumb && mediaThumb.getAttribute("url")) ||
+          (enc && enc.getAttribute("url")) || "";
+
+        return {
+          title: (node.querySelector("title")?.textContent || "").trim(),
+          link: (node.querySelector("link")?.textContent || "").trim(),
+          pubDate: (node.querySelector("pubDate")?.textContent || new Date().toUTCString()).trim(),
+          description: (node.querySelector("description")?.textContent || "").trim(),
+          thumbnail: imgUrl,
+          __portalName: channelTitle
+        };
+      });
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function fetchWorldwideFeed(url) {
+    try {
+      const r1 = await fetch(RELAYS[0](url));
+      const j1 = await r1.json();
+      if (Array.isArray(j1.items) && j1.items.length) {
+        const feedName = (j1.feed && j1.feed.title) || "World Wire";
+        return j1.items.map(it => Object.assign({}, it, { __portalName: feedName }));
+      }
+    } catch (_) {}
+
+    try {
+      const r2 = await fetch(RELAYS[1](url));
+      const j2 = await r2.json();
+      if (j2 && j2.contents) return parseXmlWithMedia(j2.contents);
+    } catch (_) {}
+
+    return [];
+  }
+
+  async function syncWorldwideWithGuaranteedImages() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    const batches = await Promise.all(WORLDWIDE_FEEDS.map(fetchWorldwideFeed));
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const combined = batches.flat().concat(existing);
+
+    const seen = new Set();
+    const enriched = [];
+
+    for (const it of combined) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : (it.__source || it.__portalName || "World Wire");
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.__cleanTitle || it.title || "").trim();
+      const key = cleanT.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+      const genImg = buildGeneratedCardImage(cleanT, src);
+      const realImg = extractRealImage(it) || genImg;
+
+      enriched.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: src,
+        __img: realImg,
+        __genImg: genImg,
+        __summary: it.__summary || (tmp.textContent || tmp.innerText || "").trim(),
+        __timeAgo: it.__timeAgo || "World Live"
+      }));
+    }
+
+    enriched.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+    if (enriched.length) {
+      window.__mirkukCurrentItems = enriched;
+      window.__mirkukAllItemsBackup = enriched.slice();
+      window.__mirkukBeastProcessedFor = null;
+
+      grid.innerHTML = enriched.slice(0, 64).map(it => `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img}" onerror="this.onerror=null;this.src='${it.__genImg}';" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${it.__source}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+              <p>${(it.__summary || "").slice(0, 155)}</p>
+            </div>
+            <div class="mk-meta">${it.__timeAgo}</div>
+          </div>
+        </article>
+      `).join("");
+
+      const countEl = document.getElementById("mk-grid-count");
+      if (countEl) {
+        countEl.textContent = `Worldwide Wire: Showing ${Math.min(64, enriched.length)} of ${enriched.length} stories (100% visual coverage)`;
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(syncWorldwideWithGuaranteedImages, 1500);
+  });
+})();
