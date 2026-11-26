@@ -2203,3 +2203,144 @@
     });
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  const MEGA_EVERYTHING_FEEDS = [
+    "https://news.google.com/rss/search?q=Elon+Musk+OR+Tesla+OR+SpaceX&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=billionaires+OR+Forbes+billionaire+OR+wealth&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=Apple+iPhone+OR+Microsoft+OR+Google+launch&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=new+movie+release+OR+movie+launch+OR+box+office&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=new+game+launch+OR+gaming+release+OR+PS5+OR+PC+game&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=celebrity+news+OR+Bollywood+OR+Hollywood+news&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=media+company+OR+broadcast+OR+streaming+news&hl=en-US&gl=US&ceid=US:en"
+  ];
+
+  function makeCardFallback(title, source) {
+    const safeT = (title || "Global Wire Update").replace(/[<>&"']/g, "").slice(0, 68);
+    const safeS = (source || "MIRKUK WIRE").replace(/[<>&"']/g, "").slice(0, 24).toUpperCase();
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+      <defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs>
+      <rect width="800" height="450" fill="url(#mg)"/>
+      <rect x="0" y="0" width="800" height="8" fill="#ef4444"/>
+      <text x="40" y="65" fill="#fca5a5" font-family="Arial,sans-serif" font-size="14" font-weight="bold">GLOBAL MEGA WIRE</text>
+      <text x="40" y="165" fill="#ffffff" font-family="Arial,sans-serif" font-size="30" font-weight="bold">${safeT.slice(0, 34)}</text>
+      <text x="40" y="208" fill="#f3f4f6" font-family="Arial,sans-serif" font-size="28" font-weight="bold">${safeT.slice(34, 68)}</text>
+      <text x="40" y="405" fill="#ef4444" font-family="Arial,sans-serif" font-size="15" font-weight="bold">MIRKUK NEWS</text>
+      <text x="760" y="405" text-anchor="end" fill="#d1d5db" font-family="Arial,sans-serif" font-size="14">${safeS}</text>
+    </svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  function pickImg(item, title, source) {
+    if (item.thumbnail && /^https?:\/\//i.test(item.thumbnail)) return item.thumbnail;
+    if (item.enclosure && (item.enclosure.link || item.enclosure.url)) {
+      const u = item.enclosure.link || item.enclosure.url;
+      if (/^https?:\/\//i.test(u)) return u;
+    }
+    const html = (item.content || "") + " " + (item.description || "");
+    const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (m && m[1] && /^https?:\/\//i.test(m[1]) && !/pixel|tracker|1x1|logo|icon/i.test(m[1])) return m[1];
+    return makeCardFallback(title, source);
+  }
+
+  async function pullMegaEverything() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    const results = await Promise.all(
+      MEGA_EVERYTHING_FEEDS.map(async u => {
+        try {
+          const r = await fetch(RELAYS[0](u));
+          const j = await r.json();
+          if (Array.isArray(j.items) && j.items.length) return j.items;
+        } catch (_) {}
+        try {
+          const r2 = await fetch(RELAYS[1](u));
+          const j2 = await r2.json();
+          if (j2 && j2.contents) {
+            const doc = new DOMParser().parseFromString(j2.contents, "text/xml");
+            return Array.from(doc.querySelectorAll("item")).map(n => ({
+              title: (n.querySelector("title")?.textContent || "").trim(),
+              link: (n.querySelector("link")?.textContent || "").trim(),
+              pubDate: (n.querySelector("pubDate")?.textContent || new Date().toUTCString()).trim(),
+              description: (n.querySelector("description")?.textContent || "").trim()
+            }));
+          }
+        } catch (_) {}
+        return [];
+      })
+    );
+
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const seen = new Set(existing.map(x => (x.__cleanTitle || x.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85)));
+    const added = [];
+
+    for (const it of results.flat()) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : "Global Wire";
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+      const key = cleanT.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+      const fb = makeCardFallback(cleanT, src);
+
+      added.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: src,
+        __img: pickImg(it, cleanT, src),
+        __genImg: fb,
+        __summary: (tmp.textContent || tmp.innerText || "").trim(),
+        __timeAgo: "Mega Wire",
+        __isJustIn: true
+      }));
+    }
+
+    if (added.length) {
+      const merged = added.concat(existing).slice(0, 150);
+      window.__mirkukCurrentItems = merged;
+      window.__mirkukAllItemsBackup = merged.slice();
+      window.__mirkukBeastProcessedFor = null;
+
+      grid.innerHTML = merged.slice(0, 64).map(it => `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img}" onerror="this.onerror=null;this.src='${it.__genImg || makeCardFallback(it.__cleanTitle, it.__source)}';" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${it.__isJustIn ? '<span class="mk-new-badge">LIVE</span>' : ''}${it.__source}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+              <p>${(it.__summary || "").slice(0, 155)}</p>
+            </div>
+            <div class="mk-meta">${it.__timeAgo || "Live"}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(pullMegaEverything, 1800);
+    document.querySelectorAll("[data-mk-topic]").forEach(btn => {
+      if (btn.dataset.mkMegaBound === "1") return;
+      btn.dataset.mkMegaBound = "1";
+      btn.addEventListener("click", function () {
+        const q = (btn.getAttribute("data-mk-topic") || "").trim();
+        const inp = document.getElementById("mk-search-input");
+        const form = document.getElementById("mk-search-form");
+        if (q && inp && form) {
+          inp.value = q;
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      });
+    });
+  });
+})();
