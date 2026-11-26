@@ -1,4 +1,4 @@
-﻿/* === MIRKUK CLEAN BROADSHEET TOP & CARDS CSS START === */
+﻿/* === MIRKUK SAFE BROADSHEET DESIGN CSS START === */
 :root {
   --mk-ink: #111315;
   --mk-muted: #555e68;
@@ -7,7 +7,6 @@
   --mk-accent: #c8102e;
 }
 
-/* Keep excluded sections hidden */
 #mk-live-desk-box,
 [data-section="24-7-live"],
 [data-section="global-stock-market"],
@@ -20,7 +19,6 @@
   display: none !important;
 }
 
-/* Centered Brand Masthead + Section Strip */
 .mk-masthead {
   background: var(--mk-bg);
   border-bottom: 1px solid var(--mk-line);
@@ -128,7 +126,6 @@
   font-weight: 600;
 }
 
-/* Main Broadsheet Container */
 .mk-editorial-wrap {
   max-width: 1240px;
   margin: 0 auto;
@@ -138,7 +135,6 @@
   background: var(--mk-bg);
 }
 
-/* Clean Borderless Broadsheet Cards (No heavy boxes or shadows) */
 .mk-section-block {
   margin-top: 22px;
   padding-top: 14px;
@@ -178,7 +174,6 @@
   text-decoration: underline;
 }
 
-/* 3-Column Lead + Rail Grid */
 .mk-front-grid {
   display: grid;
   grid-template-columns: 255px minmax(0, 1fr) 295px;
@@ -303,7 +298,6 @@
   color: var(--mk-ink);
 }
 
-/* Audio Briefing Strip */
 .mk-audio-bar {
   margin-top: 18px;
   padding: 10px 14px;
@@ -344,7 +338,6 @@
   background: var(--mk-accent);
 }
 
-/* 3-Column Desks */
 .mk-three-desk-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -406,7 +399,6 @@
   color: var(--mk-accent);
 }
 
-/* 6-Card Clean Strip */
 .mk-six-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -438,14 +430,12 @@
   color: var(--mk-accent);
 }
 
-/* 5-Card Strip */
 .mk-five-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 
-/* 6-Column Desk Strip */
 .mk-six-desk-cols {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -473,7 +463,6 @@
   cursor: pointer;
 }
 
-/* In Focus Row */
 .mk-focus-row {
   display: flex;
   align-items: center;
@@ -504,7 +493,6 @@
   color: var(--mk-accent);
 }
 
-/* Split & 3-Column Grids */
 .mk-split-video-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -656,7 +644,6 @@
   color: var(--mk-muted);
 }
 
-/* Conversation Strip */
 .mk-convo-banner {
   margin: 16px auto 4px;
   max-width: 500px;
@@ -703,7 +690,6 @@
   padding: 4px 10px;
 }
 
-/* Spotlight Band */
 .mk-select-showcase {
   background: #14181f;
   color: #ffffff;
@@ -761,7 +747,6 @@
   line-height: 1.25;
 }
 
-/* Bottom TV + Regional Strip */
 .mk-bottom-strip {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -837,4 +822,4 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-/* === MIRKUK CLEAN BROADSHEET TOP & CARDS CSS END === */
+/* === MIRKUK SAFE BROADSHEET DESIGN CSS END === */

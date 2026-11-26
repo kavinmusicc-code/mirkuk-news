@@ -1,4 +1,4 @@
-﻿/* === MIRKUK CLEAN BROADSHEET TOP & CARDS JS START === */
+﻿/* === MIRKUK SAFE BROADSHEET DESIGN JS START === */
 (function () {
   const TOP_CATEGORIES = [
     "Videos",
@@ -16,12 +16,11 @@
   ];
 
   const EXTRA_CATEGORIES = [
-    "Celebrities",
-    "Beauty",
-    "Fashion",
     "Defence",
     "Education",
     "Science",
+    "Recipes & Food News",
+    "Opinion And Features",
     "Lifestyle"
   ];
 
@@ -76,15 +75,15 @@
 
   const SIX_STRIP_CARDS = [
     { title: "Creator & stage highlights across major shows", img: "mirkuk-news/images/culture.jpg", topic: "Entertainment" },
-    { title: "Seasonal wardrobe & styling guides for daily wear", img: "mirkuk-news/images/arts.jpg", topic: "Fashion" },
-    { title: "Skincare & grooming routines that stay simple", img: "mirkuk-news/images/arts.jpg", topic: "Beauty" },
+    { title: "Seasonal wardrobe & styling guides for daily wear", img: "mirkuk-news/images/arts.jpg", topic: "Lifestyle" },
+    { title: "Everyday routines & mindful habits notes", img: "mirkuk-news/images/arts.jpg", topic: "Lifestyle" },
     { title: "City safety, civic updates & local reports", img: "mirkuk-news/images/local.jpg", topic: "India" },
     { title: "Lightweight web builds & developer setups", img: "mirkuk-news/images/tech.jpg", topic: "Tech" },
     { title: "Regional commerce & small-business briefs", img: "mirkuk-news/images/business.jpg", topic: "Business" }
   ];
 
   const FIVE_VIDEO_STRIP = [
-    { title: "Morning Focus & Daily Habits", img: "mirkuk-news/images/arts.jpg", topic: "Beauty" },
+    { title: "Morning Focus & Daily Habits", img: "mirkuk-news/images/arts.jpg", topic: "Lifestyle" },
     { title: "Creative & Stage Spotlights", img: "mirkuk-news/images/culture.jpg", topic: "Entertainment" },
     { title: "Smart Tech Walkarounds", img: "mirkuk-news/images/tech.jpg", topic: "Tech" },
     { title: "Match Highlights & Analysis", img: "mirkuk-news/images/sports.jpg", topic: "Sports" },
@@ -353,17 +352,17 @@
                 <img src="mirkuk-news/images/culture.jpg" alt="Entertainment" onerror="this.style.display='none';" />
                 <h4>Spotlight on actors, creators &amp; screen releases</h4>
               </div>
-              <div class="mk-photo-story" data-topic="Fashion">
-                <img src="mirkuk-news/images/arts.jpg" alt="Fashion & Style" onerror="this.style.display='none';" />
-                <h4>Seasonal fashion &amp; daily style picks</h4>
+              <div class="mk-photo-story" data-topic="Lifestyle">
+                <img src="mirkuk-news/images/arts.jpg" alt="Style & Culture" onerror="this.style.display='none';" />
+                <h4>Seasonal style &amp; cultural picks</h4>
               </div>
             </div>
           </div>
           <div>
             <ul class="mk-desk-list">
               <li data-topic="Entertainment">New film &amp; screen announcements catching viewer attention</li>
-              <li data-topic="Beauty">Skincare &amp; grooming routines explained simply</li>
-              <li data-topic="Fashion">Everyday layering ideas for work and casual outings</li>
+              <li data-topic="Lifestyle">Daily routines &amp; mindful habits explained simply</li>
+              <li data-topic="Travel">Weekend &amp; seasonal trip ideas</li>
               <li data-topic="Entertainment">Behind-the-scenes stories from music and stage</li>
             </ul>
           </div>
@@ -373,7 +372,7 @@
               <img src="mirkuk-news/images/culture.jpg" alt="Video 1" onerror="this.style.display='none';" />
               <span>Spotlight Clips &amp; Stage Notes</span>
             </div>
-            <div class="mk-side-video-row" data-topic="Fashion">
+            <div class="mk-side-video-row" data-topic="Lifestyle">
               <img src="mirkuk-news/images/arts.jpg" alt="Video 2" onerror="this.style.display='none';" />
               <span>Style &amp; Routine Walkthroughs</span>
             </div>
@@ -569,44 +568,153 @@
       </div>
 
       <div class="mk-section-block">
-        <div class="mk-three-desk-grid">
-          <div class="mk-desk-col">
-            <h3 class="mk-section-heading-link" data-topic="Travel">Travel &gt;</h3>
-            <div class="mk-desk-lead-card" data-topic="Travel">
-              <img src="mirkuk-news/images/weather.jpg" alt="Travel" onerror="this.style.display='none';" />
-              <h4>Smart route &amp; seasonal trip planning notes</h4>
+        <div class="mk-section-head-row">
+          <div>
+            <h3 class="mk-section-heading-link" data-topic="Education">Education &gt;</h3>
+            <div class="mk-sub-inline-links" style="margin-left:0;">
+              <span data-topic="Education">Featured</span>
+              <span data-topic="Education">Exams</span>
+              <span data-topic="Education">Results</span>
+              <span data-topic="Business">Jobs</span>
+              <span data-topic="World">Study Abroad</span>
             </div>
-            <ul class="mk-desk-list">
-              <li data-topic="Travel">Packing light &amp; weather tips</li>
-              <li data-topic="India">Weekend getaway ideas &amp; guides</li>
-            </ul>
           </div>
-          <div class="mk-desk-col">
-            <h3 class="mk-section-heading-link" data-topic="Auto">Auto &gt;</h3>
-            <div class="mk-desk-lead-card" data-topic="Auto">
-              <img src="mirkuk-news/images/local.jpg" alt="Auto" onerror="this.style.display='none';" />
-              <h4>Commute efficiency, EV notes &amp; road updates</h4>
-            </div>
-            <ul class="mk-desk-list">
-              <li data-topic="Auto">Maintenance habits for longer vehicle life</li>
-              <li data-topic="India">City traffic &amp; transit updates</li>
-            </ul>
+        </div>
+        <div class="mk-ent-three-grid">
+          <div class="mk-photo-story" data-topic="Education">
+            <img src="mirkuk-news/images/local.jpg" alt="Education Lead" style="height:150px;" onerror="this.style.display='none';" />
+            <h4 style="margin-top:8px;">Student initiatives, learning paths &amp; skill programs</h4>
           </div>
-          <div class="mk-desk-col">
-            <h3 class="mk-section-heading-link" data-topic="Cricket">Cricket &amp; Sports &gt;</h3>
-            <div class="mk-desk-lead-card" data-topic="Cricket">
-              <img src="mirkuk-news/images/sports.jpg" alt="Cricket & Sports" onerror="this.style.display='none';" />
-              <h4>Match reports, series notes &amp; key performances</h4>
-            </div>
+          <ul class="mk-desk-list">
+            <li data-topic="Education">Open &amp; flexible study schedules for self-paced learners</li>
+            <li data-topic="Tech">Practical coding &amp; web portfolios for beginners</li>
+            <li data-topic="Business">Career &amp; skill-building checklists</li>
+            <li data-topic="Education">Exam dates, notices &amp; study guides</li>
+          </ul>
+          <div class="mk-side-video-stack">
+            <h4 class="mk-flat-panel-title">Study Highlights</h4>
             <ul class="mk-desk-list">
-              <li data-topic="Cricket">Top moments &amp; squad updates</li>
-              <li data-topic="Sports">International &amp; domestic fixtures</li>
+              <li data-topic="Tech">Front-end fundamentals</li>
+              <li data-topic="Education">Self-study routines</li>
             </ul>
           </div>
         </div>
         <div class="mk-focus-row">
           <span class="mk-focus-label">In Focus</span>
           ${focusHtml}
+        </div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Defence">Defence &gt;</h3>
+        <div class="mk-six-grid">${sixStripHtml}</div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="India">From Across Desk &gt;</h3>
+        <div class="mk-ent-three-grid">
+          <div class="mk-photo-story" data-topic="India">
+            <img src="mirkuk-news/images/hero.jpg" alt="Across Desk" style="height:150px;" onerror="this.style.display='none';" />
+            <h4 style="margin-top:8px;">Notable human-interest &amp; regional stories</h4>
+          </div>
+          <ul class="mk-desk-list">
+            <li data-topic="Lifestyle">Focus habits &amp; everyday decision making</li>
+            <li data-topic="Business">Independent journeys &amp; local enterprise</li>
+            <li data-topic="India">Community milestones across cities</li>
+            <li data-topic="Tech">Digital habits &amp; online attention</li>
+          </ul>
+          <div class="mk-side-video-stack">
+            <div class="mk-side-video-row" data-topic="Entertainment">
+              <img src="mirkuk-news/images/culture.jpg" alt="Story 1" onerror="this.style.display='none';" />
+              <span>Creative &amp; stage profiles</span>
+            </div>
+            <div class="mk-side-video-row" data-topic="Lifestyle">
+              <img src="mirkuk-news/images/arts.jpg" alt="Story 2" onerror="this.style.display='none';" />
+              <span>Mindful habits &amp; culture notes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Travel">Travel &gt;</h3>
+        <div class="mk-ent-three-grid">
+          <div class="mk-photo-story" data-topic="Travel">
+            <img src="mirkuk-news/images/weather.jpg" alt="Travel Lead" style="height:150px;" onerror="this.style.display='none';" />
+            <h4 style="margin-top:8px;">Rail, route &amp; seasonal trip guides</h4>
+          </div>
+          <ul class="mk-desk-list">
+            <li data-topic="Travel">Planning smooth multi-stop journeys</li>
+            <li data-topic="India">Scenic routes &amp; regional travel notes</li>
+            <li data-topic="Travel">Festivals &amp; seasonal trips to watch</li>
+            <li data-topic="World">Passport, visa &amp; transit tips</li>
+          </ul>
+          <div class="mk-side-video-stack">
+            <h4 class="mk-flat-panel-title">Trip Checklist</h4>
+            <p style="margin:0;font-size:12px;color:#555e68;">
+              Keep digital copies of tickets, check weather forecasts, and pack light for smooth travel.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Recipes & Food News">Recipes &amp; Food News &gt;</h3>
+        <div class="mk-sub-inline-links" style="margin-left:0;margin-bottom:10px;">
+          <span data-topic="Recipes & Food News">Featured</span>
+          <span data-topic="Recipes & Food News">Recipes</span>
+          <span data-topic="Recipes & Food News">Food News</span>
+          <span data-topic="Recipes & Food News">Recipes Videos</span>
+        </div>
+        <div class="mk-ent-three-grid">
+          <div>
+            <div class="mk-photo-story" data-topic="Recipes & Food News">
+              <img src="mirkuk-news/images/arts.jpg" alt="Food Lead" style="height:140px;" onerror="this.style.display='none';" />
+              <h4 style="margin-top:8px;">Refreshing drinks &amp; quick kitchen ideas</h4>
+            </div>
+          </div>
+          <ul class="mk-desk-list">
+            <li data-topic="Recipes & Food News">Quick snacks &amp; simple everyday meals</li>
+            <li data-topic="Recipes & Food News">Warm soups &amp; spiced beverage ideas</li>
+            <li data-topic="Recipes & Food News">Easy desserts &amp; home kitchen tips</li>
+          </ul>
+          <div class="mk-side-video-stack">
+            <div class="mk-side-video-row" data-topic="Recipes & Food News">
+              <img src="mirkuk-news/images/arts.jpg" alt="Recipe 1" onerror="this.style.display='none';" />
+              <span>Spiced Tea &amp; Evening Snacks</span>
+            </div>
+            <div class="mk-side-video-row" data-topic="Recipes & Food News">
+              <img src="mirkuk-news/images/arts.jpg" alt="Recipe 2" onerror="this.style.display='none';" />
+              <span>Crispy Homemade Chips &amp; Sides</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Opinion And Features">Opinion And Features &gt;</h3>
+        <div class="mk-sub-inline-links" style="margin-left:0;margin-bottom:10px;">
+          <span data-topic="Opinion And Features">Featured</span>
+          <span data-topic="Business">Viewpoints</span>
+          <span data-topic="Opinion And Features">Blogs</span>
+          <span data-topic="Tech">Q&amp;A</span>
+        </div>
+        <div class="mk-ent-three-grid">
+          <div class="mk-photo-story" data-topic="Opinion And Features">
+            <img src="mirkuk-news/images/local.jpg" alt="Opinion Lead" style="height:145px;" onerror="this.style.display='none';" />
+            <h4 style="margin-top:8px;">Essays &amp; columns on public policy and society</h4>
+          </div>
+          <ul class="mk-desk-list">
+            <li data-topic="Tech">Technology leadership &amp; global shifts</li>
+            <li data-topic="Business">Skills, work &amp; career perspectives</li>
+            <li data-topic="India">Independent thinking &amp; civic debate</li>
+          </ul>
+          <div class="mk-side-video-stack">
+            <h4 class="mk-flat-panel-title">Editorial Note</h4>
+            <p style="margin:0;font-size:12px;color:#555e68;">
+              Clear, structured columns covering technology, work, culture, and everyday life.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -681,4 +789,4 @@
   }
   window.addEventListener("load", () => setTimeout(cleanupExcludedSections, 400));
 })();
-/* === MIRKUK CLEAN BROADSHEET TOP & CARDS JS END === */
+/* === MIRKUK SAFE BROADSHEET DESIGN JS END === */
