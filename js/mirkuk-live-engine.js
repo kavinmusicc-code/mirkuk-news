@@ -1,32 +1,44 @@
 ﻿(function () {
-  const RSS_API = "https://api.rss2json.com/v1/api.json?rss_url=";
+  const RSS_RELAYS = [
+    "https://api.rss2json.com/v1/api.json?rss_url=",
+    "https://api.allorigins.win/raw?url="
+  ];
 
+  // Broad multi-source + new business / startup / topic pools
   const SOURCE_POOLS = {
     top: [
       "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en",
       "https://feeds.bbci.co.uk/news/world/rss.xml",
       "https://www.thehindu.com/news/national/feeder/default.rss",
       "https://indianexpress.com/section/india/feed/",
-      "https://economictimes.indiatimes.com/rssfeedsdefault.cms"
+      "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+      "https://feeds.reuters.com/reuters/topNews"
+    ],
+    business: [
+      "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://news.google.com/rss/search?q=new+business+startup+entrepreneurship&hl=en-IN&gl=IN&ceid=IN:en",
+      "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
+      "https://economictimes.indiatimes.com/small-biz/sme-sector/rssfeeds/5575607.cms",
+      "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms",
+      "https://feeds.bbci.co.uk/news/business/rss.xml"
     ],
     india: [
       "https://news.google.com/rss/headlines/section/topic/NATION?hl=en-IN&gl=IN&ceid=IN:en",
       "https://www.thehindu.com/news/national/feeder/default.rss",
       "https://indianexpress.com/section/india/feed/",
-      "https://indianexpress.com/section/cities/delhi/feed/"
+      "https://indianexpress.com/section/cities/delhi/feed/",
+      "https://feeds.bbci.co.uk/news/world/asia/india/rss.xml"
     ],
     world: [
       "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-IN&gl=IN&ceid=IN:en",
       "https://feeds.bbci.co.uk/news/world/rss.xml",
-      "https://feeds.bbci.co.uk/news/world/asia/rss.xml"
-    ],
-    business: [
-      "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-IN&gl=IN&ceid=IN:en",
-      "https://economictimes.indiatimes.com/rssfeedsdefault.cms",
-      "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"
+      "https://feeds.bbci.co.uk/news/world/asia/rss.xml",
+      "https://feeds.bbci.co.uk/news/world/europe/rss.xml",
+      "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
     ],
     tech: [
       "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en",
+      "https://news.google.com/rss/search?q=artificial+intelligence+tech+innovation&hl=en-IN&gl=IN&ceid=IN:en",
       "https://feeds.bbci.co.uk/news/technology/rss.xml",
       "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms"
     ],
@@ -46,11 +58,11 @@
   };
 
   const LABELS = {
-    top: "Top Stories",
+    top: "Top Stories (Multi-Source)",
+    business: "Business, Startups & New Ventures",
     india: "India & NCR",
     world: "World",
-    business: "Business & Markets",
-    tech: "Tech & Digital",
+    tech: "Tech & Innovation",
     sports: "Sports",
     ent: "Entertainment",
     science: "Science & Environment"
@@ -73,6 +85,7 @@
 
   let currentCategory = "top";
   let currentEdition = "IN";
+  let currentSearch = "";
   let allLoadedItems = [];
   let visibleGridCount = 12;
 
@@ -114,7 +127,7 @@
     if (searchQuery) {
       return [
         `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&${ed}`,
-        `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery + " India")}&${ed}`
+        `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery + " latest news")}&${ed}`
       ];
     }
     const pool = SOURCE_POOLS[catKey] || SOURCE_POOLS.top;
@@ -125,13 +138,39 @@
     );
   }
 
-  async function fetchSingleFeed(url) {
+  function parseXmlFallback(xmlText, feedUrl) {
     try {
-      const res = await fetch(RSS_API + encodeURIComponent(url));
+      const doc = new DOMParser().parseFromString(xmlText, "text/xml");
+      const feedTitle = (doc.querySelector("channel > title")?.textContent || new URL(feedUrl).hostname).trim();
+      const nodes = Array.from(doc.querySelectorAll("item"));
+      return nodes.map(node => ({
+        title: (node.querySelector("title")?.textContent || "").trim(),
+        link: (node.querySelector("link")?.textContent || "#").trim(),
+        pubDate: (node.querySelector("pubDate")?.textContent || new Date().toISOString()).trim(),
+        description: (node.querySelector("description")?.textContent || "").trim(),
+        __feedTitle: feedTitle
+      })).filter(it => it.title);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function fetchSingleFeed(url) {
+    // 1. Try primary rss2json relay
+    try {
+      const res = await fetch(RSS_RELAYS[0] + encodeURIComponent(url));
       const data = await res.json();
-      if (!data || !Array.isArray(data.items)) return [];
-      const feedName = (data.feed && data.feed.title) ? data.feed.title : "Live Wire";
-      return data.items.map(it => Object.assign({}, it, { __feedTitle: feedName }));
+      if (data && Array.isArray(data.items) && data.items.length) {
+        const feedName = (data.feed && data.feed.title) ? data.feed.title : "Live Wire";
+        return data.items.map(it => Object.assign({}, it, { __feedTitle: feedName }));
+      }
+    } catch (_) {}
+
+    // 2. Fallback XML fetch via second relay
+    try {
+      const res2 = await fetch(RSS_RELAYS[1] + encodeURIComponent(url));
+      const xmlText = await res2.text();
+      return parseXmlFallback(xmlText, url);
     } catch (_) {
       return [];
     }
@@ -149,7 +188,7 @@
     gridArea.innerHTML = slice.map((it, i) => {
       const info = cleanTitleAndSource(it.title, it.__feedTitle);
       const img = extractImage(it, i + 2);
-      const desc = stripHtml(it.description).slice(0, 150);
+      const desc = stripHtml(it.description).slice(0, 155);
       return `
         <article class="mk-card mk-grid-card">
           <a href="${it.link}" target="_blank" rel="noopener noreferrer">
@@ -178,6 +217,7 @@
 
   async function loadLiveNews(catKey = "top", searchQuery = "") {
     currentCategory = catKey;
+    currentSearch = searchQuery;
     visibleGridCount = 12;
 
     const sectionTitle = document.getElementById("mk-active-section-title");
@@ -187,7 +227,7 @@
 
     const label = searchQuery ? `Search: "${searchQuery}"` : (LABELS[catKey] || "Top Stories");
     if (sectionTitle) sectionTitle.textContent = label;
-    if (statusPill) statusPill.textContent = "Syncing live desk...";
+    if (statusPill) statusPill.textContent = "Pulling fresh stories across sources...";
 
     try {
       const urls = getUrlsForRequest(catKey, searchQuery);
@@ -197,7 +237,7 @@
       const seen = new Set();
       const uniqueItems = [];
       for (const it of merged) {
-        const key = (it.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 80);
+        const key = (it.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85);
         if (!key || seen.has(key)) continue;
         seen.add(key);
         uniqueItems.push(it);
@@ -205,34 +245,31 @@
 
       if (!uniqueItems.length) throw new Error("No stories returned");
 
-            allLoadedItems = uniqueItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)).map((it, idx) => {
-        const inf = cleanTitleAndSource(it.title, it.__feedTitle);
-        return Object.assign({}, it, {
-          __cleanTitle: inf.title,
-          __source: inf.source,
-          __img: extractImage(it, idx),
-          __summary: stripHtml(it.description),
-          __timeAgo: timeAgo(it.pubDate)
+      allLoadedItems = uniqueItems
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+        .map((it, idx) => {
+          const inf = cleanTitleAndSource(it.title, it.__feedTitle);
+          return Object.assign({}, it, {
+            __cleanTitle: inf.title,
+            __source: inf.source,
+            __img: extractImage(it, idx),
+            __summary: stripHtml(it.description),
+            __timeAgo: timeAgo(it.pubDate)
+          });
         });
-      });
+
       window.__mirkukCurrentItems = allLoadedItems;
 
       if (tickerArea) {
-        tickerArea.innerHTML = allLoadedItems.slice(0, 8).map(item => {
-          const { title } = cleanTitleAndSource(item.title, item.__feedTitle);
-          return `<a href="${item.link}" target="_blank" rel="noopener noreferrer">&bull; ${title}</a>`;
-        }).join("");
+        tickerArea.innerHTML = allLoadedItems.slice(0, 10).map(item =>
+          `<a href="${item.link}" target="_blank" rel="noopener noreferrer">&bull; ${item.__cleanTitle}</a>`
+        ).join("");
       }
 
       const lead = allLoadedItems[0];
-      const leadInfo = cleanTitleAndSource(lead.title, lead.__feedTitle);
-      const leadImg = extractImage(lead, 0);
-      const leadDesc = stripHtml(lead.description).slice(0, 220);
-
-      const briefItems = allLoadedItems.slice(1, 4).map(it => {
-        const inf = cleanTitleAndSource(it.title, it.__feedTitle);
-        return `<li><a href="${it.link}" target="_blank" rel="noopener noreferrer">${inf.title}</a></li>`;
-      }).join("");
+      const briefItems = allLoadedItems.slice(1, 4).map(it =>
+        `<li><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></li>`
+      ).join("");
 
       const midItems = allLoadedItems.slice(4, 7);
       const wireItems = allLoadedItems.slice(7, 15);
@@ -242,13 +279,13 @@
           <div class="mk-hero-grid">
             <article class="mk-card mk-lead-card">
               <a href="${lead.link}" target="_blank" rel="noopener noreferrer">
-                <img src="${leadImg}" alt="${leadInfo.title.replace(/"/g, '&quot;')}" onerror="this.src='${FALLBACK_PHOTOS[0]}'" />
+                <img src="${lead.__img}" alt="${lead.__cleanTitle.replace(/"/g, '&quot;')}" onerror="this.src='${FALLBACK_PHOTOS[0]}'" />
               </a>
               <div class="mk-lead-body">
-                <span class="mk-cat-tag">${label} &bull; ${leadInfo.source}</span>
-                <h1><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${leadInfo.title}</a></h1>
-                <p>${leadDesc || "Read full coverage on " + leadInfo.source + "."}</p>
-                <div class="mk-meta">${timeAgo(lead.pubDate)} &bull; Live Newsroom</div>
+                <span class="mk-cat-tag">${label} &bull; ${lead.__source}</span>
+                <h1><a href="${lead.link}" target="_blank" rel="noopener noreferrer">${lead.__cleanTitle}</a></h1>
+                <p>${lead.__summary.slice(0, 220) || "Read full coverage on " + lead.__source + "."}</p>
+                <div class="mk-meta">${lead.__timeAgo} &bull; Multi-Source Live Wire</div>
                 <div class="mk-brief-box">
                   <div class="mk-brief-title">Key Developments</div>
                   <ul class="mk-brief-list">${briefItems}</ul>
@@ -257,36 +294,29 @@
             </article>
 
             <div class="mk-mid-stack">
-              ${midItems.map((it, i) => {
-                const info = cleanTitleAndSource(it.title, it.__feedTitle);
-                const img = extractImage(it, i + 1);
-                return `
-                  <article class="mk-compact-card">
-                    <a href="${it.link}" target="_blank" rel="noopener noreferrer">
-                      <img src="${img}" alt="" loading="lazy" onerror="this.src='${FALLBACK_PHOTOS[(i+1)%FALLBACK_PHOTOS.length]}'" />
-                    </a>
-                    <div>
-                      <span class="mk-cat-tag">${info.source}</span>
-                      <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${info.title}</a></h3>
-                      <div class="mk-meta">${timeAgo(it.pubDate)}</div>
-                    </div>
-                  </article>
-                `;
-              }).join("")}
+              ${midItems.map((it, i) => `
+                <article class="mk-compact-card">
+                  <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+                    <img src="${it.__img}" alt="" loading="lazy" onerror="this.src='${FALLBACK_PHOTOS[(i+1)%FALLBACK_PHOTOS.length]}'" />
+                  </a>
+                  <div>
+                    <span class="mk-cat-tag">${it.__source}</span>
+                    <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+                    <div class="mk-meta">${it.__timeAgo}</div>
+                  </div>
+                </article>
+              `).join("")}
             </div>
 
             <aside class="mk-wire-box">
               <h3>Latest Wire (Newest First)</h3>
               <ul class="mk-wire-list">
-                ${wireItems.map(it => {
-                  const info = cleanTitleAndSource(it.title, it.__feedTitle);
-                  return `
-                    <li>
-                      <a href="${it.link}" target="_blank" rel="noopener noreferrer">${info.title}</a>
-                      <span class="mk-wire-time">${info.source} &bull; ${timeAgo(it.pubDate)}</span>
-                    </li>
-                  `;
-                }).join("")}
+                ${wireItems.map(it => `
+                  <li>
+                    <a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a>
+                    <span class="mk-wire-time">${it.__source} &bull; ${it.__timeAgo}</span>
+                  </li>
+                `).join("")}
               </ul>
             </aside>
           </div>
@@ -296,7 +326,7 @@
       renderGridChunk(label);
 
       if (statusPill) {
-        statusPill.innerHTML = `Live &bull; ${allLoadedItems.length} stories across ${urls.length} feeds`;
+        statusPill.innerHTML = `Live &bull; ${allLoadedItems.length} stories from ${urls.length} feeds &bull; Auto-sync every 10m`;
       }
     } catch (_) {
       if (statusPill) statusPill.textContent = "Reconnecting to live feeds...";
@@ -355,7 +385,7 @@
     if (edSel) {
       edSel.addEventListener("change", function () {
         currentEdition = this.value;
-        loadLiveNews(currentCategory, "");
+        loadLiveNews(currentCategory, currentSearch);
       });
     }
 
@@ -373,106 +403,101 @@
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener("click", function () {
         visibleGridCount += 12;
-        renderGridChunk(LABELS[currentCategory] || "Top Stories");
+        renderGridChunk(currentSearch ? `Search: "${currentSearch}"` : (LABELS[currentCategory] || "Top Stories"));
       });
     }
 
     loadLiveNews("top", "");
-    setInterval(() => loadLiveNews(currentCategory, ""), 600000);
+    // Every 10 minutes (600,000 ms), pull fresh stories so newest items flow to top
+    setInterval(() => loadLiveNews(currentCategory, currentSearch), 600000);
   });
-})();
 
+  // In-site Story Reader handler
+  document.addEventListener("DOMContentLoaded", function () {
+    const backdrop = document.getElementById("mk-reader-backdrop");
+    const closeBtn = document.getElementById("mk-reader-close");
+    const copyBtn = document.getElementById("mk-reader-copy");
+    if (!backdrop) return;
 
-
-(function () {
-  const backdrop = document.getElementById("mk-reader-backdrop");
-  const closeBtn = document.getElementById("mk-reader-close");
-  const copyBtn = document.getElementById("mk-reader-copy");
-  if (!backdrop) return;
-
-  function openReaderByIndex(idx) {
-    const items = window.__mirkukCurrentItems || [];
-    const item = items[idx];
-    if (!item) return;
-
-    document.getElementById("mk-reader-source").textContent = item.__source || "Mirkuk Wire";
-    document.getElementById("mk-reader-title").textContent = item.__cleanTitle || item.title || "Story";
-    document.getElementById("mk-reader-meta").textContent = (item.__timeAgo || "Just now") + " • Mirkuk News Reader";
-
-    const imgEl = document.getElementById("mk-reader-img");
-    if (item.__img) {
-      imgEl.src = item.__img;
-      imgEl.style.display = "block";
-    } else {
-      imgEl.style.display = "none";
-    }
-
-    document.getElementById("mk-reader-summary").textContent =
-      item.__summary || "Open the original source link below to read the complete report.";
-
-    const extLink = document.getElementById("mk-reader-ext");
-    extLink.href = item.link || "#";
-    if (copyBtn) copyBtn.setAttribute("data-url", item.link || "");
-
-    const relBox = document.getElementById("mk-reader-related");
-    if (relBox) {
-      const picks = items.filter((_, i) => i !== idx).slice(0, 3);
-      relBox.innerHTML = picks.map((p) => {
-        const pIdx = items.indexOf(p);
-        return 
-          <div class="mk-related-card" data-mk-open-idx="">
-            <span class="mk-cat-tag"></span>
-            <h4></h4>
-            <div class="mk-meta"></div>
-          </div>
-        ;
-      }).join("");
-    }
-
-    backdrop.classList.add("open");
-  }
-
-  document.addEventListener("click", function (e) {
-    const trigger = e.target.closest("[data-mk-open-idx]");
-    if (trigger) {
-      e.preventDefault();
-      const idx = parseInt(trigger.getAttribute("data-mk-open-idx"), 10);
-      if (!isNaN(idx)) openReaderByIndex(idx);
-      return;
-    }
-
-    // Intercept story links inside hero/grid/wire so reader opens first
-    const storyLink = e.target.closest("#mk-hero-area a, #mk-grid-area a, .mk-wire-list a");
-    if (storyLink && !storyLink.hasAttribute("data-mk-open-idx")) {
+    function openReaderByIndex(idx) {
       const items = window.__mirkukCurrentItems || [];
-      const href = storyLink.getAttribute("href");
-      const foundIdx = items.findIndex(it => it.link === href);
-      if (foundIdx >= 0) {
-        e.preventDefault();
-        openReaderByIndex(foundIdx);
+      const item = items[idx];
+      if (!item) return;
+
+      document.getElementById("mk-reader-source").textContent = item.__source || "Mirkuk Wire";
+      document.getElementById("mk-reader-title").textContent = item.__cleanTitle || item.title || "Story";
+      document.getElementById("mk-reader-meta").textContent = (item.__timeAgo || "Just now") + " • Mirkuk News Reader";
+
+      const imgEl = document.getElementById("mk-reader-img");
+      if (item.__img) {
+        imgEl.src = item.__img;
+        imgEl.style.display = "block";
+      } else {
+        imgEl.style.display = "none";
       }
+
+      document.getElementById("mk-reader-summary").textContent =
+        item.__summary || "Open the original source link below to read the complete report.";
+
+      const extLink = document.getElementById("mk-reader-ext");
+      extLink.href = item.link || "#";
+      if (copyBtn) copyBtn.setAttribute("data-url", item.link || "");
+
+      const relBox = document.getElementById("mk-reader-related");
+      if (relBox) {
+        const picks = items.filter((_, i) => i !== idx).slice(0, 3);
+        relBox.innerHTML = picks.map(p => {
+          const pIdx = items.indexOf(p);
+          return `
+            <div class="mk-related-card" data-mk-open-idx="${pIdx}">
+              <span class="mk-cat-tag">${p.__source || "Wire"}</span>
+              <h4>${p.__cleanTitle || p.title}</h4>
+              <div class="mk-meta">${p.__timeAgo || "Recent"}</div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      backdrop.classList.add("open");
+    }
+
+    document.addEventListener("click", function (e) {
+      const trigger = e.target.closest("[data-mk-open-idx]");
+      if (trigger) {
+        e.preventDefault();
+        const idx = parseInt(trigger.getAttribute("data-mk-open-idx"), 10);
+        if (!isNaN(idx)) openReaderByIndex(idx);
+        return;
+      }
+
+      const storyLink = e.target.closest("#mk-hero-area a, #mk-grid-area a, .mk-wire-list a");
+      if (storyLink && !storyLink.hasAttribute("data-mk-open-idx")) {
+        const items = window.__mirkukCurrentItems || [];
+        const href = storyLink.getAttribute("href");
+        const foundIdx = items.findIndex(it => it.link === href);
+        if (foundIdx >= 0) {
+          e.preventDefault();
+          openReaderByIndex(foundIdx);
+        }
+      }
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => backdrop.classList.remove("open"));
+    }
+    backdrop.addEventListener("click", e => {
+      if (e.target === backdrop) backdrop.classList.remove("open");
+    });
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function () {
+        const u = this.getAttribute("data-url") || window.location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(u).then(() => {
+            copyBtn.textContent = "Link Copied!";
+            setTimeout(() => { copyBtn.textContent = "Copy Story Link"; }, 1800);
+          });
+        }
+      });
     }
   });
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", function () {
-      backdrop.classList.remove("open");
-    });
-  }
-
-  backdrop.addEventListener("click", function (e) {
-    if (e.target === backdrop) backdrop.classList.remove("open");
-  });
-
-  if (copyBtn) {
-    copyBtn.addEventListener("click", function () {
-      const u = this.getAttribute("data-url") || window.location.href;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(u).then(() => {
-          copyBtn.textContent = "Link Copied!";
-          setTimeout(() => { copyBtn.textContent = "Copy Story Link"; }, 1800);
-        });
-      }
-    });
-  }
 })();
