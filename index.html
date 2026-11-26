@@ -3,52 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mirkuk News — Live India, World, Business, Tech &amp; Sports News</title>
-  <meta name="description" content="Real-time breaking news, India updates, global markets, technology, and sports headlines on Mirkuk News." />
+  <title>Mirkuk News — India, World, Business, Tech &amp; Sports</title>
   <link rel="stylesheet" href="css/mirkuk-toi-theme.css" />
 </head>
 <body>
 
-  <!-- Top Utility Bar -->
   <div class="mk-topbar">
     <div class="mk-topbar-inner">
       <div class="mk-util-group">
         <label for="mk-edition-select"><strong>Edition:</strong></label>
         <select id="mk-edition-select" class="mk-select" aria-label="Select Edition">
           <option value="IN" selected>India</option>
-          <option value="US">United States</option>
-          <option value="GB">United Kingdom</option>
-          <option value="AE">Middle East (GCC)</option>
+          <option value="US">US</option>
+          <option value="GB">UK</option>
+          <option value="AE">GCC</option>
         </select>
         <span id="mk-live-clock">Loading IST...</span>
       </div>
 
       <div class="mk-util-group">
-        <span id="mk-live-weather">New Delhi &bull; Live</span>
+        <span id="mk-live-weather">Delhi &bull; Live</span>
         <a href="about/index.html">About</a>
         <a href="contact/index.html" class="mk-btn-sub">Subscribe</a>
       </div>
     </div>
   </div>
 
-  <!-- Masthead -->
   <header class="mk-masthead">
     <a href="index.html" class="mk-logo">MIRKUK <span>NEWS</span></a>
-    <div class="mk-tagline">Real-Time Digital Newsroom &bull; India &amp; Global Wire</div>
+    <div class="mk-tagline">India &amp; Global News Desk</div>
   </header>
 
-  <!-- Live Breaking News Ticker -->
-  <div class="mk-ticker-bar" aria-label="Breaking Headlines">
-    <div class="mk-ticker-inner">
-      <span class="mk-ticker-badge">LIVE WIRE</span>
-      <div id="mk-ticker-links" class="mk-ticker-links">
-        <span>Loading live breaking headlines...</span>
-      </div>
+  <div class="mk-in-the-news" aria-label="In The News">
+    <div class="mk-in-the-news-inner">
+      <span class="mk-itn-label">In The News</span>
+      <a href="#" data-mk-cat="india">National Desk</a>
+      <a href="#" data-mk-cat="business">Economy &amp; Markets</a>
+      <a href="#" data-mk-cat="tech">Tech &amp; Gadgets</a>
+      <a href="#" data-mk-cat="sports">Cricket &amp; Sports</a>
+      <a href="#" data-mk-cat="world">Global Affairs</a>
     </div>
   </div>
 
-  <!-- Sticky Section Navigation + Search -->
-  <nav class="mk-nav-wrap" aria-label="News Categories">
+  <nav class="mk-nav-wrap" aria-label="Primary Navigation">
     <div class="mk-nav">
       <ul class="mk-nav-list">
         <li><button type="button" class="mk-nav-btn active" data-mk-cat="top">Home</button></li>
@@ -59,72 +56,113 @@
         <li><button type="button" class="mk-nav-btn" data-mk-cat="sports">Sports</button></li>
         <li><button type="button" class="mk-nav-btn" data-mk-cat="ent">Entertainment</button></li>
         <li><button type="button" class="mk-nav-btn" data-mk-cat="science">Science</button></li>
+        <li>
+          <button type="button" id="mk-dots-btn" class="mk-dots-btn" aria-expanded="false" aria-controls="mk-dots-drawer">&bull;&bull;&bull;</button>
+        </li>
       </ul>
 
-      <form id="mk-search-form" class="mk-search" role="search">
-        <input id="mk-search-input" type="search" placeholder="Search real news..." aria-label="Search real news" />
-        <button type="submit">Search</button>
-      </form>
+      <div class="mk-nav-right">
+        <a href="#mk-hero-area" class="mk-live-pill">LIVE</a>
+        <form id="mk-search-form" class="mk-search" role="search">
+          <input id="mk-search-input" type="search" placeholder="Search news..." aria-label="Search news" />
+          <button type="submit">Go</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="mk-dots-drawer" class="mk-dots-drawer" aria-label="More Sections">
+      <div class="mk-dots-inner">
+        <div class="mk-dots-col">
+          <h5>Core Sections</h5>
+          <ul>
+            <li><a href="#" data-mk-cat="india">India</a></li>
+            <li><a href="#" data-mk-cat="world">World</a></li>
+            <li><a href="#" data-mk-cat="business">Business &amp; Economy</a></li>
+            <li><a href="#" data-mk-cat="tech">Technology</a></li>
+          </ul>
+        </div>
+        <div class="mk-dots-col">
+          <h5>Sports &amp; Culture</h5>
+          <ul>
+            <li><a href="#" data-mk-cat="sports">Cricket &amp; Sports</a></li>
+            <li><a href="#" data-mk-cat="ent">Entertainment</a></li>
+            <li><a href="#" data-mk-cat="science">Science &amp; Environment</a></li>
+          </ul>
+        </div>
+        <div class="mk-dots-col">
+          <h5>Mirkuk Desk</h5>
+          <ul>
+            <li><a href="about/index.html">About Us</a></li>
+            <li><a href="contact/index.html">Contact Us</a></li>
+            <li><a href="privacy/index.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <!-- Main Live Editorial Content -->
+  <div class="mk-ticker-bar" aria-label="Breaking Headlines">
+    <div class="mk-ticker-inner">
+      <span class="mk-ticker-badge">BREAKING</span>
+      <div id="mk-ticker-links" class="mk-ticker-links">
+        <span>Loading live headlines...</span>
+      </div>
+    </div>
+  </div>
+
   <main class="mk-container">
     <div class="mk-section-head">
       <h2 id="mk-active-section-title">Top Stories</h2>
-      <span id="mk-feed-status" class="mk-status-pill">Connecting to live wire...</span>
+      <span id="mk-feed-status" class="mk-status-pill">Connecting...</span>
     </div>
 
-    <!-- Hero Grid (Populated 100% by Live RSS Feed) -->
     <section id="mk-hero-area" aria-label="Lead Stories">
-      <div class="mk-loader">Loading live top stories...</div>
+      <div class="mk-loader">Loading live news...</div>
     </section>
 
-    <!-- More Stories Grid -->
     <div class="mk-section-head">
-      <h2>More From The Wire</h2>
-      <span class="mk-status-pill">Click any headline to read full coverage</span>
+      <h2>More Stories</h2>
+      <span class="mk-status-pill">Newest first</span>
     </div>
     <section id="mk-grid-area" class="mk-news-grid" aria-label="More News"></section>
   </main>
 
-  <!-- Clean TOI-Style Mega Footer -->
   <footer class="mk-footer">
     <div class="mk-footer-inner">
       <div>
         <h4>News Sections</h4>
         <ul>
           <li><a href="#" data-mk-cat="top">Top Stories</a></li>
-          <li><a href="#" data-mk-cat="india">India News</a></li>
-          <li><a href="#" data-mk-cat="world">World News</a></li>
-          <li><a href="#" data-mk-cat="business">Business &amp; Economy</a></li>
+          <li><a href="#" data-mk-cat="india">India</a></li>
+          <li><a href="#" data-mk-cat="world">World</a></li>
+          <li><a href="#" data-mk-cat="business">Business</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Technology &amp; Culture</h4>
+        <h4>Topics</h4>
         <ul>
-          <li><a href="#" data-mk-cat="tech">Technology &amp; Gadgets</a></li>
-          <li><a href="#" data-mk-cat="science">Science &amp; Environment</a></li>
-          <li><a href="#" data-mk-cat="sports">Cricket &amp; Sports</a></li>
-          <li><a href="#" data-mk-cat="ent">Entertainment &amp; Cinema</a></li>
+          <li><a href="#" data-mk-cat="tech">Tech</a></li>
+          <li><a href="#" data-mk-cat="sports">Sports</a></li>
+          <li><a href="#" data-mk-cat="ent">Entertainment</a></li>
+          <li><a href="#" data-mk-cat="science">Science</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>About Mirkuk News</h4>
+        <h4>Information</h4>
         <ul>
           <li><a href="about/index.html">About Us</a></li>
-          <li><a href="contact/index.html">Contact Desk</a></li>
+          <li><a href="contact/index.html">Contact Us</a></li>
           <li><a href="privacy/index.html">Privacy Policy</a></li>
-          <li><a href="privacy/index.html#terms">Terms of Use</a></li>
+          <li><a href="privacy/index.html#terms">Terms</a></li>
         </ul>
       </div>
 
       <div>
-        <h4>Live Coverage</h4>
+        <h4>Mirkuk News</h4>
         <p style="margin:0; line-height:1.6; color:#9aa5b1;">
-          Mirkuk News aggregates real-time verified headlines across India, global markets, technology, and sports with instant search and regional editions.
+          Real-time headlines and multi-category coverage structured for clear reading and quick navigation.
         </p>
       </div>
     </div>
@@ -141,6 +179,18 @@
     </div>
   </footer>
 
+  <script>
+    (function () {
+      var btn = document.getElementById("mk-dots-btn");
+      var drawer = document.getElementById("mk-dots-drawer");
+      if (btn && drawer) {
+        btn.addEventListener("click", function () {
+          var open = drawer.classList.toggle("open");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+    })();
+  </script>
   <script src="js/mirkuk-live-engine.js"></script>
 </body>
 </html>
