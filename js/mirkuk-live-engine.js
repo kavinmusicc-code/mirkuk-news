@@ -2475,3 +2475,145 @@
     });
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  const SHOPPING_FEEDS = [
+    "https://news.google.com/rss/search?q=Amazon+OR+Flipkart+sale+deals+offers+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=shopping+deals+Black+Friday+sale+discounts&hl=en-US&gl=US&ceid=US:en"
+  ];
+
+  let visibleLimit = 64;
+
+  function renderCardsWithLimit() {
+    const grid = document.getElementById("mk-grid-area");
+    const items = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems : [];
+    if (!grid || !items.length) return;
+
+    const slice = items.slice(0, visibleLimit);
+    grid.innerHTML = slice.map(it => {
+      const title = it.__cleanTitle || it.title || "Update";
+      const src = it.__source || "Mirkuk Wire";
+      const img = it.__img || it.__genImg || "";
+      const fb = it.__genImg || img;
+      const summary = (it.__summary || "").slice(0, 155);
+      const timeAgo = it.__timeAgo || "Live";
+      const badge = it.__isJustIn ? '<span class="mk-new-badge">LIVE</span>' : '';
+      return `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${img}" onerror="this.onerror=null;this.src='${fb}';" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${badge}${src}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${title}</a></h3>
+              <p>${summary}</p>
+            </div>
+            <div class="mk-meta">${timeAgo}</div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    let loadBtn = document.getElementById("mk-fixed-load-more");
+    if (!loadBtn) {
+      loadBtn = document.createElement("button");
+      loadBtn.id = "mk-fixed-load-more";
+      loadBtn.type = "button";
+      loadBtn.textContent = "Load More Stories";
+      loadBtn.style.cssText = "display:block; margin:18px auto 8px; padding:10px 22px; background:#c8102e; color:#fff; border:0; border-radius:6px; font-weight:700; cursor:pointer;";
+      loadBtn.addEventListener("click", function () {
+        visibleLimit += 32;
+        renderCardsWithLimit();
+      });
+      grid.parentNode.insertBefore(loadBtn, grid.nextSibling);
+    }
+
+    if (visibleLimit >= items.length) {
+      loadBtn.textContent = `All ${items.length} Loaded (Reset View)`;
+      loadBtn.onclick = function () {
+        visibleLimit = 64;
+        renderCardsWithLimit();
+      };
+    } else {
+      loadBtn.textContent = `Load More (${items.length - visibleLimit} more available)`;
+      loadBtn.onclick = function () {
+        visibleLimit += 32;
+        renderCardsWithLimit();
+      };
+    }
+  }
+
+  function ensureStoreBar() {
+    const panel = document.getElementById("mk-more-panel");
+    if (!panel || document.getElementById("mk-store-quick-bar")) return;
+
+    const bar = document.createElement("div");
+    bar.id = "mk-store-quick-bar";
+    bar.style.cssText = "margin-top:12px; padding:10px 12px; background:rgba(255,255,255,0.05); border-radius:6px; display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:12px;";
+    bar.innerHTML = `
+      <strong style="color:#fbbf24;">Direct Stores:</strong>
+      <a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">Amazon India</a>
+      <a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">Flipkart</a>
+      <a href="https://www.myntra.com" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">Myntra</a>
+      <a href="https://www.ajio.com" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">AJIO</a>
+      <a href="https://www.croma.com" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">Croma</a>
+      <a href="https://www.amazon.com" target="_blank" rel="noopener noreferrer" style="color:#fff; text-decoration:underline;">Amazon Global</a>
+    `;
+    panel.appendChild(bar);
+  }
+
+  async function pullShoppingDeals() {
+    const batches = await Promise.all(
+      SHOPPING_FEEDS.map(async u => {
+        try {
+          const r = await fetch(RELAYS[0](u));
+          const j = await r.json();
+          if (Array.isArray(j.items) && j.items.length) return j.items;
+        } catch (_) {}
+        return [];
+      })
+    );
+
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const seen = new Set(existing.map(x => (x.__cleanTitle || x.title || "").toLowerCase().trim().slice(0, 85)));
+    const added = [];
+
+    for (const it of batches.flat()) {
+      const cleanT = (it.title || "").split(" - ")[0].trim();
+      const key = cleanT.toLowerCase().trim().slice(0, 85);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const safeT = cleanT.replace(/[<>&"']/g, "").slice(0, 68);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><defs><linearGradient id="sh" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#b45309"/></linearGradient></defs><rect width="800" height="450" fill="url(#sh)"/><text x="40" y="65" fill="#fde68a" font-family="Arial,sans-serif" font-size="14" font-weight="bold">SHOPPING &amp; DEALS WIRE</text><text x="40" y="170" fill="#ffffff" font-family="Arial,sans-serif" font-size="30" font-weight="bold">${safeT.slice(0, 34)}</text><text x="40" y="212" fill="#fef3c7" font-family="Arial,sans-serif" font-size="28" font-weight="bold">${safeT.slice(34, 68)}</text><text x="40" y="405" fill="#fbbf24" font-family="Arial,sans-serif" font-size="15" font-weight="bold">MIRKUK SHOPPING</text></svg>`;
+      const genImg = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+
+      added.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: "Shopping Deals",
+        __img: (it.thumbnail && /^https?:\/\//i.test(it.thumbnail)) ? it.thumbnail : genImg,
+        __genImg: genImg,
+        __summary: "Latest shopping offer, sale update, and deal alert.",
+        __timeAgo: "Deals Live",
+        __isJustIn: true
+      }));
+    }
+
+    if (added.length) {
+      window.__mirkukCurrentItems = added.concat(existing).slice(0, 220);
+      renderCardsWithLimit();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureStoreBar();
+    setTimeout(renderCardsWithLimit, 2400);
+    setTimeout(pullShoppingDeals, 2800);
+  });
+})();
