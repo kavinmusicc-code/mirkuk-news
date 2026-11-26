@@ -1,0 +1,35 @@
+﻿/* === MIRKUK LAYOUT FIX BOUNDARY START === */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Broken images ko clean rakhe */
+img[src=""], img:not([src]) {
+  display: none;
+}
+
+/* Top bar aur navigation items ko overlap hone se rokna */
+header, nav, .top-bar, .ticker-bar {
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Mobile / narrow screen par cards aur columns ko stack karna */
+@media (max-width: 900px) {
+  main, section, article, .hero, .featured-story {
+    max-width: 100% !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+/* === MIRKUK LAYOUT FIX BOUNDARY END === */
