@@ -870,3 +870,82 @@ a:hover {
 button[aria-label*="Dark" i] {
   display: none !important;
 }
+
+/* Mirkuk News - Newest on Top, Older Items Push Down */
+.mirkuk-feed-stack-wrap {
+  max-width: 1280px;
+  margin: 22px auto;
+  padding: 0 18px;
+}
+
+.mirkuk-feed-panel {
+  background: #ffffff;
+  border: 1px solid #dfe3e8;
+  border-top: 3px solid #c8102e;
+  border-radius: 4px;
+  padding: 16px 18px;
+}
+
+.mirkuk-feed-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e8ec;
+}
+
+.mirkuk-feed-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #14171a;
+}
+
+.mirkuk-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mirkuk-feed-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  background: #fafbfc;
+  border: 1px solid #e6eaee;
+  border-left: 4px solid #c8102e;
+  border-radius: 3px;
+}
+
+.mirkuk-feed-item:not(:first-child) {
+  border-left-color: #9aa5b1;
+  background: #ffffff;
+}
+
+.mirkuk-feed-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #c8102e;
+  margin-bottom: 4px;
+}
+
+.mirkuk-feed-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #14171a;
+  line-height: 1.35;
+}
+
+.mirkuk-feed-meta {
+  font-size: 12px;
+  color: #616e7c;
+  white-space: nowrap;
+}

@@ -315,7 +315,64 @@
     </section>
   </main>
 
-  <footer class="site-footer">
+  <section id="mirkuk-newest-stream" class="mirkuk-feed-stack-wrap" aria-label="Latest Updates Stream">
+  <div class="mirkuk-feed-panel">
+    <div class="mirkuk-feed-header">
+      <h3>Latest Updates (Newest First)</h3>
+      <span style="font-size:12px; color:#555e68;">New items appear at the top; older updates move down</span>
+    </div>
+    <div id="mirkuk-feed-list" class="mirkuk-feed-list">
+      <article class="mirkuk-feed-item">
+        <div>
+          <span class="mirkuk-feed-tag">LATEST</span>
+          <h4 class="mirkuk-feed-title">Regional &amp; National Desk Updates Live on Mirkuk News</h4>
+        </div>
+        <span class="mirkuk-feed-meta">Just now</span>
+      </article>
+      <article class="mirkuk-feed-item">
+        <div>
+          <span class="mirkuk-feed-tag">PREVIOUS</span>
+          <h4 class="mirkuk-feed-title">Markets, Policy &amp; Ground Reports Archive</h4>
+        </div>
+        <span class="mirkuk-feed-meta">Earlier</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+window.MirkukFeed = window.MirkukFeed || {
+  pushTop: function (title, tag, meta) {
+    var list = document.getElementById("mirkuk-feed-list");
+    if (!list || !title) return;
+    var art = document.createElement("article");
+    art.className = "mirkuk-feed-item";
+
+    var left = document.createElement("div");
+    var spanTag = document.createElement("span");
+    spanTag.className = "mirkuk-feed-tag";
+    spanTag.textContent = tag || "UPDATE";
+
+    var h4 = document.createElement("h4");
+    h4.className = "mirkuk-feed-title";
+    h4.textContent = title;
+
+    var spanMeta = document.createElement("span");
+    spanMeta.className = "mirkuk-feed-meta";
+    spanMeta.textContent = meta || "Updated";
+
+    left.appendChild(spanTag);
+    left.appendChild(h4);
+    art.appendChild(left);
+    art.appendChild(spanMeta);
+
+    // Sabse upar insert karega aur purane items ko niche bhej dega
+    list.insertBefore(art, list.firstChild);
+  }
+};
+</script>
+
+<footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-col">
         <h3 class="footer-logo">MIRKUK NEWS</h3>
@@ -370,6 +427,63 @@
   <script src="js/mirkuk-toi-cards-menu.js" defer></script>
   <script src="js/mirkuk-toi-pro.js" defer></script>
   <script src="js/mirkuk-live-desk.js" defer></script>
+<section id="mirkuk-newest-stream" class="mirkuk-feed-stack-wrap" aria-label="Latest Updates Stream">
+  <div class="mirkuk-feed-panel">
+    <div class="mirkuk-feed-header">
+      <h3>Latest Updates (Newest First)</h3>
+      <span style="font-size:12px; color:#555e68;">New items appear at the top; older updates move down</span>
+    </div>
+    <div id="mirkuk-feed-list" class="mirkuk-feed-list">
+      <article class="mirkuk-feed-item">
+        <div>
+          <span class="mirkuk-feed-tag">LATEST</span>
+          <h4 class="mirkuk-feed-title">Regional &amp; National Desk Updates Live on Mirkuk News</h4>
+        </div>
+        <span class="mirkuk-feed-meta">Just now</span>
+      </article>
+      <article class="mirkuk-feed-item">
+        <div>
+          <span class="mirkuk-feed-tag">PREVIOUS</span>
+          <h4 class="mirkuk-feed-title">Markets, Policy &amp; Ground Reports Archive</h4>
+        </div>
+        <span class="mirkuk-feed-meta">Earlier</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+window.MirkukFeed = window.MirkukFeed || {
+  pushTop: function (title, tag, meta) {
+    var list = document.getElementById("mirkuk-feed-list");
+    if (!list || !title) return;
+    var art = document.createElement("article");
+    art.className = "mirkuk-feed-item";
+
+    var left = document.createElement("div");
+    var spanTag = document.createElement("span");
+    spanTag.className = "mirkuk-feed-tag";
+    spanTag.textContent = tag || "UPDATE";
+
+    var h4 = document.createElement("h4");
+    h4.className = "mirkuk-feed-title";
+    h4.textContent = title;
+
+    var spanMeta = document.createElement("span");
+    spanMeta.className = "mirkuk-feed-meta";
+    spanMeta.textContent = meta || "Updated";
+
+    left.appendChild(spanTag);
+    left.appendChild(h4);
+    art.appendChild(left);
+    art.appendChild(spanMeta);
+
+    // Sabse upar insert karega aur purane items ko niche bhej dega
+    list.insertBefore(art, list.firstChild);
+  }
+};
+</script>
+
 <footer class="mirkuk-mega-footer" aria-label="Mirkuk News Directory and Footer">
   <div class="mirkuk-mega-wrap">
     <div class="mirkuk-mega-grid">
@@ -464,6 +578,7 @@
 
 </body>
 </html>
+
 
 
 
