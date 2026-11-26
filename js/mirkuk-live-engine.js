@@ -2344,3 +2344,134 @@
     });
   });
 })();
+
+(function () {
+  const RELAYS = [
+    u => "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/get?url=" + encodeURIComponent(u)
+  ];
+
+  const EXTRA_LIFE_FEEDS = [
+    "https://news.google.com/rss/search?q=scholarship+apply+students+India+OR+abroad&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=government+scheme+OR+yojana+apply+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=global+grant+OR+public+scheme+OR+fellowship+program&hl=en-US&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=travel+news+OR+flight+OR+visa+OR+tourism&hl=en-IN&gl=IN&ceid=IN:en",
+    "https://news.google.com/rss/search?q=international+travel+airlines+tourism+destination&hl=en-US&gl=US&ceid=US:en"
+  ];
+
+  function ensureApplyHelperBox() {
+    const panel = document.getElementById("mk-more-panel");
+    if (!panel || document.getElementById("mk-apply-guide-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "mk-apply-guide-box";
+    box.style.cssText = "margin-top:14px; padding:12px 14px; background:rgba(255,255,255,0.05); border-left:4px solid #38bdf8; border-radius:4px; font-size:12px; line-height:1.5; color:#e2e8f0;";
+    box.innerHTML = `
+      <strong style="color:#7dd3fc;">How to Apply (Scholarships &amp; Schemes — Quick Checklist):</strong>
+      1) News/Alert se Official Portal ka naam aur Last Date check karein.
+      2) Eligibility, Income/Academic Criteria aur Required Documents (ID, Marksheet/Certificates, Bank/Passport details) taiyar rakhein.
+      3) Official website par Registration -> Form Fill -> Document Upload -> Final Submit karke Acknowledgement/Receipt save karein.
+    `;
+    panel.appendChild(box);
+  }
+
+  async function pullScholarshipsSchemesTravel() {
+    const grid = document.getElementById("mk-grid-area");
+    if (!grid) return;
+
+    const batches = await Promise.all(
+      EXTRA_LIFE_FEEDS.map(async u => {
+        try {
+          const r = await fetch(RELAYS[0](u));
+          const j = await r.json();
+          if (Array.isArray(j.items) && j.items.length) return j.items;
+        } catch (_) {}
+        try {
+          const r2 = await fetch(RELAYS[1](u));
+          const j2 = await r2.json();
+          if (j2 && j2.contents) {
+            const doc = new DOMParser().parseFromString(j2.contents, "text/xml");
+            return Array.from(doc.querySelectorAll("item")).map(n => ({
+              title: (n.querySelector("title")?.textContent || "").trim(),
+              link: (n.querySelector("link")?.textContent || "").trim(),
+              pubDate: (n.querySelector("pubDate")?.textContent || new Date().toUTCString()).trim(),
+              description: (n.querySelector("description")?.textContent || "").trim()
+            }));
+          }
+        } catch (_) {}
+        return [];
+      })
+    );
+
+    const existing = Array.isArray(window.__mirkukCurrentItems) ? window.__mirkukCurrentItems.slice() : [];
+    const seen = new Set(existing.map(x => (x.__cleanTitle || x.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85)));
+    const added = [];
+
+    for (const it of batches.flat()) {
+      const parts = (it.title || "").split(" - ");
+      const src = parts.length > 1 ? parts.pop().trim() : "Schemes & Travel Wire";
+      const cleanT = parts.length > 1 ? parts.join(" - ").trim() : (it.title || "").trim();
+      const key = cleanT.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 85);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = it.description || "";
+      const safeT = cleanT.replace(/[<>&"']/g, "").slice(0, 68);
+      const safeS = src.replace(/[<>&"']/g, "").slice(0, 24).toUpperCase();
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><defs><linearGradient id="st" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><rect width="800" height="450" fill="url(#st)"/><rect x="0" y="0" width="800" height="8" fill="#38bdf8"/><text x="40" y="65" fill="#7dd3fc" font-family="Arial,sans-serif" font-size="14" font-weight="bold">SCHOLARSHIPS • SCHEMES • TRAVEL</text><text x="40" y="165" fill="#ffffff" font-family="Arial,sans-serif" font-size="30" font-weight="bold">${safeT.slice(0, 34)}</text><text x="40" y="208" fill="#e0f2fe" font-family="Arial,sans-serif" font-size="28" font-weight="bold">${safeT.slice(34, 68)}</text><text x="40" y="405" fill="#38bdf8" font-family="Arial,sans-serif" font-size="15" font-weight="bold">MIRKUK NEWS</text><text x="760" y="405" text-anchor="end" fill="#bae6fd" font-family="Arial,sans-serif" font-size="14">${safeS}</text></svg>`;
+      const genImg = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+
+      added.push(Object.assign({}, it, {
+        __cleanTitle: cleanT,
+        __source: src,
+        __img: (it.thumbnail && /^https?:\/\//i.test(it.thumbnail)) ? it.thumbnail : genImg,
+        __genImg: genImg,
+        __summary: (tmp.textContent || tmp.innerText || "").trim(),
+        __timeAgo: "Live Update",
+        __isJustIn: true
+      }));
+    }
+
+    if (added.length) {
+      const merged = added.concat(existing).slice(0, 160);
+      window.__mirkukCurrentItems = merged;
+      window.__mirkukAllItemsBackup = merged.slice();
+      window.__mirkukBeastProcessedFor = null;
+
+      grid.innerHTML = merged.slice(0, 64).map(it => `
+        <article class="mk-card mk-grid-card">
+          <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${it.__img}" onerror="this.onerror=null;this.src='${it.__genImg}';" alt="" loading="lazy" />
+          </a>
+          <div class="mk-grid-body">
+            <div>
+              <span class="mk-cat-tag">${it.__isJustIn ? '<span class="mk-new-badge">LIVE</span>' : ''}${it.__source}</span>
+              <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle}</a></h3>
+              <p>${(it.__summary || "").slice(0, 155)}</p>
+            </div>
+            <div class="mk-meta">${it.__timeAgo || "Live"}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureApplyHelperBox();
+    setTimeout(pullScholarshipsSchemesTravel, 2000);
+    document.querySelectorAll("[data-mk-topic]").forEach(btn => {
+      if (btn.dataset.mkExtraBound === "1") return;
+      btn.dataset.mkExtraBound = "1";
+      btn.addEventListener("click", function () {
+        const q = (btn.getAttribute("data-mk-topic") || "").trim();
+        const inp = document.getElementById("mk-search-input");
+        const form = document.getElementById("mk-search-form");
+        if (q && inp && form) {
+          inp.value = q;
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      });
+    });
+  });
+})();
