@@ -1,4 +1,4 @@
-﻿/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT CSS START === */
+﻿/* === MIRKUK FULL BROADSHEET LOWER SECTIONS CSS START === */
 :root {
   --mk-ink: #14171a;
   --mk-muted: #5c6470;
@@ -8,14 +8,23 @@
   --mk-crimson: #c8102e;
 }
 
-#mk-live-desk-box {
+/* Hide excluded sections/widgets as requested */
+#mk-live-desk-box,
+[data-section="24-7-live"],
+[data-section="global-stock-market"],
+[data-section="more-sections"],
+[data-section="radar-feedback"],
+.mirkuk-live-247,
+.mirkuk-stock-market,
+.mirkuk-more-sections,
+.mirkuk-radar-feedback {
   display: none !important;
 }
 
 .mk-editorial-wrap {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 12px 16px 36px;
+  padding: 12px 16px 40px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--mk-ink);
   background: var(--mk-surface);
@@ -212,6 +221,7 @@
   font-weight: 600;
 }
 
+/* Front 3-Column Grid */
 .mk-front-grid {
   display: grid;
   grid-template-columns: 265px minmax(0, 1fr) 300px;
@@ -349,8 +359,9 @@
   color: var(--mk-ink);
 }
 
+/* Audio Briefing Strip */
 .mk-audio-bar {
-  margin-top: 24px;
+  margin-top: 22px;
   padding: 12px 16px;
   border-top: 1px solid var(--mk-border);
   border-bottom: 1px solid var(--mk-border);
@@ -391,15 +402,25 @@
   background: var(--mk-crimson);
 }
 
+/* Generic Section Block */
 .mk-section-block {
-  margin-top: 26px;
-  padding-top: 18px;
+  margin-top: 24px;
+  padding-top: 16px;
   border-top: 2px solid var(--mk-ink);
+}
+
+.mk-section-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
 }
 
 .mk-section-heading-link {
   display: inline-block;
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 18px;
   font-weight: 800;
   color: var(--mk-ink);
@@ -410,6 +431,7 @@
   color: var(--mk-crimson);
 }
 
+/* 3-Column Desks */
 .mk-three-desk-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -471,66 +493,109 @@
   color: var(--mk-crimson);
 }
 
-.mk-ent-grid {
+/* 6-Card Horizontal Strip (Spotlight / City Crime / Desk Picks) */
+.mk-six-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 280px;
-  gap: 20px;
-  align-items: start;
-}
-
-.mk-ent-top-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 12px;
 }
 
-.mk-ent-card {
+.mk-six-card {
   cursor: pointer;
 }
 
-.mk-ent-card img {
+.mk-six-card img {
   width: 100%;
-  height: 112px;
+  height: 84px;
   object-fit: cover;
   border-radius: 4px;
   display: block;
   margin-bottom: 6px;
 }
 
-.mk-ent-card p {
+.mk-six-card p {
   margin: 0;
   font-size: 12px;
+  line-height: 1.34;
   font-weight: 600;
-  line-height: 1.35;
 }
 
-.mk-ent-video-item {
+/* In Focus Pill Row */
+.mk-focus-row {
   display: flex;
-  gap: 10px;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+}
+
+.mk-focus-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--mk-crimson);
+}
+
+.mk-focus-pill {
+  background: var(--mk-soft);
+  border: 1px solid var(--mk-border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--mk-ink);
   cursor: pointer;
 }
 
-.mk-ent-video-item img {
-  width: 86px;
-  height: 54px;
-  object-fit: cover;
-  border-radius: 3px;
-  flex-shrink: 0;
+.mk-focus-pill:hover {
+  border-color: var(--mk-crimson);
+  color: var(--mk-crimson);
 }
 
-.mk-ent-video-item span {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.32;
+/* World / Sports + Side Videos Layout */
+.mk-split-video-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 20px;
+  align-items: start;
+}
+
+.mk-two-photo-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.mk-photo-story {
+  cursor: pointer;
+}
+
+.mk-photo-story img {
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mk-photo-story h4 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.36;
+  font-weight: 700;
+}
+
+@media (max-width: 1060px) {
+  .mk-six-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 960px) {
   .mk-front-grid,
   .mk-three-desk-grid,
-  .mk-ent-grid {
+  .mk-split-video-grid {
     grid-template-columns: 1fr;
   }
   .mk-side-rail,
@@ -540,4 +605,10 @@
     padding: 0;
   }
 }
-/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT CSS END === */
+
+@media (max-width: 600px) {
+  .mk-six-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* === MIRKUK FULL BROADSHEET LOWER SECTIONS CSS END === */

@@ -1,11 +1,11 @@
-﻿/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT JS START === */
+﻿/* === MIRKUK FULL BROADSHEET LOWER SECTIONS JS START === */
 (function () {
   const NAV_SECTIONS = [
     {
       label: "Top Stories",
       cols: {
         "Highlights": ["Latest News", "National", "World", "Defence", "Education"],
-        "More Desks": ["Business", "Markets", "Sports", "Celebrities", "Beauty", "Fashion"]
+        "More Desks": ["Business", "Sports", "Celebrities", "Beauty", "Fashion"]
       },
       thumbs: [
         { title: "National & policy updates across major desks", img: "mirkuk-news/images/local.jpg", topic: "National" },
@@ -107,6 +107,17 @@
     }
   ];
 
+  const SIX_STRIP_CARDS = [
+    { title: "Creator & stage highlights across major shows", img: "mirkuk-news/images/culture.jpg", topic: "Celebrities" },
+    { title: "Seasonal wardrobe & styling guides for daily wear", img: "mirkuk-news/images/arts.jpg", topic: "Fashion" },
+    { title: "Skincare & grooming routines that stay simple", img: "mirkuk-news/images/arts.jpg", topic: "Beauty" },
+    { title: "City safety, civic updates & local reports", img: "mirkuk-news/images/local.jpg", topic: "National" },
+    { title: "Lightweight web builds & developer setups", img: "mirkuk-news/images/tech.jpg", topic: "Technology" },
+    { title: "Regional commerce & small-business briefs", img: "mirkuk-news/images/business.jpg", topic: "Business" }
+  ];
+
+  const FOCUS_TAGS = ["Celebrities", "Beauty", "Fashion", "Technology", "Defence", "Business", "Sports", "World"];
+
   function filterByTopic(topic) {
     const search =
       document.querySelector('input[type="search"]') ||
@@ -119,10 +130,43 @@
     }
   }
 
-  function renderProLayout() {
-    const oldDeskBox = document.getElementById("mk-live-desk-box");
-    if (oldDeskBox) oldDeskBox.remove();
+  function cleanupExcludedSections() {
+    const idsToRemove = ["mk-live-desk-box"];
+    idsToRemove.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
 
+    const selectorsToHide = [
+      '[data-section="24-7-live"]',
+      '[data-section="global-stock-market"]',
+      '[data-section="more-sections"]',
+      '[data-section="radar-feedback"]',
+      ".mirkuk-live-247",
+      ".mirkuk-stock-market",
+      ".mirkuk-more-sections",
+      ".mirkuk-radar-feedback"
+    ];
+    selectorsToHide.forEach((sel) => {
+      document.querySelectorAll(sel).forEach((el) => {
+        el.style.display = "none";
+      });
+    });
+
+    // Also hide any standalone heading/card containing 24/7 Live, Global Stock Market, More Sections, or Radar Feedback
+    const blockedPhrases = ["24/7 live", "global stock market", "more sections", "radar feedback"];
+    document.querySelectorAll("section, article, aside, div").forEach((el) => {
+      if (el.id === "mk-front-editorial" || el.id === "mk-pro-masthead") return;
+      if (el.closest("#mk-front-editorial") || el.closest("#mk-pro-masthead")) return;
+      const firstLine = (el.textContent || "").trim().toLowerCase().slice(0, 120);
+      if (blockedPhrases.some((p) => firstLine.includes(p)) && el.children.length <= 6) {
+        el.style.display = "none";
+      }
+    });
+  }
+
+  function renderProLayout() {
+    cleanupExcludedSections();
     if (document.getElementById("mk-pro-masthead")) return;
 
     const nowText = new Date().toLocaleString("en-IN", {
@@ -322,6 +366,19 @@
     `
     ).join("");
 
+    const sixStripHtml = SIX_STRIP_CARDS.map(
+      (c) => `
+      <div class="mk-six-card" data-topic="${c.topic}">
+        <img src="${c.img}" alt="${c.title}" onerror="this.style.display='none';" />
+        <p>${c.title}</p>
+      </div>
+    `
+    ).join("");
+
+    const focusHtml = FOCUS_TAGS.map(
+      (tag) => `<button type="button" class="mk-focus-pill" data-topic="${tag}">${tag}</button>`
+    ).join("");
+
     frontWrap.innerHTML = `
       <div class="mk-front-grid">
         <aside class="mk-side-rail" aria-label="Category Highlights">${leftHtml}</aside>
@@ -366,40 +423,60 @@
       </div>
 
       <div class="mk-section-block">
-        <h3 class="mk-section-heading-link" data-topic="Celebrities">Entertainment &gt;</h3>
-        <div class="mk-ent-grid">
+        <div class="mk-section-head-row">
+          <h3 class="mk-section-heading-link" data-topic="Celebrities">Entertainment &amp; Spotlight &gt;</h3>
+        </div>
+        <div class="mk-six-grid">${sixStripHtml}</div>
+        <div class="mk-focus-row">
+          <span class="mk-focus-label">In Focus</span>
+          ${focusHtml}
+        </div>
+      </div>
+
+      <div class="mk-section-block">
+        <div class="mk-split-video-grid">
           <div>
-            <div class="mk-ent-top-pair">
-              <div class="mk-ent-card" data-topic="Celebrities">
-                <img src="mirkuk-news/images/culture.jpg" alt="Celebrities" onerror="this.style.display='none';" />
-                <p>Spotlight on actors, creators, and live stage events</p>
+            <h3 class="mk-section-heading-link" data-topic="World">World &amp; Global Desks &gt;</h3>
+            <div class="mk-two-photo-pair">
+              <div class="mk-photo-story" data-topic="World">
+                <img src="mirkuk-news/images/weather.jpg" alt="World Desk 1" onerror="this.style.display='none';" />
+                <h4>Cross-border policy, diplomacy &amp; global dispatches</h4>
               </div>
-              <div class="mk-ent-card" data-topic="Fashion">
-                <img src="mirkuk-news/images/arts.jpg" alt="Fashion & Style" onerror="this.style.display='none';" />
-                <p>Style &amp; beauty trends shaping seasonal looks</p>
+              <div class="mk-photo-story" data-topic="Defence">
+                <img src="mirkuk-news/images/hero.jpg" alt="World Desk 2" onerror="this.style.display='none';" />
+                <h4>Strategic briefs, security updates &amp; regional shifts</h4>
               </div>
             </div>
-          </div>
-          <div>
             <ul class="mk-desk-list">
-              <li data-topic="Celebrities">New film &amp; OTT announcements catching viewer attention</li>
-              <li data-topic="Beauty">Skincare &amp; grooming routines explained simply</li>
-              <li data-topic="Fashion">Everyday layering ideas for work and casual outings</li>
-              <li data-topic="Celebrities">Behind-the-scenes stories from music and cinema</li>
+              <li data-topic="World">International trade &amp; supply route updates across regions</li>
+              <li data-topic="Business">Global technology &amp; digital policy developments</li>
+              <li data-topic="National">Key domestic policy &amp; public service updates</li>
             </ul>
           </div>
           <div>
-            <h4 style="margin:0 0 10px;font-size:14px;font-weight:800;">Entertainment Videos &gt;</h4>
-            <div class="mk-ent-video-item" data-topic="Celebrities">
-              <img src="mirkuk-news/images/culture.jpg" alt="Video 1" onerror="this.style.display='none';" />
-              <span>Spotlight Clips &amp; Red Carpet Moments</span>
-            </div>
-            <div class="mk-ent-video-item" data-topic="Fashion">
-              <img src="mirkuk-news/images/arts.jpg" alt="Video 2" onerror="this.style.display='none';" />
-              <span>Style &amp; Beauty Quick Walkthroughs</span>
+            <h4 style="margin:0 0 12px;font-size:15px;font-weight:800;">World &amp; Sports Clips &gt;</h4>
+            <div class="mk-video-grid-2">
+              <div class="mk-video-tile" data-topic="World">
+                <img src="mirkuk-news/images/weather.jpg" alt="Clip 1" onerror="this.style.display='none';" />
+                <div class="mk-video-tile-caption">Global Briefing</div>
+              </div>
+              <div class="mk-video-tile" data-topic="Sports">
+                <img src="mirkuk-news/images/sports.jpg" alt="Clip 2" onerror="this.style.display='none';" />
+                <div class="mk-video-tile-caption">Match &amp; Field Notes</div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Sports">Sports &amp; Active Culture &gt;</h3>
+        <div class="mk-six-grid">${sixStripHtml}</div>
+      </div>
+
+      <div class="mk-section-block">
+        <h3 class="mk-section-heading-link" data-topic="Beauty">Lifestyle, Beauty &amp; Fashion &gt;</h3>
+        <div class="mk-six-grid">${sixStripHtml}</div>
       </div>
     `;
 
@@ -438,5 +515,6 @@
   } else {
     renderProLayout();
   }
+  window.addEventListener("load", () => setTimeout(cleanupExcludedSections, 400));
 })();
-/* === MIRKUK FULL BROADSHEET & SECTION LAYOUT JS END === */
+/* === MIRKUK FULL BROADSHEET LOWER SECTIONS JS END === */
