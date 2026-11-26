@@ -1,397 +1,146 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Mirkuk News � Independent Journalism &amp; Breaking Coverage</title>
-  <link rel="stylesheet" href="css/style.css?v=1795430261">
-  <link rel="manifest" href="manifest.json">
-  <meta name="google-site-verification" content="Gh4VO5OZdH0UDiVjt-o7qVRm5Zq4H2F8PCKTOwbkQdw" />
-  <!-- === MIRKUK LAYOUT FIX LINK START === -->
-  <link rel="stylesheet" href="css/mirkuk-layout-fix.css" />
-  <!-- === MIRKUK LAYOUT FIX LINK END === -->
-  <!-- === MIRKUK TOI THEME LINK START === -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mirkuk News — Live India, World, Business, Tech &amp; Sports News</title>
+  <meta name="description" content="Real-time breaking news, India updates, global markets, technology, and sports headlines on Mirkuk News." />
   <link rel="stylesheet" href="css/mirkuk-toi-theme.css" />
-  <!-- === MIRKUK TOI THEME LINK END === -->
-  <link rel="stylesheet" href="css/mirkuk-toi-cards-menu.css" />
-  <link rel="stylesheet" href="css/mirkuk-toi-pro.css" />
 </head>
-<body class="mirkuk-pro-polish">
+<body>
 
-<div id="top"></div>
-<header class="mirkuk-top-header" aria-label="Site Header">
-  <div class="mirkuk-top-utility">
-    <div class="mirkuk-top-utility-inner">
-      <div class="mirkuk-util-group">
-        <span><strong>Edition:</strong></span>
-        <select id="mirkuk-edition-select" class="mirkuk-util-select" aria-label="Select Edition">
-          <option value="India" selected>India</option>
-          <option value="US">US</option>
-          <option value="UK">UK</option>
-          <option value="GCC">GCC</option>
+  <!-- Top Utility Bar -->
+  <div class="mk-topbar">
+    <div class="mk-topbar-inner">
+      <div class="mk-util-group">
+        <label for="mk-edition-select"><strong>Edition:</strong></label>
+        <select id="mk-edition-select" class="mk-select" aria-label="Select Edition">
+          <option value="IN" selected>India</option>
+          <option value="US">United States</option>
+          <option value="GB">United Kingdom</option>
+          <option value="AE">Middle East (GCC)</option>
         </select>
-
-        <select id="mirkuk-lang-select" class="mirkuk-util-select" aria-label="Select Language">
-          <option value="English" selected>English</option>
-          <option value="Hindi">Hindi (हिन्दी)</option>
-          <option value="Marathi">Marathi (मराठी)</option>
-          <option value="Tamil">Tamil (தமிழ்)</option>
-          <option value="Bengali">Bengali (বাংলা)</option>
-          <option value="Gujarati">Gujarati (ગુજરાતી)</option>
-        </select>
-
+        <span id="mk-live-clock">Loading IST...</span>
       </div>
 
-      <div class="mirkuk-util-group">
-        <span id="mirkuk-delhi-weather">Delhi &bull; 20&deg;C Clear</span>
-        <a href="#latest-news" class="mirkuk-util-btn">Read ePaper</a>
-        <a href="contact/index.html#subscribe" class="mirkuk-util-btn subscribe">Subscribe</a>
+      <div class="mk-util-group">
+        <span id="mk-live-weather">New Delhi &bull; Live</span>
+        <a href="about/index.html">About</a>
+        <a href="contact/index.html" class="mk-btn-sub">Subscribe</a>
       </div>
     </div>
   </div>
 
-  <div class="mirkuk-masthead">
-    <a href="index.html" class="mirkuk-brand-wordmark">MIRKUK <span>NEWS</span></a>
-  </div>
+  <!-- Masthead -->
+  <header class="mk-masthead">
+    <a href="index.html" class="mk-logo">MIRKUK <span>NEWS</span></a>
+    <div class="mk-tagline">Real-Time Digital Newsroom &bull; India &amp; Global Wire</div>
+  </header>
 
-  <div class="mirkuk-in-the-news" aria-label="In The News">
-    <div class="mirkuk-in-the-news-inner">
-      <span class="mirkuk-itn-label">In The News</span>
-      <a href="#latest-news">Delhi &amp; NCR Updates</a>
-      <a href="#latest-news">Economy Gateway</a>
-      <a href="#featured-videos">Mirkuk Dialogue</a>
-      <a href="#latest-news">India &amp; Global Trade</a>
-      <a href="#live-video-desk">24/7 Desk</a>
+  <!-- Live Breaking News Ticker -->
+  <div class="mk-ticker-bar" aria-label="Breaking Headlines">
+    <div class="mk-ticker-inner">
+      <span class="mk-ticker-badge">LIVE WIRE</span>
+      <div id="mk-ticker-links" class="mk-ticker-links">
+        <span>Loading live breaking headlines...</span>
+      </div>
     </div>
   </div>
 
-  <nav class="mirkuk-main-nav-wrap" aria-label="Primary Sections">
-    <div class="mirkuk-main-nav">
-      <ul class="mirkuk-nav-links">
-        <li><a href="index.html" class="mirkuk-nav-brand-badge">MK</a></li>
-        <li><a href="#featured-videos">Videos</a></li>
-        <li><a href="#latest-news">City</a></li>
-        <li><a href="#latest-news">India</a></li>
-        <li><a href="#latest-news">World</a></li>
-        <li><a href="#latest-news">Business</a></li>
-        <li><a href="#latest-news">Tech</a></li>
-        <li><a href="#latest-news">Gadget Now</a></li>
-        <li><a href="#latest-news">Cricket</a></li>
-        <li><a href="#latest-news">Sports</a></li>
-        <li><a href="#latest-news">Entertainment</a></li>
-        <li><a href="#latest-news">Auto</a></li>
-        <li><a href="#latest-news">Travel</a></li>
-        <li><a href="#live-video-desk">TV</a></li>
-        <li>
-          <button type="button" id="mirkuk-dots-toggle" class="mirkuk-dots-btn" aria-expanded="false" aria-controls="mirkuk-dots-drawer">
-            &bull;&bull;&bull;
-          </button>
-        </li>
+  <!-- Sticky Section Navigation + Search -->
+  <nav class="mk-nav-wrap" aria-label="News Categories">
+    <div class="mk-nav">
+      <ul class="mk-nav-list">
+        <li><button type="button" class="mk-nav-btn active" data-mk-cat="top">Home</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="india">India</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="world">World</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="business">Business</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="tech">Tech</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="sports">Sports</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="ent">Entertainment</button></li>
+        <li><button type="button" class="mk-nav-btn" data-mk-cat="science">Science</button></li>
       </ul>
 
-      <div class="mirkuk-nav-right">
-        <a href="#live-video-desk" class="mirkuk-live-pill">LIVE</a>
-        <form class="mirkuk-search-box" onsubmit="event.preventDefault(); const target = document.getElementById('latest-news'); if (target) target.scrollIntoView({behavior:'smooth'});">
-          <input type="search" placeholder="Search news..." aria-label="Search news" />
-          <button type="submit">Go</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="mirkuk-dots-drawer" class="mirkuk-dots-drawer" aria-label="More Sections">
-      <div class="mirkuk-dots-inner">
-        <div class="mirkuk-dots-col">
-          <h5>Channels &amp; Media</h5>
-          <ul>
-            <li><a href="#featured-videos">Videos</a></li>
-            <li><a href="#live-video-desk">TV Videos</a></li>
-            <li><a href="#featured-videos">Entertainment Clips</a></li>
-            <li><a href="#latest-news">Photos</a></li>
-            <li><a href="#featured-videos">Audio</a></li>
-          </ul>
-        </div>
-        <div class="mirkuk-dots-col">
-          <h5>Lifestyle &amp; Culture</h5>
-          <ul>
-            <li><a href="#latest-news">Astrologers</a></li>
-            <li><a href="#latest-news">Educational</a></li>
-            <li><a href="#latest-news">Lifestyle</a></li>
-            <li><a href="#featured-videos">Web Series</a></li>
-            <li><a href="#latest-news">Culture &amp; Events</a></li>
-          </ul>
-        </div>
-        <div class="mirkuk-dots-col">
-          <h5>Opinion &amp; Economy</h5>
-          <ul>
-            <li><a href="#top">Opinion</a></li>
-            <li><a href="#top">Editorial &amp; Blogs</a></li>
-            <li><a href="#latest-news">Economy</a></li>
-            <li><a href="#latest-news">Technology</a></li>
-            <li><a href="#latest-news">Science &amp; Environment</a></li>
-          </ul>
-        </div>
-        <div class="mirkuk-dots-col">
-          <h5>More From Desk</h5>
-          <ul>
-            <li><a href="#top">Special Desk</a></li>
-            <li><a href="#latest-news">Games &amp; Puzzles</a></li>
-            <li><a href="about/index.html">About Us</a></li>
-            <li><a href="contact/index.html">Contact Us</a></li>
-          </ul>
-        </div>
-      </div>
+      <form id="mk-search-form" class="mk-search" role="search">
+        <input id="mk-search-input" type="search" placeholder="Search real news..." aria-label="Search real news" />
+        <button type="submit">Search</button>
+      </form>
     </div>
   </nav>
-</header>
 
-<script>
-(function () {
-  var btn = document.getElementById("mirkuk-dots-toggle");
-  var drawer = document.getElementById("mirkuk-dots-drawer");
-  if (btn && drawer) {
-    btn.addEventListener("click", function () {
-      var isOpen = drawer.classList.toggle("open");
-      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-  }
-  var dateEl = document.getElementById("mirkuk-live-date");
-  if (dateEl) {
-    try {
-      var now = new Date();
-      dateEl.textContent = now.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timeZone: "Asia/Kolkata"
-      });
-    } catch (e) {}
-  }
-})();
-</script>
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <div class="topbar-left">
-        <span id="current-date" class="current-date">Loading date...</span>
-        <span class="edition-tag">U.S. &amp; Global Edition</span>
-      </div>
-      <div class="topbar-right">
-        </button>
-      </div>
+  <!-- Main Live Editorial Content -->
+  <main class="mk-container">
+    <div class="mk-section-head">
+      <h2 id="mk-active-section-title">Top Stories</h2>
+      <span id="mk-feed-status" class="mk-status-pill">Connecting to live wire...</span>
     </div>
-  </div>
 
-  
-
-  <!-- Top Country / Region Bar -->
-  <div class="country-strip" aria-label="Countries and Regions">
-    <div class="container country-strip-inner">
-      <div id="region-filters" class="country-strip-list" role="group" aria-label="Filter news by country or section">
-        <button type="button" class="region-btn active" data-region="All">All</button>
-        <button type="button" class="region-btn live-filter-btn" data-region="LIVE"><span class="live-dot" aria-hidden="true"></span>LIVE (1m)</button>
-        <button type="button" class="region-btn" data-region="India">India</button>
-        <button type="button" class="region-btn" data-region="USA">USA</button>
-        <button type="button" class="region-btn" data-region="North East">North East</button>
-        <button type="button" class="region-btn" data-region="UK">UK</button>
-        <button type="button" class="region-btn" data-region="Canada">Canada</button>
-        <button type="button" class="region-btn" data-region="Australia">Australia</button>
-        <button type="button" class="region-btn" data-region="Japan">Japan</button>
-        <button type="button" class="region-btn" data-region="Europe">Europe</button>
-        <button type="button" class="region-btn" data-region="Middle East">Middle East</button>
-        <button type="button" class="region-btn" data-region="World">World</button>
-        <button type="button" class="region-btn" data-region="Business">Business</button>
-        <button type="button" class="region-btn" data-region="Tech">Tech</button>
-        <button type="button" class="region-btn" data-region="Sports">Sports</button>
-      </div>
-      <span id="live-sync-status" class="live-sync-status" aria-live="polite">Auto-sync: Every 1 min</span>
-    </div>
-  </div>
-
-    <!-- On-Page Country Live Video & News Desk -->
-  
-
-
-<section class="mirkuk-featured-videos" aria-label="Featured Videos">
-  <h3>Featured Videos</h3>
-  <div id="mirkuk-video-stage"></div>
-</section>
-
-
-
-
-<section class="mirkuk-featured-videos" aria-label="Featured Videos">
-  <h3>Featured Videos</h3>
-  <div id="mirkuk-video-stage"></div>
-</section>
-
-<section id="live-video-desk" class="live-video-desk" aria-label="Country Live Video Desk">
-    <div class="container live-video-inner">
-      <div class="live-video-meta">
-        <p class="kicker"><span class="live-dot" aria-hidden="true"></span>ON-PAGE LIVE STREAM</p>
-        <h2 id="live-country-heading">Global Live Desk</h2>
-        <p id="live-country-subtext" class="live-video-subtext">Tap any country above to view its live news feed and play its stream right inside Mirkuk News.</p>
-      </div>
-      <div id="live-video-stage" class="live-video-stage">
-        <p class="live-video-placeholder">Select a country edition above to load its on-page live stream.</p>
-      </div>
-    </div>
-  </section>
-
-<main class="container">
-    <section class="hero-section" aria-label="Featured Story">
-      <div class="hero-grid">
-        <div class="hero-content">
-          <span class="category-badge">TOP STORY &bull; NATIONAL</span>
-          <h1 class="hero-title">
-            <a href="./article?id=0">Metropolitan Transit Overhaul Secures Historic Bipartisan Infrastructure Backing</a>
-          </h1>
-          <p class="hero-excerpt">
-            City planners and federal transport officials unveiled a sweeping ten-year modernization blueprint on Monday, promising high-speed commuter corridors, zero-emission bus fleets, and upgraded regional rail hubs across twelve major districts.
-          </p>
-          <div class="article-meta">
-            <span>By <strong>Eleanor Vance</strong></span>
-            <span>&bull;</span>
-            <span>4 min read</span>
-          </div>
-          <a href="./article?id=0" class="btn-primary">Read Full Report</a>
-        </div>
-        <div class="hero-media">
-          <img src="images/hero.jpg" data-base="images/hero" onerror="tryNextImgExt(this)" alt="Metropolitan Transit Overhaul" class="hero-img">
-          <span class="media-caption">INFRASTRUCTURE DESK &mdash; SPECIAL REPORT</span>
-        </div>
-      </div>
+    <!-- Hero Grid (Populated 100% by Live RSS Feed) -->
+    <section id="mk-hero-area" aria-label="Lead Stories">
+      <div class="mk-loader">Loading live top stories...</div>
     </section>
 
-    <hr class="section-divider">
-
-    <section id="latest-news" class="latest-section">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Latest News</h2>
-          <p class="section-subtitle">Dispatches across local affairs, markets, science, and culture</p>
-        </div>
-        <div class="search-box">
-          <label for="news-search" class="sr-only">Search articles by title, country, or category</label>
-          <input type="search" id="news-search" placeholder="Search headlines, country, or category..." autocomplete="off">
-        </div>
-      </div>
-
-      <div id="news-grid" class="news-grid"></div>
-
-              <div id="mirkuk-ad-slot" class="mirkuk-ad-slot" aria-label="Advertisement"></div>
-  
-
-        <div id="no-results" class="no-results hidden">
-        <p>No articles matched your search query. Try searching for <strong>Business</strong>, <strong>Tech</strong>, <strong>Weather</strong>, or clear the search box.</p>
-      </div>
-    </section>
+    <!-- More Stories Grid -->
+    <div class="mk-section-head">
+      <h2>More From The Wire</h2>
+      <span class="mk-status-pill">Click any headline to read full coverage</span>
+    </div>
+    <section id="mk-grid-area" class="mk-news-grid" aria-label="More News"></section>
   </main>
 
-  
+  <!-- Clean TOI-Style Mega Footer -->
+  <footer class="mk-footer">
+    <div class="mk-footer-inner">
+      <div>
+        <h4>News Sections</h4>
+        <ul>
+          <li><a href="#" data-mk-cat="top">Top Stories</a></li>
+          <li><a href="#" data-mk-cat="india">India News</a></li>
+          <li><a href="#" data-mk-cat="world">World News</a></li>
+          <li><a href="#" data-mk-cat="business">Business &amp; Economy</a></li>
+        </ul>
+      </div>
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="footer-col">
-        <h3 class="footer-logo">MIRKUK NEWS</h3>
-        <p>
-          Mirkuk News is an independent American digital newspaper committed to rigorous fact-checking, clear reporting, and public-interest journalism across local and global beats.
+      <div>
+        <h4>Technology &amp; Culture</h4>
+        <ul>
+          <li><a href="#" data-mk-cat="tech">Technology &amp; Gadgets</a></li>
+          <li><a href="#" data-mk-cat="science">Science &amp; Environment</a></li>
+          <li><a href="#" data-mk-cat="sports">Cricket &amp; Sports</a></li>
+          <li><a href="#" data-mk-cat="ent">Entertainment &amp; Cinema</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>About Mirkuk News</h4>
+        <ul>
+          <li><a href="about/index.html">About Us</a></li>
+          <li><a href="contact/index.html">Contact Desk</a></li>
+          <li><a href="privacy/index.html">Privacy Policy</a></li>
+          <li><a href="privacy/index.html#terms">Terms of Use</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Live Coverage</h4>
+        <p style="margin:0; line-height:1.6; color:#9aa5b1;">
+          Mirkuk News aggregates real-time verified headlines across India, global markets, technology, and sports with instant search and regional editions.
         </p>
       </div>
-      <div class="footer-col">
-        <h4>Pages</h4>
-        <ul class="footer-links">
-          <li><a href="./">Home</a></li>
-          <li><a href="./#latest-news">Latest Coverage</a></li>
-          <li><a href="./about">About Us</a></li>
-          <li><a href="./contact">Contact</a></li>
-          <li><a href="./privacy">Privacy Policy</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <ul class="footer-contact">
-          <li><strong>Newsroom Desk:</strong> newsroom@mirkuknews.com</li>
-          <li><strong>Advertising &amp; Press:</strong> press@mirkuknews.com</li>
-          <li><strong>Headquarters:</strong> 450 Lexington Ave, Suite 1800, New York, NY 10017</li>
-        </ul>
-      </div>
     </div>
-    <div class="footer-bottom">
-      <div class="container">
-        <p>&copy; 2026 Mirkuk News Media Group. All Rights Reserved.</p>
+
+    <div class="mk-footer-bottom">
+      <div class="mk-footer-bottom-inner">
+        <span>&copy; 2026 Mirkuk News. All rights reserved.</span>
+        <span>
+          <a href="about/index.html" style="margin-right:14px;">About</a>
+          <a href="contact/index.html" style="margin-right:14px;">Contact</a>
+          <a href="privacy/index.html">Privacy Policy</a>
+        </span>
       </div>
     </div>
   </footer>
 
-  <script src="js/script.js?v=1795430261"></script>
-  <script src="js/feeds-config.js?v=1795430261"></script>
-  <script src="js/tracker.js"></script>
-  <script src="js/ads.js"></script>
-  <script src="js/share.js"></script>
-  <!-- === MIRKUK BROKEN IMG FIX START === -->
-  <script>
-    document.addEventListener("error", function (e) {
-      if (e.target && e.target.tagName === "IMG") e.target.style.display = "none";
-    }, true);
-  </script>
-  <!-- === MIRKUK BROKEN IMG FIX END === -->
-  <!-- === MIRKUK AUTO FOOTER SCRIPT START === -->
-  <script src="js/mirkuk-footer-index.js" defer></script>
-  <!-- === MIRKUK AUTO FOOTER SCRIPT END === -->
-  <!-- === MIRKUK TOI FOOTER SCRIPT START === -->
-  <script src="js/mirkuk-toi-footer.js" defer></script>
-  <!-- === MIRKUK TOI FOOTER SCRIPT END === -->
-  <script src="js/mirkuk-toi-cards-menu.js" defer></script>
-  <script src="js/mirkuk-toi-pro.js" defer></script>
-  <script src="js/mirkuk-live-desk.js" defer></script>
-
-
-
-
-<footer style="margin-top:32px; padding:16px 18px; border-top:2px solid #c8102e; background:#fafafa; font-size:13px; color:#333;">
-  <div style="max-width:1280px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;">
-    <span><strong>Mirkuk News</strong> &copy; 2026</span>
-    <span>
-      <a href="about/index.html" style="color:inherit; margin-right:12px;">About</a>
-      <a href="contact/index.html" style="color:inherit; margin-right:12px;">Contact</a>
-      <a href="privacy/index.html" style="color:inherit;">Privacy Policy</a>
-    </span>
-  </div>
-</footer>
+  <script src="js/mirkuk-live-engine.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
