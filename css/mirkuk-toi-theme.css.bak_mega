@@ -1,0 +1,287 @@
+﻿/* === MIRKUK TOI-INSPIRED THEME BOUNDARY START === */
+:root {
+  --toi-bg: #f6f7f9;
+  --toi-surface: #ffffff;
+  --toi-ink: #18191a;
+  --toi-muted: #555b64;
+  --toi-accent: #c8102e;
+  --toi-border: #dfe3e8;
+}
+
+body {
+  background-color: var(--toi-bg) !important;
+  color: var(--toi-ink) !important;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+header, nav, .navbar, .top-bar {
+  background-color: var(--toi-surface) !important;
+  border-bottom: 2px solid var(--toi-accent) !important;
+}
+
+article, .card, .story-card, .news-card, #mirkuk-rotator-box {
+  background-color: var(--toi-surface) !important;
+  border: 1px solid var(--toi-border) !important;
+  border-radius: 4px !important;
+}
+
+h1, h2, h3, .headline, .title {
+  color: var(--toi-ink) !important;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--toi-ink);
+}
+
+a:hover {
+  color: var(--toi-accent);
+}
+
+/* Dark mode support agar page ya browser dark mode mein ho */
+@media (prefers-color-scheme: dark) {
+  body.auto-toi-dark {
+    background-color: #111317 !important;
+    color: #eef1f5 !important;
+  }
+}
+/* === MIRKUK TOI-INSPIRED THEME BOUNDARY END === */
+
+/* Mirkuk News - Editorial Story + Ad + Featured Video Grid */
+.mirkuk-editorial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin: 20px 0;
+}
+
+.mirkuk-lead-story {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.mirkuk-lead-story img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin: 10px 0 12px;
+  display: block;
+}
+
+.mirkuk-bottom-strip {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-left: 3px solid #c8102e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.mirkuk-sidebar-ad {
+  background: #fafafa;
+  border: 1px solid #e2e6ec;
+  border-radius: 6px;
+  padding: 14px;
+  text-align: center;
+}
+
+.mirkuk-sidebar-ad::before {
+  content: "ADVERTISEMENT";
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.mirkuk-featured-videos {
+  margin-top: 24px;
+}
+
+.mirkuk-featured-videos h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #c8102e;
+}
+
+@media (max-width: 860px) {
+  .mirkuk-editorial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mirkuk News - TOI Inspired Editorial Layout & Footer */
+:root {
+  --mirkuk-red: #c8102e;
+  --mirkuk-ink: #14171a;
+  --mirkuk-muted: #555e68;
+  --mirkuk-border: #dfe3e8;
+  --mirkuk-surface: #ffffff;
+  --mirkuk-soft: #f6f7f9;
+}
+
+.mirkuk-editorial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(270px, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin: 22px 0;
+}
+
+.mirkuk-lead-story {
+  background: var(--mirkuk-surface);
+  border: 1px solid var(--mirkuk-border);
+  border-top: 3px solid var(--mirkuk-red);
+  border-radius: 4px;
+  padding: 18px;
+}
+
+.mirkuk-lead-story h2 {
+  font-size: clamp(22px, 2.8vw, 30px);
+  line-height: 1.22;
+  margin: 8px 0 12px;
+  color: var(--mirkuk-ink);
+  font-weight: 800;
+}
+
+.mirkuk-lead-story img {
+  width: 100%;
+  max-height: 410px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin: 8px 0 12px;
+  display: block;
+}
+
+.mirkuk-lead-story p {
+  color: var(--mirkuk-muted);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.mirkuk-bottom-strip {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--mirkuk-soft);
+  border-left: 4px solid var(--mirkuk-red);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--mirkuk-ink);
+}
+
+.mirkuk-sidebar-ad {
+  background: var(--mirkuk-soft);
+  border: 1px solid var(--mirkuk-border);
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mirkuk-sidebar-ad::before {
+  content: "ADVERTISEMENT";
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #6c757d;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.mirkuk-featured-videos {
+  margin: 26px 0;
+  padding: 18px;
+  background: var(--mirkuk-surface);
+  border: 1px solid var(--mirkuk-border);
+  border-radius: 4px;
+}
+
+.mirkuk-featured-videos h3 {
+  font-size: 19px;
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--mirkuk-red);
+  color: var(--mirkuk-ink);
+  font-weight: 800;
+}
+
+/* TOI Style Footer */
+.mirkuk-toi-footer {
+  margin-top: 36px;
+  background: #14171a;
+  color: #d0d7de;
+  border-top: 4px solid var(--mirkuk-red);
+}
+
+.mirkuk-footer-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 18px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 24px;
+}
+
+.mirkuk-footer-col h4 {
+  color: #ffffff;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.mirkuk-footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mirkuk-footer-col li {
+  margin-bottom: 8px;
+  font-size: 13.5px;
+}
+
+.mirkuk-footer-col a {
+  color: #c9d1d9;
+  text-decoration: none;
+}
+
+.mirkuk-footer-col a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.mirkuk-footer-bottom {
+  background: #0d1012;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 18px;
+  font-size: 12.5px;
+  color: #9ba3ae;
+}
+
+.mirkuk-footer-bottom-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .mirkuk-editorial-grid {
+    grid-template-columns: 1fr;
+  }
+}

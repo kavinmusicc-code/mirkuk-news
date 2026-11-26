@@ -17,6 +17,159 @@
   <link rel="stylesheet" href="css/mirkuk-toi-pro.css" />
 </head>
 <body>
+
+<div id="top"></div>
+<header class="mirkuk-top-header" aria-label="Site Header">
+  <div class="mirkuk-top-utility">
+    <div class="mirkuk-top-utility-inner">
+      <div class="mirkuk-util-group">
+        <span><strong>Edition:</strong></span>
+        <select id="mirkuk-edition-select" class="mirkuk-util-select" aria-label="Select Edition">
+          <option value="India" selected>India</option>
+          <option value="US">US</option>
+          <option value="UK">UK</option>
+          <option value="GCC">GCC</option>
+        </select>
+
+        <select id="mirkuk-lang-select" class="mirkuk-util-select" aria-label="Select Language">
+          <option value="English" selected>English</option>
+          <option value="Hindi">Hindi (हिन्दी)</option>
+          <option value="Marathi">Marathi (मराठी)</option>
+          <option value="Tamil">Tamil (தமிழ்)</option>
+          <option value="Bengali">Bengali (বাংলা)</option>
+          <option value="Gujarati">Gujarati (ગુજરાતી)</option>
+        </select>
+
+        <span id="mirkuk-live-date">Thursday, November 26, 2026</span>
+      </div>
+
+      <div class="mirkuk-util-group">
+        <span id="mirkuk-delhi-weather">Delhi &bull; 20&deg;C Clear</span>
+        <a href="#latest-news" class="mirkuk-util-btn">Read ePaper</a>
+        <a href="contact/index.html#subscribe" class="mirkuk-util-btn subscribe">Subscribe</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mirkuk-masthead">
+    <a href="index.html" class="mirkuk-brand-wordmark">MIRKUK <span>NEWS</span></a>
+  </div>
+
+  <div class="mirkuk-in-the-news" aria-label="In The News">
+    <div class="mirkuk-in-the-news-inner">
+      <span class="mirkuk-itn-label">In The News</span>
+      <a href="#latest-news">Delhi &amp; NCR Updates</a>
+      <a href="#latest-news">Economy Gateway</a>
+      <a href="#featured-videos">Mirkuk Dialogue</a>
+      <a href="#latest-news">India &amp; Global Trade</a>
+      <a href="#live-video-desk">24/7 Desk</a>
+    </div>
+  </div>
+
+  <nav class="mirkuk-main-nav-wrap" aria-label="Primary Sections">
+    <div class="mirkuk-main-nav">
+      <ul class="mirkuk-nav-links">
+        <li><a href="index.html" class="mirkuk-nav-brand-badge">MK</a></li>
+        <li><a href="#featured-videos">Videos</a></li>
+        <li><a href="#latest-news">City</a></li>
+        <li><a href="#latest-news">India</a></li>
+        <li><a href="#latest-news">World</a></li>
+        <li><a href="#latest-news">Business</a></li>
+        <li><a href="#latest-news">Tech</a></li>
+        <li><a href="#latest-news">Gadget Now</a></li>
+        <li><a href="#latest-news">Cricket</a></li>
+        <li><a href="#latest-news">Sports</a></li>
+        <li><a href="#latest-news">Entertainment</a></li>
+        <li><a href="#latest-news">Auto</a></li>
+        <li><a href="#latest-news">Travel</a></li>
+        <li><a href="#live-video-desk">TV</a></li>
+        <li>
+          <button type="button" id="mirkuk-dots-toggle" class="mirkuk-dots-btn" aria-expanded="false" aria-controls="mirkuk-dots-drawer">
+            &bull;&bull;&bull;
+          </button>
+        </li>
+      </ul>
+
+      <div class="mirkuk-nav-right">
+        <a href="#live-video-desk" class="mirkuk-live-pill">LIVE</a>
+        <form class="mirkuk-search-box" onsubmit="event.preventDefault(); const target = document.getElementById('latest-news'); if (target) target.scrollIntoView({behavior:'smooth'});">
+          <input type="search" placeholder="Search news..." aria-label="Search news" />
+          <button type="submit">Go</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="mirkuk-dots-drawer" class="mirkuk-dots-drawer" aria-label="More Sections">
+      <div class="mirkuk-dots-inner">
+        <div class="mirkuk-dots-col">
+          <h5>Channels &amp; Media</h5>
+          <ul>
+            <li><a href="#featured-videos">Videos</a></li>
+            <li><a href="#live-video-desk">TV Videos</a></li>
+            <li><a href="#featured-videos">Entertainment Clips</a></li>
+            <li><a href="#latest-news">Photos</a></li>
+            <li><a href="#featured-videos">Audio</a></li>
+          </ul>
+        </div>
+        <div class="mirkuk-dots-col">
+          <h5>Lifestyle &amp; Culture</h5>
+          <ul>
+            <li><a href="#latest-news">Astrologers</a></li>
+            <li><a href="#latest-news">Educational</a></li>
+            <li><a href="#latest-news">Lifestyle</a></li>
+            <li><a href="#featured-videos">Web Series</a></li>
+            <li><a href="#latest-news">Culture &amp; Events</a></li>
+          </ul>
+        </div>
+        <div class="mirkuk-dots-col">
+          <h5>Opinion &amp; Economy</h5>
+          <ul>
+            <li><a href="#top">Opinion</a></li>
+            <li><a href="#top">Editorial &amp; Blogs</a></li>
+            <li><a href="#latest-news">Economy</a></li>
+            <li><a href="#latest-news">Technology</a></li>
+            <li><a href="#latest-news">Science &amp; Environment</a></li>
+          </ul>
+        </div>
+        <div class="mirkuk-dots-col">
+          <h5>More From Desk</h5>
+          <ul>
+            <li><a href="#top">Special Desk</a></li>
+            <li><a href="#latest-news">Games &amp; Puzzles</a></li>
+            <li><a href="about/index.html">About Us</a></li>
+            <li><a href="contact/index.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+(function () {
+  var btn = document.getElementById("mirkuk-dots-toggle");
+  var drawer = document.getElementById("mirkuk-dots-drawer");
+  if (btn && drawer) {
+    btn.addEventListener("click", function () {
+      var isOpen = drawer.classList.toggle("open");
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+  var dateEl = document.getElementById("mirkuk-live-date");
+  if (dateEl) {
+    try {
+      var now = new Date();
+      dateEl.textContent = now.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "Asia/Kolkata"
+      });
+    } catch (e) {}
+  }
+})();
+</script>
   <div class="topbar">
     <div class="container topbar-inner">
       <div class="topbar-left">
@@ -95,7 +248,7 @@
 
     <!-- On-Page Country Live Video & News Desk -->
   
-<section class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
+<section id="featured-videos" class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
   <article class="mirkuk-lead-story">
     <span class="kicker">NEWS DESK</span>
     <h2>Live Headlines &amp; Ground Reports Across Regions</h2>
@@ -117,7 +270,7 @@
 </section>
 
 
-<section class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
+<section id="featured-videos" class="mirkuk-editorial-grid" aria-label="Featured Story and Ad">
   <article class="mirkuk-lead-story">
     <span class="kicker">NEWS DESK</span>
     <h2>Live Headlines &amp; Ground Reports Across Regions</h2>
@@ -256,8 +409,103 @@
   <script src="js/mirkuk-toi-cards-menu.js" defer></script>
   <script src="js/mirkuk-toi-pro.js" defer></script>
   <script src="js/mirkuk-live-desk.js" defer></script>
+<footer class="mirkuk-mega-footer" aria-label="Mirkuk News Directory and Footer">
+  <div class="mirkuk-mega-wrap">
+    <div class="mirkuk-mega-grid">
+      <div class="mirkuk-mega-col">
+        <h4>Across Mirkuk &amp; Opinion</h4>
+        <ul>
+          <li><a href="#top">From Across Desk</a></li>
+          <li><a href="#top">Mirkuk Edit &amp; Opinion</a></li>
+          <li><a href="#top">Opinion &amp; Features</a></li>
+          <li><a href="#top">Sponsored Stories</a></li>
+          <li><a href="contact/index.html#subscribe">Subscribe &amp; Updates</a></li>
+        </ul>
+      </div>
+
+      <div class="mirkuk-mega-col">
+        <h4>Videos &amp; Audio</h4>
+        <ul>
+          <li><a href="#featured-videos">Videos</a></li>
+          <li><a href="#featured-videos">Trending Videos</a></li>
+          <li><a href="#live-video-desk">TV &amp; Live Desk</a></li>
+          <li><a href="#featured-videos">Entertainment &amp; Shows</a></li>
+          <li><a href="#featured-videos">Audio &amp; Briefings</a></li>
+        </ul>
+      </div>
+
+      <div class="mirkuk-mega-col">
+        <h4>Lifestyle, Food &amp; Travel</h4>
+        <ul>
+          <li><a href="#latest-news">Travels</a></li>
+          <li><a href="#latest-news">Recipes &amp; Food News</a></li>
+          <li><a href="#latest-news">Living &amp; Entertainment</a></li>
+          <li><a href="#latest-news">Culture &amp; Features</a></li>
+          <li><a href="#latest-news">Explore Across Regions</a></li>
+        </ul>
+      </div>
+
+      <div class="mirkuk-mega-col">
+        <h4>Science, Tech &amp; Insight</h4>
+        <ul>
+          <li><a href="#latest-news">Science &amp; Environment</a></li>
+          <li><a href="#latest-news">Tech Tips &amp; Digital</a></li>
+          <li><a href="#latest-news">Astrology &amp; Daily Insight</a></li>
+          <li><a href="#latest-news">Reflections &amp; Weekend</a></li>
+          <li><a href="#latest-news">Latest News</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mirkuk-mega-grid" style="margin-bottom:10px;">
+      <div class="mirkuk-mega-col">
+        <h4>Trending Topics &amp; Hot on Web</h4>
+        <div class="mirkuk-tag-cloud">
+          <a href="#top">Breaking Headlines</a>
+          <a href="#latest-news">India Updates</a>
+          <a href="#latest-news">Global Markets</a>
+          <a href="#featured-videos">Top Clips</a>
+          <a href="#latest-news">Hot on the Web</a>
+        </div>
+      </div>
+
+      <div class="mirkuk-mega-col">
+        <h4>Popular Categories &amp; Services</h4>
+        <div class="mirkuk-tag-cloud">
+          <a href="#latest-news">News</a>
+          <a href="#featured-videos">Videos</a>
+          <a href="about/index.html">About</a>
+          <a href="contact/index.html">Contact</a>
+          <a href="privacy/index.html">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mirkuk-footer-subbar">
+    <div class="mirkuk-footer-subbar-inner">
+      <div>
+        <div class="mirkuk-footer-brand">MIRKUK NEWS</div>
+        <div style="font-size:12px; color:#9ba3ae; margin-top:2px;">
+          Copyright &copy; 2026 Mirkuk News. All rights reserved.
+        </div>
+      </div>
+
+      <div class="mirkuk-footer-legal">
+        <a href="about/index.html">About Us</a>
+        <a href="contact/index.html">Contact Us</a>
+        <a href="privacy/index.html">Privacy Policy</a>
+        <a href="privacy/index.html#terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
+
+
+
 
 
 
