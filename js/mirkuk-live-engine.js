@@ -3015,3 +3015,193 @@
     });
   });
 })();
+
+(function () {
+  function detectNewsTheme(text) {
+    const t = (text || "").toLowerCase();
+    if (/tech|ai|apple|google|microsoft|tesla|elon|musk|chip|cyber|software|launch|iphone/.test(t)) {
+      return {
+        tag: "TECH & LAUNCH WIRE",
+        bg1: "#090d16",
+        bg2: "#0f294a",
+        accent: "#38bdf8",
+        scene: "tech"
+      };
+    }
+    if (/market|stock|economy|business|rupee|dollar|billionaire|forbes|bank|trade|oil|ev/.test(t)) {
+      return {
+        tag: "MARKETS & ECONOMY",
+        bg1: "#071a14",
+        bg2: "#0f3d2e",
+        accent: "#34d399",
+        scene: "chart"
+      };
+    }
+    if (/movie|film|cinema|series|ott|tv|serial|celebrity|kanye|ye|music|box office|trailer/.test(t)) {
+      return {
+        tag: "ENTERTAINMENT & CULTURE",
+        bg1: "#1a0918",
+        bg2: "#4a1138",
+        accent: "#f472b6",
+        scene: "stage"
+      };
+    }
+    if (/cricket|ipl|football|soccer|sport|match|game|gaming|gta|ps5|esports|cup/.test(t)) {
+      return {
+        tag: "SPORTS & GAMING DESK",
+        bg1: "#1c0b07",
+        bg2: "#521c0c",
+        accent: "#fb923c",
+        scene: "arena"
+      };
+    }
+    if (/scholarship|scheme|yojana|grant|exam|student|travel|visa|flight|shopping|deal|sale|amazon|flipkart/.test(t)) {
+      return {
+        tag: "SCHEMES • TRAVEL • DEALS",
+        bg1: "#15102b",
+        bg2: "#37266b",
+        accent: "#fbbf24",
+        scene: "hub"
+      };
+    }
+    return {
+      tag: "WORLD & NATIONAL WIRE",
+      bg1: "#0b1324",
+      bg2: "#7f1d1d",
+      accent: "#f87171",
+      scene: "globe"
+    };
+  }
+
+  function renderSceneIllustration(scene, accent) {
+    if (scene === "chart") {
+      return `
+        <g opacity="0.28" stroke="${accent}" stroke-width="3" fill="none">
+          <polyline points="470,330 535,275 595,295 665,215 735,165"/>
+          <rect x="485" y="290" width="24" height="55" fill="${accent}" opacity="0.35"/>
+          <rect x="545" y="250" width="24" height="95" fill="${accent}" opacity="0.45"/>
+          <rect x="605" y="220" width="24" height="125" fill="${accent}" opacity="0.55"/>
+          <rect x="665" y="175" width="24" height="170" fill="${accent}" opacity="0.7"/>
+        </g>`;
+    }
+    if (scene === "tech") {
+      return `
+        <g opacity="0.28" stroke="${accent}" stroke-width="2" fill="none">
+          <circle cx="620" cy="230" r="95"/>
+          <circle cx="620" cy="230" r="55"/>
+          <line x1="505" y1="230" x2="735" y2="230"/>
+          <line x1="620" y1="115" x2="620" y2="345"/>
+          <circle cx="620" cy="135" r="6" fill="${accent}"/>
+          <circle cx="715" cy="230" r="6" fill="${accent}"/>
+          <circle cx="525" cy="230" r="6" fill="${accent}"/>
+        </g>`;
+    }
+    if (scene === "stage") {
+      return `
+        <g opacity="0.28" fill="${accent}">
+          <circle cx="625" cy="225" r="88" fill="none" stroke="${accent}" stroke-width="3"/>
+          <polygon points="602,185 672,225 602,265"/>
+        </g>`;
+    }
+    if (scene === "arena") {
+      return `
+        <g opacity="0.28" stroke="${accent}" stroke-width="3" fill="none">
+          <ellipse cx="625" cy="230" rx="115" ry="62"/>
+          <ellipse cx="625" cy="230" rx="60" ry="32"/>
+          <line x1="625" y1="168" x2="625" y2="292"/>
+        </g>`;
+    }
+    if (scene === "hub") {
+      return `
+        <g opacity="0.25" stroke="${accent}" stroke-width="2.5" fill="none">
+          <rect x="520" y="135" width="210" height="190" rx="14"/>
+          <line x1="520" y1="195" x2="730" y2="195"/>
+          <circle cx="560" cy="165" r="7" fill="${accent}"/>
+          <circle cx="585" cy="165" r="7" fill="${accent}"/>
+        </g>`;
+    }
+    return `
+      <g opacity="0.26" stroke="${accent}" stroke-width="2" fill="none">
+        <circle cx="625" cy="230" r="92"/>
+        <ellipse cx="625" cy="230" rx="46" ry="92"/>
+        <line x1="533" y1="230" x2="717" y2="230"/>
+        <line x1="550" y1="185" x2="700" y2="185"/>
+        <line x1="550" y1="275" x2="700" y2="275"/>
+      </g>`;
+  }
+
+  function buildTopicNewsImage(title, source) {
+    const cleanT = (title || "Breaking News Update").replace(/[<>&"']/g, "").trim();
+    const cleanS = (source || "MIRKUK WIRE").replace(/[<>&"']/g, "").trim().slice(0, 26).toUpperCase();
+    const theme = detectNewsTheme(cleanT + " " + cleanS);
+    const line1 = cleanT.slice(0, 34);
+    const line2 = cleanT.slice(34, 68);
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="${theme.bg1}"/>
+            <stop offset="100%" stop-color="${theme.bg2}"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="450" fill="url(#bg)"/>
+        <rect x="0" y="0" width="800" height="7" fill="${theme.accent}"/>
+        ${renderSceneIllustration(theme.scene, theme.accent)}
+        <rect x="38" y="34" width="235" height="28" rx="4" fill="${theme.accent}" opacity="0.18"/>
+        <text x="50" y="53" fill="${theme.accent}" font-family="Arial,sans-serif" font-size="13" font-weight="bold">${theme.tag}</text>
+        <text x="38" y="162" fill="#ffffff" font-family="Arial,sans-serif" font-size="31" font-weight="bold">${line1}</text>
+        <text x="38" y="206" fill="#f1f5f9" font-family="Arial,sans-serif" font-size="29" font-weight="bold">${line2}</text>
+        <line x1="38" y1="365" x2="762" y2="365" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+        <text x="38" y="404" fill="${theme.accent}" font-family="Arial,sans-serif" font-size="15" font-weight="bold">MIRKUK NEWS</text>
+        <text x="762" y="404" text-anchor="end" fill="#cbd5e1" font-family="Arial,sans-serif" font-size="14">${cleanS}</text>
+      </svg>
+    `.trim();
+
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  function applyTopicNewsImagesToPage() {
+    const imgs = Array.from(document.querySelectorAll("img"));
+    imgs.forEach(img => {
+      const card = img.closest("article, .mk-side-item, .mk-toi-sub-card, .mk-lead-spotlight");
+      const titleEl = card ? card.querySelector("h1, h2, h3, h4, a") : null;
+      const srcEl = card ? card.querySelector(".mk-cat-tag, small, span") : null;
+      const title = (titleEl && titleEl.textContent || img.alt || "News Update").trim();
+      const source = (srcEl && srcEl.textContent || "Mirkuk Wire").trim();
+      const artUrl = buildTopicNewsImage(title, source);
+
+      img.dataset.mkTopicArt = artUrl;
+
+      const isBrokenOrDuplicateGeneric =
+        !img.complete ||
+        img.naturalWidth === 0 ||
+        !img.getAttribute("src") ||
+        (img.getAttribute("src") || "").startsWith("data:image/svg+xml");
+
+      if (isBrokenOrDuplicateGeneric) {
+        img.src = artUrl;
+      }
+
+      img.addEventListener("error", function () {
+        if (this.dataset.mkTopicArt && this.src !== this.dataset.mkTopicArt) {
+          this.src = this.dataset.mkTopicArt;
+        }
+      }, { once: true });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    applyTopicNewsImagesToPage();
+    setTimeout(applyTopicNewsImagesToPage, 1000);
+    setTimeout(applyTopicNewsImagesToPage, 2500);
+    setTimeout(applyTopicNewsImagesToPage, 4500);
+
+    if (typeof MutationObserver !== "undefined") {
+      const obs = new MutationObserver(() => {
+        applyTopicNewsImagesToPage();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  });
+})();
