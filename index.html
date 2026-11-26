@@ -131,6 +131,19 @@
         <button type="button" id="mk-saved-view-btn" class="mk-chip">Saved (<span id="mk-saved-count">0</span>)</button>
       </div>
     </div>
+    <div class="mk-pulse-bar" aria-label="Newsroom Intelligence Controls">
+      <div class="mk-pulse-left">
+        <span><strong>Source Filter:</strong></span>
+        <select id="mk-source-filter" class="mk-select" aria-label="Filter by News Source">
+          <option value="ALL" selected>All Sources</option>
+        </select>
+        <span id="mk-pulse-stats" class="mk-status-pill">Ready</span>
+      </div>
+      <div class="mk-pulse-right">
+        <span id="mk-next-sync" class="mk-status-pill">Auto-sync: 10:00</span>
+        <button type="button" id="mk-force-sync-btn" class="mk-sync-btn">Sync Now</button>
+      </div>
+    </div>
     <div class="mk-section-head">
       <h2 id="mk-active-section-title">Top Stories</h2>
       <span id="mk-feed-status" class="mk-status-pill">Connecting...</span>
@@ -240,6 +253,7 @@
 </div>
 </body>
 </html>
+
 
 
 

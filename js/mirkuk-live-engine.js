@@ -897,3 +897,145 @@
     syncByLang();
   });
 })();
+
+(function () {
+  function calcReadMinutes(text) {
+    const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 180) + 1);
+  }
+
+  function decorateCardsWithReadTimeAndSource() {
+    const items = window.__mirkukCurrentItems || [];
+    if (!items.length) return;
+
+    // Populate source dropdown once per batch
+    const srcSelect = document.getElementById("mk-source-filter");
+    if (srcSelect) {
+      const prevVal = srcSelect.value || "ALL";
+      const sources = Array.from(new Set(items.map(it => it.__source).filter(Boolean))).sort();
+      srcSelect.innerHTML = `<option value="ALL">All Sources (${items.length})</option>` +
+        sources.map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`).join("");
+      if (Array.from(srcSelect.options).some(o => o.value === prevVal)) {
+        srcSelect.value = prevVal;
+      }
+    }
+
+    // Add read-time badge to grid meta lines
+    document.querySelectorAll("#mk-grid-area .mk-grid-body").forEach((bodyEl) => {
+      const metaEl = bodyEl.querySelector(".mk-meta");
+      if (!metaEl || metaEl.querySelector(".mk-read-pill")) return;
+      const linkEl = bodyEl.querySelector("h3 a");
+      const href = linkEl ? linkEl.getAttribute("href") : "";
+      const matched = items.find(it => it.link === href);
+      const mins = calcReadMinutes((matched && matched.__summary) || bodyEl.textContent);
+      const badge = document.createElement("span");
+      badge.className = "mk-read-pill";
+      badge.textContent = `${mins} min read`;
+      metaEl.appendChild(badge);
+    });
+
+    const statsEl = document.getElementById("mk-pulse-stats");
+    if (statsEl) {
+      const uniqueSources = new Set(items.map(it => it.__source).filter(Boolean)).size;
+      statsEl.textContent = `${items.length} stories • ${uniqueSources} sources active`;
+    }
+  }
+
+  function applySourceFilter(chosenSource) {
+    const all = window.__mirkukAllItemsBackup || window.__mirkukCurrentItems || [];
+    if (!window.__mirkukAllItemsBackup && all.length) {
+      window.__mirkukAllItemsBackup = all.slice();
+    }
+    const base = window.__mirkukAllItemsBackup || [];
+    if (!base.length) return;
+
+    const filtered = (!chosenSource || chosenSource === "ALL")
+      ? base.slice()
+      : base.filter(it => (it.__source || "") === chosenSource);
+
+    window.__mirkukCurrentItems = filtered.length ? filtered : base.slice();
+
+    const gridArea = document.getElementById("mk-grid-area");
+    if (gridArea) {
+      gridArea.innerHTML = window.__mirkukCurrentItems.slice(0, 16).map((it, i) => {
+        const mins = calcReadMinutes(it.__summary || it.__cleanTitle || "");
+        return `
+          <article class="mk-card mk-grid-card">
+            <a href="${it.link}" target="_blank" rel="noopener noreferrer">
+              <img src="${it.__img || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=900&q=80'}" alt="" loading="lazy" />
+            </a>
+            <div class="mk-grid-body">
+              <div>
+                <span class="mk-cat-tag">${it.__source || "Wire"}</span>
+                <h3><a href="${it.link}" target="_blank" rel="noopener noreferrer">${it.__cleanTitle || it.title}</a></h3>
+                <p>${(it.__summary || "").slice(0, 155)}</p>
+              </div>
+              <div class="mk-meta">${it.__timeAgo || "Live"} <span class="mk-read-pill">${mins} min read</span></div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const gridEl = document.getElementById("mk-grid-area");
+    if (gridEl && window.MutationObserver) {
+      const obs = new MutationObserver(() => {
+        if (Array.isArray(window.__mirkukCurrentItems) && window.__mirkukCurrentItems.length) {
+          window.__mirkukAllItemsBackup = window.__mirkukCurrentItems.slice();
+        }
+        decorateCardsWithReadTimeAndSource();
+      });
+      obs.observe(gridEl, { childList: true });
+    }
+
+    const srcSelect = document.getElementById("mk-source-filter");
+    if (srcSelect) {
+      srcSelect.addEventListener("change", function () {
+        applySourceFilter(this.value);
+      });
+    }
+
+    // Countdown timer (600s = 10m) + Force Sync button
+    let remainingSec = 600;
+    const syncLabel = document.getElementById("mk-next-sync");
+    const forceBtn = document.getElementById("mk-force-sync-btn");
+
+    function triggerRefresh() {
+      remainingSec = 600;
+      const activeNav = document.querySelector(".mk-nav-btn.active") || document.querySelector(".mk-nav-btn");
+      if (activeNav) activeNav.click();
+    }
+
+    if (forceBtn) {
+      forceBtn.addEventListener("click", triggerRefresh);
+    }
+
+    setInterval(() => {
+      remainingSec = remainingSec > 0 ? remainingSec - 1 : 600;
+      if (syncLabel) {
+        const m = String(Math.floor(remainingSec / 60)).padStart(2, "0");
+        const s = String(remainingSec % 60).padStart(2, "0");
+        syncLabel.textContent = `Auto-sync: ${m}:${s}`;
+      }
+    }, 1000);
+
+    // Power shortcuts: '/' focuses search, 'Escape' closes reader modal
+    document.addEventListener("keydown", function (e) {
+      const tag = (e.target && e.target.tagName || "").toLowerCase();
+      if (e.key === "/" && tag !== "input" && tag !== "textarea") {
+        const inp = document.getElementById("mk-search-input");
+        if (inp) {
+          e.preventDefault();
+          inp.focus();
+        }
+      } else if (e.key === "Escape") {
+        const backdrop = document.getElementById("mk-reader-backdrop");
+        if (backdrop && backdrop.classList.contains("open")) {
+          backdrop.classList.remove("open");
+        }
+      }
+    });
+  });
+})();
