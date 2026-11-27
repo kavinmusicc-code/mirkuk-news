@@ -1876,3 +1876,65 @@ html, body {
 .mk-desk-reset-btn:hover {
   opacity: 0.92;
 }
+
+/* =========================================================
+   MIRKUK NEWS 100% PORTAL FINAL POLISH & OVERFLOW GUARD
+   ========================================================= */
+html, body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#mk-more-panel {
+  display: none !important;
+}
+
+#mk-more-panel.open {
+  display: block !important;
+}
+
+.mk-grid-area {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  max-width: 1280px !important;
+  margin: 0 auto 24px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+}
+
+.mk-grid-area > article {
+  min-width: 0 !important;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.mk-grid-area > article img {
+  width: 100% !important;
+  height: 145px !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.mk-grid-body {
+  padding: 11px 12px !important;
+}
+
+@media (max-width: 1024px) {
+  .mk-grid-area {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .mk-grid-area {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 0 10px !important;
+  }
+  .mk-grid-area > article img {
+    height: 105px !important;
+  }
+}

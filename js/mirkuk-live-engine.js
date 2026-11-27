@@ -3404,3 +3404,29 @@
     }
   });
 })();
+
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    const allPanels = Array.from(document.querySelectorAll("#mk-more-panel"));
+    allPanels.forEach((p, idx) => {
+      if (idx > 0) p.remove();
+      else p.classList.remove("open");
+    });
+
+    const panel = document.getElementById("mk-more-panel");
+    const closeBtn = document.getElementById("mk-more-close");
+    if (closeBtn && panel) {
+      closeBtn.addEventListener("click", function () {
+        panel.classList.remove("open");
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      const toggle = e.target.closest("#mk-more-toggle-btn, [data-mk-more-toggle], button");
+      if (toggle && /more options/i.test(toggle.textContent || "") && panel) {
+        e.preventDefault();
+        panel.classList.toggle("open");
+      }
+    });
+  });
+})();
