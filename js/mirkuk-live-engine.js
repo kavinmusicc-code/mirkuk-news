@@ -3880,3 +3880,197 @@
     }
   });
 })();
+
+(function () {
+  const CACHE = new Map();
+
+  function pickPalette(text) {
+    const t = (text || "").toLowerCase();
+    if (/stock|market|rupee|sensex|nifty|economy|bank|trade|finance/.test(t)) {
+      return { tag: "MARKETS & FINANCE", g1: "#052e16", g2: "#047857", ac: "#34d399", glyph: "chart" };
+    }
+    if (/tech|ai|apple|google|microsoft|tesla|elon|musk|chip|cyber|software|launch/.test(t)) {
+      return { tag: "TECH & DIGITAL", g1: "#082f49", g2: "#0369a1", ac: "#38bdf8", glyph: "tech" };
+    }
+    if (/amazon|flipkart|sale|deal|offer|shopping|discount|buy|price/.test(t)) {
+      return { tag: "SHOPPING & DEALS", g1: "#2e1065", g2: "#b45309", ac: "#fbbf24", glyph: "shop" };
+    }
+    if (/cricket|ipl|football|soccer|match|sport|game|gaming|gta|world cup/.test(t)) {
+      return { tag: "SPORTS & GAMING", g1: "#431407", g2: "#b91c1c", ac: "#fb923c", glyph: "sport" };
+    }
+    if (/movie|film|series|ott|tv|serial|celebrity|kanye|ye|music|show/.test(t)) {
+      return { tag: "ENTERTAINMENT", g1: "#4a044e", g2: "#be185d", ac: "#f472b6", glyph: "ent" };
+    }
+    return { tag: "NATIONAL & WORLD", g1: "#0f172a", g2: "#991b1b", ac: "#f87171", glyph: "news" };
+  }
+
+  function drawGlyph(ctx, glyph, ac, w, h) {
+    ctx.save();
+    ctx.strokeStyle = ac;
+    ctx.fillStyle = ac;
+    ctx.lineWidth = 3;
+
+    const x = w * 0.66;
+    const y = h * 0.24;
+    const rw = w * 0.28;
+    const rh = h * 0.52;
+
+    ctx.globalAlpha = 0.14;
+    ctx.fillRect(x, y, rw, rh);
+    ctx.globalAlpha = 0.45;
+    ctx.strokeRect(x, y, rw, rh);
+
+    ctx.globalAlpha = 0.82;
+    if (glyph === "chart") {
+      ctx.beginPath();
+      ctx.moveTo(x + 20, y + rh - 28);
+      ctx.lineTo(x + rw * 0.4, y + rh * 0.55);
+      ctx.lineTo(x + rw * 0.7, y + rh * 0.68);
+      ctx.lineTo(x + rw - 20, y + 28);
+      ctx.stroke();
+    } else if (glyph === "shop") {
+      ctx.strokeRect(x + 30, y + 40, rw - 60, rh - 70);
+      ctx.beginPath();
+      ctx.moveTo(x + 30, y + 76);
+      ctx.lineTo(x + rw - 30, y + 76);
+      ctx.stroke();
+    } else {
+      const cx = x + rw * 0.5;
+      const cy = y + rh * 0.5;
+      ctx.beginPath(); ctx.arc(cx, cy, 46, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function splitLines(ctx, text, maxW, maxLines) {
+    const words = (text || "").trim().split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = "";
+    for (const w of words) {
+      const cand = cur ? cur + " " + w : w;
+      if (ctx.measureText(cand).width <= maxW) {
+        cur = cand;
+      } else {
+        if (cur) lines.push(cur);
+        cur = w;
+        if (lines.length >= maxLines) break;
+      }
+    }
+    if (cur && lines.length < maxLines) lines.push(cur);
+    return lines;
+  }
+
+  function makeCardPng(title, source) {
+    let cleanTitle = (title || "").trim();
+    if (!cleanTitle || /mirkuk news live dispatch|breaking news update/i.test(cleanTitle)) {
+      return "";
+    }
+    const cleanSrc = (source || "MIRKUK NEWS").trim().toUpperCase().slice(0, 28);
+    const key = cleanTitle.slice(0, 85) + "||" + cleanSrc;
+    if (CACHE.has(key)) return CACHE.get(key);
+
+    const w = 800;
+    const h = 450;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+
+    const pal = pickPalette(cleanTitle + " " + cleanSrc);
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, pal.g1);
+    grad.addColorStop(1, pal.g2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = pal.ac;
+    ctx.fillRect(0, 0, w, 8);
+
+    drawGlyph(ctx, pal.glyph, pal.ac, w, h);
+
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(34, 30, 220, 28);
+    ctx.fillStyle = pal.ac;
+    ctx.font = "bold 13px Arial, sans-serif";
+    ctx.fillText(pal.tag, 46, 49);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 30px Arial, sans-serif";
+    const lines = splitLines(ctx, cleanTitle, 465, 4);
+    lines.forEach((ln, idx) => {
+      ctx.fillText(ln, 34, 114 + idx * 42);
+    });
+
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(34, 376);
+    ctx.lineTo(w - 34, 376);
+    ctx.stroke();
+
+    ctx.fillStyle = pal.ac;
+    ctx.font = "bold 15px Arial, sans-serif";
+    ctx.fillText("MIRKUK NEWS", 34, 410);
+
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "14px Arial, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(cleanSrc, w - 34, 410);
+    ctx.textAlign = "left";
+
+    const png = canvas.toDataURL("image/png");
+    CACHE.set(key, png);
+    return png;
+  }
+
+  function fixCardsOnce() {
+    const cards = Array.from(
+      document.querySelectorAll("article, .mk-side-item, .mk-toi-sub-card, .mk-lead-spotlight, .mk-toi-center-lead")
+    );
+
+    cards.forEach(card => {
+      if (card.closest("header, nav, .mk-masthead, .mk-breaking-bar")) return;
+
+      const heading = card.querySelector("h1, h2, h3, h4, a");
+      const srcEl = card.querySelector(".mk-cat-tag, small, span");
+      const title = (heading && heading.textContent || "").trim();
+      const source = (srcEl && srcEl.textContent || "Mirkuk News").trim();
+      const png = makeCardPng(title, source);
+      if (!png) return;
+
+      let img = card.querySelector("img");
+      if (!img) {
+        const a = card.querySelector("a");
+        img = document.createElement("img");
+        img.alt = title;
+        img.loading = "eager";
+        img.style.cssText = "width:100%; height:150px; object-fit:cover; display:block;";
+        if (a) a.prepend(img);
+        else card.prepend(img);
+      }
+
+      const cur = (img.getAttribute("src") || "").trim();
+      const isGenericDispatch = !cur || cur === "undefined" || cur === "null" || img.dataset.mkIsDispatch === "1";
+
+      if (isGenericDispatch && img.dataset.mkAppliedPng !== png) {
+        img.dataset.mkAppliedPng = png;
+        img.src = png;
+      }
+
+      img.onerror = function () {
+        if (this.src !== png) {
+          this.dataset.mkAppliedPng = png;
+          this.src = png;
+        }
+      };
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(fixCardsOnce, 1200);
+    setTimeout(fixCardsOnce, 2800);
+    setTimeout(fixCardsOnce, 5000);
+  });
+})();
