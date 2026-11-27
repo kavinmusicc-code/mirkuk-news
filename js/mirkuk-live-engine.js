@@ -3205,3 +3205,202 @@
     }
   });
 })();
+
+(function () {
+  const canvasCache = new Map();
+
+  function pickTheme(text) {
+    const t = (text || "").toLowerCase();
+    if (/amazon|flipkart|sale|deal|offer|shopping|festival|buy|price|discount/.test(t)) {
+      return { badge: "SHOPPING & DEALS", c1: "#1e1b4b", c2: "#b45309", acc: "#fbbf24", mode: "shop" };
+    }
+    if (/nasa|space|asteroid|mars|rocket|orbit|satellite|astronaut|cosmos/.test(t)) {
+      return { badge: "SPACE & SCIENCE", c1: "#050b18", c2: "#1d4ed8", acc: "#38bdf8", mode: "space" };
+    }
+    if (/tech|ai|gpt|apple|google|microsoft|tesla|elon|musk|chip|cyber|software|launch/.test(t)) {
+      return { badge: "TECH & INNOVATION", c1: "#071324", c2: "#0e7490", acc: "#22d3ee", mode: "tech" };
+    }
+    if (/market|stock|economy|business|rupee|dollar|billionaire|bank|trade|finance/.test(t)) {
+      return { badge: "MARKETS & ECONOMY", c1: "#061f17", c2: "#047857", acc: "#34d399", mode: "chart" };
+    }
+    if (/movie|film|cinema|series|ott|tv|serial|celebrity|kanye|ye|music|song|show/.test(t)) {
+      return { badge: "ENTERTAINMENT WIRE", c1: "#24071d", c2: "#9d174d", acc: "#f472b6", mode: "stage" };
+    }
+    if (/cricket|ipl|football|soccer|sport|match|game|gaming|gta|cup|player/.test(t)) {
+      return { badge: "SPORTS & GAMING", c1: "#240905", c2: "#c2410c", acc: "#fb923c", mode: "arena" };
+    }
+    return { badge: "WORLD & NATIONAL", c1: "#0f172a", c2: "#991b1b", acc: "#f87171", mode: "globe" };
+  }
+
+  function drawScene(ctx, mode, acc, w, h) {
+    ctx.save();
+    ctx.strokeStyle = acc;
+    ctx.fillStyle = acc;
+    ctx.globalAlpha = 0.24;
+    ctx.lineWidth = 3;
+
+    const cx = w * 0.78;
+    const cy = h * 0.52;
+
+    if (mode === "space") {
+      ctx.beginPath(); ctx.arc(cx - 35, cy + 10, 58, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx + 25, cy - 45); ctx.lineTo(cx + 75, cy - 95); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx + 75, cy - 95, 7, 0, Math.PI * 2); ctx.fill();
+    } else if (mode === "chart") {
+      const bars = [45, 75, 105, 140];
+      bars.forEach((bh, i) => {
+        ctx.globalAlpha = 0.22 + i * 0.08;
+        ctx.fillRect(w * 0.62 + i * 38, h * 0.75 - bh, 24, bh);
+      });
+    } else if (mode === "shop") {
+      ctx.strokeRect(cx - 65, cy - 55, 130, 110);
+      ctx.beginPath(); ctx.moveTo(cx - 65, cy - 15); ctx.lineTo(cx + 65, cy - 15); ctx.stroke();
+    } else if (mode === "stage") {
+      ctx.beginPath(); ctx.arc(cx, cy, 66, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx - 18, cy - 26);
+      ctx.lineTo(cx + 28, cy);
+      ctx.lineTo(cx - 18, cy + 26);
+      ctx.closePath();
+      ctx.fill();
+    } else if (mode === "arena") {
+      ctx.beginPath(); ctx.ellipse(cx, cy, 85, 44, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(cx, cy, 42, 22, 0, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.arc(cx, cy, 68, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(cx, cy, 32, 68, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - 68, cy); ctx.lineTo(cx + 68, cy); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function wrapLines(ctx, text, maxWidth, maxLines) {
+    const words = (text || "").trim().split(/\s+/).filter(Boolean);
+    const lines = [];
+    let current = "";
+    for (const w of words) {
+      const test = current ? current + " " + w : w;
+      if (ctx.measureText(test).width <= maxWidth) {
+        current = test;
+      } else {
+        if (current) lines.push(current);
+        current = w;
+        if (lines.length >= maxLines) break;
+      }
+    }
+    if (current && lines.length < maxLines) lines.push(current);
+    return lines;
+  }
+
+  function generatePngDataUrl(title, source) {
+    const cleanTitle = (title || "Mirkuk News Live Dispatch").trim();
+    const cleanSource = (source || "MIRKUK WIRE").trim().toUpperCase().slice(0, 28);
+    const key = cleanTitle.slice(0, 70) + "||" + cleanSource;
+    if (canvasCache.has(key)) return canvasCache.get(key);
+
+    const w = 800;
+    const h = 450;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+
+    const theme = pickTheme(cleanTitle + " " + cleanSource);
+
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, theme.c1);
+    grad.addColorStop(1, theme.c2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = theme.acc;
+    ctx.fillRect(0, 0, w, 8);
+
+    drawScene(ctx, theme.mode, theme.acc, w, h);
+
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(36, 32, 230, 30);
+    ctx.fillStyle = theme.acc;
+    ctx.font = "bold 14px Arial, sans-serif";
+    ctx.fillText(theme.badge, 48, 52);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 32px Arial, sans-serif";
+    const lines = wrapLines(ctx, cleanTitle, 520, 3);
+    lines.forEach((line, idx) => {
+      ctx.fillText(line, 36, 130 + idx * 44);
+    });
+
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(36, 372);
+    ctx.lineTo(w - 36, 372);
+    ctx.stroke();
+
+    ctx.fillStyle = theme.acc;
+    ctx.font = "bold 16px Arial, sans-serif";
+    ctx.fillText("MIRKUK NEWS", 36, 408);
+
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "14px Arial, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(cleanSource, w - 36, 408);
+    ctx.textAlign = "left";
+
+    const url = canvas.toDataURL("image/png");
+    canvasCache.set(key, url);
+    return url;
+  }
+
+  function ensureAllImagesPopulated() {
+    document.querySelectorAll("img").forEach(img => {
+      const container = img.closest("article, .mk-side-item, .mk-toi-sub-card, .mk-lead-spotlight, .mk-toi-center-lead");
+      const titleEl = container ? container.querySelector("h1, h2, h3, h4, a") : null;
+      const srcEl = container ? container.querySelector(".mk-cat-tag, small, span") : null;
+      const title = (titleEl && titleEl.textContent || img.alt || "News Update").trim();
+      const source = (srcEl && srcEl.textContent || "Mirkuk Wire").trim();
+
+      const pngUrl = generatePngDataUrl(title, source);
+      if (!pngUrl) return;
+
+      img.dataset.mkPngFallback = pngUrl;
+      img.style.display = "block";
+      img.style.opacity = "1";
+      img.style.visibility = "visible";
+
+      const currentSrc = (img.getAttribute("src") || "").trim();
+      const looksBroken =
+        !currentSrc ||
+        currentSrc === "undefined" ||
+        currentSrc === "null" ||
+        currentSrc.startsWith("data:image/svg+xml") ||
+        (img.complete && img.naturalWidth === 0);
+
+      if (looksBroken) {
+        img.src = pngUrl;
+      }
+
+      img.onerror = function () {
+        if (this.dataset.mkPngFallback && this.src !== this.dataset.mkPngFallback) {
+          this.src = this.dataset.mkPngFallback;
+        }
+      };
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureAllImagesPopulated();
+    setTimeout(ensureAllImagesPopulated, 800);
+    setTimeout(ensureAllImagesPopulated, 2000);
+    setTimeout(ensureAllImagesPopulated, 4000);
+
+    if (typeof MutationObserver !== "undefined") {
+      const obs = new MutationObserver(() => {
+        ensureAllImagesPopulated();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  });
+})();
