@@ -3649,3 +3649,234 @@
     }
   });
 })();
+
+(function () {
+  const PNG_CACHE = new Map();
+
+  function classifyTopic(text) {
+    const s = (text || "").toLowerCase();
+    if (/stock|market|rout|share|sensex|nifty|economy|trade|bank|dollar|rupee|inflation|fed|finance/.test(s)) {
+      return { badge: "MARKETS & ECONOMY", c1: "#051b14", c2: "#047857", acc: "#34d399", kind: "chart" };
+    }
+    if (/tech|ai|apple|app store|google|microsoft|tesla|elon|musk|chip|cyber|data|software|launch|iphone/.test(s)) {
+      return { badge: "TECH & LAUNCHES", c1: "#071326", c2: "#0284c7", acc: "#38bdf8", kind: "tech" };
+    }
+    if (/amazon|flipkart|sale|deal|offer|shopping|black friday|discount|buy|price/.test(s)) {
+      return { badge: "SHOPPING & DEALS", c1: "#1f1436", c2: "#b45309", acc: "#fbbf24", kind: "shop" };
+    }
+    if (/cricket|ipl|football|soccer|world cup|match|sport|game|gaming|gta|esports/.test(s)) {
+      return { badge: "SPORTS & GAMING", c1: "#240a06", c2: "#b91c1c", acc: "#fb923c", kind: "sport" };
+    }
+    if (/movie|film|series|ott|tv|serial|celebrity|kanye|ye|music|song|cinema|show/.test(s)) {
+      return { badge: "ENTERTAINMENT", c1: "#23071d", c2: "#9d174d", acc: "#f472b6", kind: "ent" };
+    }
+    if (/scholarship|scheme|yojana|grant|exam|student|travel|visa|flight|tourism/.test(s)) {
+      return { badge: "SCHEMES & TRAVEL", c1: "#13162e", c2: "#4338ca", acc: "#a5b4fc", kind: "hub" };
+    }
+    return { badge: "INDIA & WORLD WIRE", c1: "#0d1629", c2: "#7f1d1d", acc: "#f87171", kind: "world" };
+  }
+
+  function paintVisual(ctx, kind, acc, w, h) {
+    ctx.save();
+    ctx.strokeStyle = acc;
+    ctx.fillStyle = acc;
+    ctx.lineWidth = 3;
+
+    const x0 = w * 0.65;
+    const y0 = h * 0.22;
+    const bw = w * 0.29;
+    const bh = h * 0.56;
+
+    ctx.globalAlpha = 0.14;
+    ctx.fillRect(x0, y0, bw, bh);
+    ctx.globalAlpha = 0.45;
+    ctx.strokeRect(x0, y0, bw, bh);
+
+    if (kind === "chart") {
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath();
+      ctx.moveTo(x0 + 20, y0 + bh - 32);
+      ctx.lineTo(x0 + bw * 0.35, y0 + bh * 0.56);
+      ctx.lineTo(x0 + bw * 0.65, y0 + bh * 0.70);
+      ctx.lineTo(x0 + bw - 20, y0 + 32);
+      ctx.stroke();
+
+      [42, 72, 106].forEach((ht, idx) => {
+        ctx.globalAlpha = 0.35 + idx * 0.2;
+        ctx.fillRect(x0 + 24 + idx * 52, y0 + bh - 20 - ht, 28, ht);
+      });
+    } else if (kind === "shop") {
+      ctx.globalAlpha = 0.8;
+      ctx.strokeRect(x0 + 34, y0 + 44, bw - 68, bh - 74);
+      ctx.beginPath();
+      ctx.moveTo(x0 + 34, y0 + 82);
+      ctx.lineTo(x0 + bw - 34, y0 + 82);
+      ctx.stroke();
+    } else if (kind === "tech") {
+      ctx.globalAlpha = 0.78;
+      const cx = x0 + bw * 0.5;
+      const cy = y0 + bh * 0.5;
+      ctx.beginPath(); ctx.arc(cx, cy, 46, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx, cy, 16, 0, Math.PI * 2); ctx.fill();
+    } else {
+      ctx.globalAlpha = 0.76;
+      const cx = x0 + bw * 0.5;
+      const cy = y0 + bh * 0.5;
+      ctx.beginPath(); ctx.arc(cx, cy, 50, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(cx, cy, 24, 50, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - 50, cy); ctx.lineTo(cx + 50, cy); ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function wrapLines(ctx, text, maxWidth, maxLines) {
+    const words = (text || "").trim().split(/\s+/).filter(Boolean);
+    const out = [];
+    let cur = "";
+    for (const w of words) {
+      const test = cur ? cur + " " + w : w;
+      if (ctx.measureText(test).width <= maxWidth) {
+        cur = test;
+      } else {
+        if (cur) out.push(cur);
+        cur = w;
+        if (out.length >= maxLines) break;
+      }
+    }
+    if (cur && out.length < maxLines) out.push(cur);
+    return out;
+  }
+
+  function createNewsPng(headline, source) {
+    let hText = (headline || "").trim();
+    if (!hText || /mirkuk news live dispatch/i.test(hText)) {
+      hText = "Live News Dispatch Across Global & National Desks";
+    }
+    const sText = (source || "MIRKUK NEWS").trim().toUpperCase().slice(0, 28);
+    const cacheKey = hText.slice(0, 80) + "||" + sText;
+    if (PNG_CACHE.has(cacheKey)) return PNG_CACHE.get(cacheKey);
+
+    const w = 800;
+    const h = 450;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return "";
+
+    const theme = classifyTopic(hText + " " + sText);
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, theme.c1);
+    grad.addColorStop(1, theme.c2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = theme.acc;
+    ctx.fillRect(0, 0, w, 8);
+
+    paintVisual(ctx, theme.kind, theme.acc, w, h);
+
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fillRect(34, 30, 224, 28);
+    ctx.fillStyle = theme.acc;
+    ctx.font = "bold 13px Arial, sans-serif";
+    ctx.fillText(theme.badge, 46, 49);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 30px Arial, sans-serif";
+    const lines = wrapLines(ctx, hText, 465, 4);
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 34, 114 + i * 42);
+    });
+
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(34, 376);
+    ctx.lineTo(w - 34, 376);
+    ctx.stroke();
+
+    ctx.fillStyle = theme.acc;
+    ctx.font = "bold 15px Arial, sans-serif";
+    ctx.fillText("MIRKUK NEWS", 34, 410);
+
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "14px Arial, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(sText, w - 34, 410);
+    ctx.textAlign = "left";
+
+    const pngUrl = canvas.toDataURL("image/png");
+    PNG_CACHE.set(cacheKey, pngUrl);
+    return pngUrl;
+  }
+
+  function forceImagesEverywhere() {
+    const containers = Array.from(
+      document.querySelectorAll("article, .mk-side-item, .mk-toi-sub-card, .mk-lead-spotlight, .mk-toi-center-lead")
+    );
+
+    containers.forEach(box => {
+      if (box.closest("header, nav, .mk-masthead, .mk-breaking-bar")) return;
+
+      const titleNode = box.querySelector("h1, h2, h3, h4, a");
+      const sourceNode = box.querySelector(".mk-cat-tag, small, span");
+      let title = (titleNode && titleNode.textContent || "").trim();
+      if (!title || /mirkuk news live dispatch/i.test(title)) {
+        const mainH = document.querySelector(".mk-toi-center-lead h2 a, .mk-toi-center-lead h2, h1");
+        title = (mainH && mainH.textContent || "Breaking News Update").trim();
+      }
+      const source = (sourceNode && sourceNode.textContent || "Mirkuk News").trim();
+      const fallbackPng = createNewsPng(title, source);
+      if (!fallbackPng) return;
+
+      let img = box.querySelector("img");
+      if (!img) {
+        const link = box.querySelector("a");
+        img = document.createElement("img");
+        img.alt = title;
+        img.loading = "eager";
+        img.style.cssText = "width:100%; height:150px; object-fit:cover; display:block;";
+        if (link) {
+          link.prepend(img);
+        } else {
+          box.prepend(img);
+        }
+      }
+
+      img.dataset.mkGuaranteedPng = fallbackPng;
+      img.style.display = "block";
+      img.style.visibility = "visible";
+      img.style.opacity = "1";
+
+      const srcAttr = (img.getAttribute("src") || "").trim();
+      const badSrc =
+        !srcAttr ||
+        srcAttr === "undefined" ||
+        srcAttr === "null" ||
+        srcAttr.startsWith("data:image/svg+xml") ||
+        (img.complete && img.naturalWidth === 0);
+
+      if (badSrc) {
+        img.src = fallbackPng;
+      }
+
+      img.onerror = function () {
+        if (this.dataset.mkGuaranteedPng && this.src !== this.dataset.mkGuaranteedPng) {
+          this.src = this.dataset.mkGuaranteedPng;
+        }
+      };
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    forceImagesEverywhere();
+    setInterval(forceImagesEverywhere, 1200);
+
+    if (typeof MutationObserver !== "undefined") {
+      const obs = new MutationObserver(() => forceImagesEverywhere());
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  });
+})();
